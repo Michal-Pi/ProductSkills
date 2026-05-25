@@ -1,0 +1,27 @@
+{
+  "case": "notion-tool-kind-mismatch-negative",
+  "expected": "fail",
+  "tool": "notion",
+  "scenario": "tool_kind_mismatch",
+  "payloads": [
+    {
+      "kind": "linear_issue",
+      "operation": "create",
+      "confirmation_question": "Confirm Linear dry-run payload hash hash-kind-mismatch-001 for team PROD?",
+      "payload": {
+        "mode": "dry_run",
+        "team_key": "PROD",
+        "title": "Wrong tool payload kind",
+        "description": "This fixture must fail because a Notion fixture cannot carry a Linear issue payload.",
+        "issue_type": "story",
+        "priority": "medium",
+        "labels": ["unsafe"],
+        "acceptance_criteria": ["Tool and payload kind must match."],
+        "dependencies": [],
+        "idempotency_key": "kind-mismatch",
+        "dry_run_payload_hash": "hash-kind-mismatch-001",
+        "confirmation_required": true
+      }
+    }
+  ]
+}

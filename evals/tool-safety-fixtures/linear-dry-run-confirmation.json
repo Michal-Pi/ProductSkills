@@ -1,0 +1,40 @@
+{
+  "case": "linear-dry-run-confirmation",
+  "expected": "pass",
+  "tool": "linear",
+  "scenario": "dry_run_confirmation",
+  "workspace": {
+    "version": 1,
+    "workspaces": [
+      {
+        "tool": "linear",
+        "name": "Product Team",
+        "target_id": "linear-workspace-123",
+        "default_team_key": "PROD"
+      }
+    ]
+  },
+  "payloads": [
+    {
+      "kind": "linear_issue",
+      "operation": "create",
+      "confirmation_question": "Confirm Linear dry-run payload hash hash-linear-onboarding-001 and idempotency key linear-onboarding-owner-assignment before writing to team PROD?",
+      "payload": {
+        "mode": "dry_run",
+        "team_key": "PROD",
+        "title": "Assign setup owner during onboarding",
+        "description": "Create owner assignment during workspace setup.",
+        "issue_type": "story",
+        "priority": "medium",
+        "labels": ["onboarding", "activation"],
+        "acceptance_criteria": [
+          "Given an admin assigns an owner, the owner is visible in setup status."
+        ],
+        "dependencies": [],
+        "idempotency_key": "linear-onboarding-owner-assignment",
+        "dry_run_payload_hash": "hash-linear-onboarding-001",
+        "confirmation_required": true
+      }
+    }
+  ]
+}

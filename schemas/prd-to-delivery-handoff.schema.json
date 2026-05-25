@@ -1,0 +1,166 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "PRD to Delivery Handoff",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "workflow_id",
+    "decision_status",
+    "source_prd",
+    "readiness_review",
+    "scope_map",
+    "epics",
+    "stories",
+    "acceptance_criteria",
+    "linear_preview",
+    "approval_gates",
+    "open_questions",
+    "next_actions"
+  ],
+  "properties": {
+    "workflow_id": {
+      "const": "workflow-prd-to-linear-delivery"
+    },
+    "decision_status": {
+      "type": "string",
+      "enum": [
+        "blocked",
+        "needs_product_decision",
+        "ready_for_delivery_review",
+        "ready_for_linear_preview",
+        "approved_for_linear_write"
+      ]
+    },
+    "source_prd": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["title"],
+      "properties": {
+        "title": {"type": "string"},
+        "source_path": {"type": "string"},
+        "artifact_id": {"type": "string"},
+        "version_or_date": {"type": "string"},
+        "summary": {"type": "string"}
+      }
+    },
+    "readiness_review": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["blocking_issues", "delivery_recommendation"],
+      "properties": {
+        "blocking_issues": {"type": "array", "items": {"type": "string"}},
+        "non_blocking_improvements": {"type": "array", "items": {"type": "string"}},
+        "unsupported_claims": {"type": "array", "items": {"type": "string"}},
+        "delivery_recommendation": {"type": "string"}
+      }
+    },
+    "scope_map": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["in_scope", "non_goals"],
+      "properties": {
+        "in_scope": {"type": "array", "items": {"type": "string"}},
+        "non_goals": {"type": "array", "items": {"type": "string"}},
+        "dependencies": {"type": "array", "items": {"type": "string"}},
+        "assumptions": {"type": "array", "items": {"type": "string"}},
+        "excluded_requests": {"type": "array", "items": {"type": "string"}},
+        "sequencing_constraints": {"type": "array", "items": {"type": "string"}}
+      }
+    },
+    "epics": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["local_id", "title", "outcome", "completion_criteria"],
+        "properties": {
+          "local_id": {"type": "string"},
+          "title": {"type": "string"},
+          "outcome": {"type": "string"},
+          "completion_criteria": {"type": "array", "items": {"type": "string"}},
+          "dependencies": {"type": "array", "items": {"type": "string"}},
+          "risks": {"type": "array", "items": {"type": "string"}},
+          "priority": {"type": "string"}
+        }
+      }
+    },
+    "stories": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["local_id", "parent_epic_id", "story", "user_value"],
+        "properties": {
+          "local_id": {"type": "string"},
+          "parent_epic_id": {"type": "string"},
+          "story": {"type": "string"},
+          "user_value": {"type": "string"},
+          "split_rationale": {"type": "string"},
+          "dependencies": {"type": "array", "items": {"type": "string"}},
+          "priority": {"type": "string"}
+        }
+      }
+    },
+    "acceptance_criteria": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["story_id", "criteria"],
+        "properties": {
+          "story_id": {"type": "string"},
+          "criteria": {"type": "array", "items": {"type": "string"}},
+          "edge_cases": {"type": "array", "items": {"type": "string"}},
+          "failure_states": {"type": "array", "items": {"type": "string"}},
+          "observability_needs": {"type": "array", "items": {"type": "string"}}
+        }
+      }
+    },
+    "linear_preview": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "mode",
+        "target_team",
+        "issues",
+        "idempotency_keys",
+        "dry_run_payload_hash",
+        "confirmation_required",
+        "confirmation_question"
+      ],
+      "properties": {
+        "mode": {"type": "string", "enum": ["dry_run", "confirmed_write"]},
+        "target_team": {"type": "string"},
+        "issues": {
+          "type": "array",
+          "minItems": 1,
+          "items": {"$ref": "linear-issue.schema.json"}
+        },
+        "idempotency_keys": {"type": "array", "items": {"type": "string"}},
+        "dry_run_payload_hash": {"type": "string"},
+        "confirmation_required": {"type": "boolean"},
+        "confirmation_question": {"type": "string"},
+        "confirmation_evidence": {"type": "string"}
+      },
+      "oneOf": [
+        {
+          "properties": {
+            "mode": {"const": "dry_run"},
+            "confirmation_required": {"const": true}
+          },
+          "required": ["mode", "confirmation_required"]
+        },
+        {
+          "properties": {
+            "mode": {"const": "confirmed_write"},
+            "confirmation_required": {"const": false}
+          },
+          "required": ["mode", "confirmation_required", "confirmation_evidence"]
+        }
+      ]
+    },
+    "approval_gates": {"type": "array", "items": {"type": "string"}},
+    "open_questions": {"type": "array", "items": {"type": "string"}},
+    "next_actions": {"type": "array", "items": {"type": "string"}}
+  }
+}

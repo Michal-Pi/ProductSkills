@@ -1,0 +1,98 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Discovery to PRD Handoff",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "workflow_id",
+    "decision_status",
+    "source_inventory",
+    "evidence_summary",
+    "opportunity_frame",
+    "assumption_map",
+    "validation_recommendation",
+    "prd",
+    "approval_gates",
+    "open_questions",
+    "next_actions"
+  ],
+  "properties": {
+    "workflow_id": {
+      "const": "workflow-discovery-to-prd"
+    },
+    "decision_status": {
+      "type": "string",
+      "enum": [
+        "blocked",
+        "needs_validation",
+        "validation_not_required",
+        "ready_for_prd_review",
+        "approved_for_delivery"
+      ]
+    },
+    "source_inventory": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["source", "source_type", "segment"],
+        "properties": {
+          "source": {"type": "string"},
+          "source_type": {"type": "string"},
+          "segment": {"type": "string"},
+          "date_or_recency": {"type": "string"},
+          "owner": {"type": "string"}
+        }
+      }
+    },
+    "evidence_summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["themes", "confidence", "evidence_gaps"],
+      "properties": {
+        "themes": {"type": "array", "items": {"type": "string"}},
+        "direct_evidence": {"type": "array", "items": {"type": "string"}},
+        "confidence": {"type": "string", "enum": ["low", "medium", "high"]},
+        "contradictions": {"type": "array", "items": {"type": "string"}},
+        "evidence_gaps": {"type": "array", "items": {"type": "string"}}
+      }
+    },
+    "opportunity_frame": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["outcome", "opportunities", "solution_ideas"],
+      "properties": {
+        "outcome": {"type": "string"},
+        "opportunities": {"type": "array", "items": {"type": "string"}},
+        "target_segments": {"type": "array", "items": {"type": "string"}},
+        "jobs": {"type": "array", "items": {"type": "string"}},
+        "pains": {"type": "array", "items": {"type": "string"}},
+        "current_workarounds": {"type": "array", "items": {"type": "string"}},
+        "solution_ideas": {"type": "array", "items": {"type": "string"}}
+      }
+    },
+    "assumption_map": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["assumption", "category", "evidence_strength", "risk"],
+        "properties": {
+          "assumption": {"type": "string"},
+          "category": {
+            "type": "string",
+            "enum": ["desirability", "viability", "feasibility", "usability", "gtm", "compliance"]
+          },
+          "evidence_strength": {"type": "string", "enum": ["none", "low", "medium", "high"]},
+          "risk": {"type": "string", "enum": ["low", "medium", "high"]}
+        }
+      }
+    },
+    "validation_recommendation": {"type": "string"},
+    "prd": {"type": "string"},
+    "approval_gates": {"type": "array", "items": {"type": "string"}},
+    "open_questions": {"type": "array", "items": {"type": "string"}},
+    "next_actions": {"type": "array", "items": {"type": "string"}},
+    "notion_preview": {"$ref": "notion-page.schema.json"}
+  }
+}

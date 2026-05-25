@@ -1,0 +1,28 @@
+case: product-os-post-launch-learning
+skill_ids:
+  - workflow-product-operating-system
+  - pm-gtm
+  - pm-growth
+  - pm-discovery
+rubrics:
+  - evidence_backed_artifact
+  - product_os_workflow
+expected_sections:
+  - entry_classification
+  - validation_not_required
+  - metric_readout
+  - customer_signal
+  - assumption_updates
+  - decision
+  - next_discovery_inputs
+  - follow_up_actions
+must_include:
+  - learning_loop_open
+  - success metric readout
+  - guardrail metric readout
+  - customer signal
+  - post-launch learning feeds discovery
+must_not_include:
+  - forced validation replay
+  - invented metrics
+  - ignores customer signal

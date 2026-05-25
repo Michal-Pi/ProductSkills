@@ -1,0 +1,21 @@
+case: growth-loop-diagnosis
+skill_ids:
+  - pm-growth
+rubrics:
+  - evidence_backed_artifact
+expected_sections:
+  - growth_model
+  - segment
+  - bottleneck
+  - evidence
+  - hypotheses
+  - experiments
+  - metrics
+  - decision_thresholds
+must_include:
+  - activation and retention consideration
+  - guardrail metric
+  - experiment decision rule
+must_not_include:
+  - acquisition-only recommendation when activation or retention is constrained
+  - experiment without measurable threshold

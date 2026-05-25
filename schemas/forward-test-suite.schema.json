@@ -1,0 +1,74 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://product-operating-system.local/schemas/forward-test-suite.schema.json",
+  "title": "Forward Test Suite",
+  "type": "object",
+  "required": ["version", "suite", "description", "cases"],
+  "properties": {
+    "version": {"type": "integer", "const": 1},
+    "suite": {"type": "string", "minLength": 1},
+    "description": {"type": "string", "minLength": 1},
+    "cases": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "skill_id",
+          "prompt",
+          "fresh_context",
+          "required_resources",
+          "success_signals",
+          "prohibited_behaviors",
+          "capture"
+        ],
+        "properties": {
+          "id": {"type": "string", "minLength": 1},
+          "skill_id": {"type": "string", "minLength": 1},
+          "prompt": {"type": "string", "minLength": 40},
+          "fresh_context": {"type": "boolean"},
+          "required_resources": {
+            "type": "array",
+            "minItems": 1,
+            "items": {"type": "string", "minLength": 1}
+          },
+          "success_signals": {
+            "type": "array",
+            "minItems": 2,
+            "items": {"type": "string", "minLength": 1}
+          },
+          "prohibited_behaviors": {
+            "type": "array",
+            "minItems": 1,
+            "items": {"type": "string", "minLength": 1}
+          },
+          "capture": {
+            "type": "object",
+            "required": ["mode", "status", "observations", "gaps", "patched_paths"],
+            "properties": {
+              "mode": {"type": "string", "enum": ["simulated_fresh_context", "independent_agent"]},
+              "status": {"type": "string", "enum": ["pass", "flag", "fail"]},
+              "observations": {
+                "type": "array",
+                "minItems": 1,
+                "items": {"type": "string", "minLength": 1}
+              },
+              "gaps": {
+                "type": "array",
+                "items": {"type": "string"}
+              },
+              "patched_paths": {
+                "type": "array",
+                "items": {"type": "string"}
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}

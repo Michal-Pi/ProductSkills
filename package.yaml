@@ -1,0 +1,42 @@
+name: product-operating-system
+version: 0.1.0
+display_name: Product Operating System Skills
+description: >
+  Product Management skillset for discovery, strategy, validation, growth,
+  documentation, delivery, launch, and Notion/Linear workflows.
+authors:
+  - name: Product OS Team
+license: MIT
+content_license: CC-BY-4.0
+package_type: skillset
+skills_root: skills
+references_root: references
+templates_root: templates
+schemas_root: schemas
+evals_root: evals
+default_router: null
+entry_workflows:
+  - workflow-product-operating-system
+  - workflow-discovery-to-prd
+  - workflow-prd-to-linear-delivery
+quality_gates:
+  current_validation:
+    - structural_validation
+    - registry_skill_integrity
+    - trigger_fixture_coverage
+    - reference_link_validation
+    - artifact_grader_smoke
+    - tool_safety_fixture_validation
+    - forward_test_prompt_validation
+    - product_operating_system_workflow_assets
+    - py_compile
+  planned_for_release:
+    - trigger_tests_as_regression_scaffold
+    - artifact_fixture_validation
+    - no_broken_reference_links
+    - no_external_tool_required_without_fallback
+    - local_installation_smoke
+    - manual_workflow_smoke_prompts
+security:
+  default_tool_policy: ask-before-write
+  external_mcp_policy: require-user-confirmation

@@ -1,0 +1,28 @@
+case: product-os-approved-prd-reentry
+skill_ids:
+  - workflow-product-operating-system
+  - workflow-prd-to-linear-delivery
+  - pm-gtm
+rubrics:
+  - delivery_readiness
+  - tooling_safety
+  - product_os_workflow
+expected_sections:
+  - entry_classification
+  - validation_not_required
+  - delivery_readiness_gate
+  - delivery_split
+  - tool_dry_run_preview
+  - launch_readiness
+  - handoff
+must_include:
+  - approved_for_delivery
+  - validation not required
+  - scope and non-goals
+  - epics or stories
+  - acceptance criteria
+  - dry-run payload before write
+must_not_include:
+  - forced validation replay
+  - live Linear write
+  - missing approval gate

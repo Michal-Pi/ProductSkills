@@ -1,0 +1,33 @@
+{
+  "package": "product-operating-system",
+  "version": "0.1.0",
+  "release_stage": "scaffold",
+  "skills": [
+    {"id": "pm-discovery", "path": "skills/pm-discovery", "type": "family", "domain": "discovery"},
+    {"id": "pm-strategy", "path": "skills/pm-strategy", "type": "family", "domain": "strategy"},
+    {"id": "pm-validation", "path": "skills/pm-validation", "type": "family", "domain": "validation"},
+    {"id": "pm-design", "path": "skills/pm-design", "type": "family", "domain": "design"},
+    {"id": "pm-docs", "path": "skills/pm-docs", "type": "family", "domain": "documentation"},
+    {"id": "pm-delivery", "path": "skills/pm-delivery", "type": "family", "domain": "delivery"},
+    {"id": "pm-growth", "path": "skills/pm-growth", "type": "family", "domain": "growth"},
+    {"id": "pm-gtm", "path": "skills/pm-gtm", "type": "family", "domain": "gtm"},
+    {"id": "pm-tooling", "path": "skills/pm-tooling", "type": "family", "domain": "tooling"},
+    {"id": "workflow-product-operating-system", "path": "skills/workflow-product-operating-system", "type": "workflow", "domain": "end-to-end"},
+    {"id": "workflow-discovery-to-prd", "path": "skills/workflow-discovery-to-prd", "type": "workflow", "domain": "end-to-end"},
+    {"id": "workflow-prd-to-linear-delivery", "path": "skills/workflow-prd-to-linear-delivery", "type": "workflow", "domain": "end-to-end"}
+  ],
+  "collections": [
+    {
+      "id": "pm-core",
+      "skills": ["pm-discovery", "pm-strategy", "pm-validation", "pm-design", "pm-docs", "workflow-product-operating-system", "workflow-discovery-to-prd"]
+    },
+    {
+      "id": "pm-delivery-tooling",
+      "skills": ["pm-delivery", "pm-tooling", "workflow-product-operating-system", "workflow-prd-to-linear-delivery"]
+    },
+    {
+      "id": "pm-growth-gtm",
+      "skills": ["pm-growth", "pm-gtm", "workflow-product-operating-system"]
+    }
+  ]
+}

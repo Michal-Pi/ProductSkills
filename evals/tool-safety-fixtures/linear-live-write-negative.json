@@ -1,0 +1,28 @@
+{
+  "case": "linear-live-write-negative",
+  "expected": "fail",
+  "tool": "linear",
+  "scenario": "live_write_without_eval_safety",
+  "payloads": [
+    {
+      "kind": "linear_issue",
+      "operation": "create",
+      "confirmation_question": "Create this issue now?",
+      "payload": {
+        "mode": "confirmed_write",
+        "team_key": "PROD",
+        "title": "Unsafe confirmed write",
+        "description": "This fixture must fail because evals cannot use confirmed writes.",
+        "issue_type": "story",
+        "priority": "medium",
+        "labels": ["unsafe"],
+        "acceptance_criteria": ["Issue is created."],
+        "dependencies": [],
+        "idempotency_key": "linear-unsafe-live-write",
+        "dry_run_payload_hash": "hash-linear-unsafe-001",
+        "confirmation_required": false,
+        "confirmation_evidence": "User said yes."
+      }
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+case: workflow-discovery-to-prd
+skill_ids:
+  - workflow-discovery-to-prd
+  - pm-discovery
+  - pm-validation
+  - pm-docs
+rubrics:
+  - evidence_backed_artifact
+expected_sections:
+  - intake_inventory
+  - evidence_ledger
+  - voc_synthesis
+  - opportunity_frame
+  - assumption_map
+  - validation_recommendation
+  - prd
+  - approval_gates
+  - open_questions
+  - next_actions
+must_include:
+  - direct evidence separated from inference
+  - sales asks separated from customer problems
+  - assumptions scored by evidence strength
+  - PRD scope and non-goals
+  - explicit stop or approval gates
+must_not_include:
+  - fake certainty
+  - unsupported delivery commitment
+  - live Notion write without confirmation

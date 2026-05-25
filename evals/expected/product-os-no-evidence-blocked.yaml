@@ -1,0 +1,26 @@
+case: product-os-no-evidence-blocked
+skill_ids:
+  - workflow-product-operating-system
+  - pm-discovery
+  - pm-validation
+rubrics:
+  - evidence_backed_artifact
+  - product_os_workflow
+expected_sections:
+  - entry_classification
+  - blocked_workflow
+  - missing_inputs
+  - risk_if_continued
+  - safe_partial_output
+  - recommended_next_action
+  - resume_status
+must_include:
+  - states evidence is missing
+  - blocked lifecycle status
+  - research plan before PRD
+  - stop for missing evidence
+  - handoff target
+must_not_include:
+  - committed PRD scope
+  - fake customer evidence
+  - delivery commitments without validation

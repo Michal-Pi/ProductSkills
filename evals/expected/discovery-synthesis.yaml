@@ -1,0 +1,20 @@
+case: discovery-synthesis
+skill_ids:
+  - pm-discovery
+rubrics:
+  - evidence_backed_artifact
+expected_sections:
+  - sources
+  - themes
+  - direct_evidence
+  - confidence
+  - assumptions
+  - opportunities
+  - next_learning
+must_include:
+  - separates direct evidence from inference
+  - labels confidence by theme
+  - recommends next research or validation step
+must_not_include:
+  - invented customer quotes
+  - delivery commitments without validation

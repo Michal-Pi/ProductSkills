@@ -1,0 +1,60 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Workflow Stage Output",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "workflow_id",
+    "stage_id",
+    "status",
+    "artifact_type",
+    "artifact",
+    "evidence_used",
+    "assumptions",
+    "approval_gate",
+    "blocked_by",
+    "next_action",
+    "handoff_target"
+  ],
+  "properties": {
+    "workflow_id": {"type": "string"},
+    "stage_id": {"type": "string"},
+    "status": {"$ref": "workflow-stage.schema.json"},
+    "artifact_type": {"type": "string"},
+    "artifact": {
+      "oneOf": [
+        {"type": "string"},
+        {"type": "object"},
+        {"type": "array"}
+      ]
+    },
+    "evidence_used": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["kind", "summary"],
+        "properties": {
+          "kind": {"type": "string", "enum": ["direct_evidence", "inference", "provided_artifact"]},
+          "summary": {"type": "string"},
+          "source": {"type": "string"},
+          "confidence": {"type": "string", "enum": ["none", "low", "medium", "high"]}
+        }
+      }
+    },
+    "assumptions": {"type": "array", "items": {"type": "string"}},
+    "approval_gate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["required", "reason", "question"],
+      "properties": {
+        "required": {"type": "boolean"},
+        "reason": {"type": "string"},
+        "question": {"type": "string"}
+      }
+    },
+    "blocked_by": {"type": "array", "items": {"type": "string"}},
+    "next_action": {"type": "array", "items": {"type": "string"}},
+    "handoff_target": {"type": "string"}
+  }
+}

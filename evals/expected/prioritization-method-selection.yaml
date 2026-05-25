@@ -1,0 +1,21 @@
+case: prioritization-method-selection
+skill_ids:
+  - pm-strategy
+rubrics:
+  - evidence_backed_artifact
+expected_sections:
+  - decision_context
+  - options
+  - selected_method
+  - criteria
+  - scores
+  - confidence
+  - recommendation
+  - risks
+must_include:
+  - method selection rationale
+  - confidence or sensitivity note
+  - next decision step
+must_not_include:
+  - automatic RICE scoring for every scenario
+  - hidden criteria weights

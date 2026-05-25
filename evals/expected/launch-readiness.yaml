@@ -1,0 +1,23 @@
+case: launch-readiness
+skill_ids:
+  - pm-gtm
+rubrics:
+  - evidence_backed_artifact
+expected_sections:
+  - launch_type
+  - audience
+  - positioning
+  - channels
+  - enablement
+  - support_plan
+  - rollout
+  - risks
+  - success_metrics
+  - post_launch_review
+must_include:
+  - customer impact
+  - mitigation or fallback for risky launches
+  - post-launch learning loop
+must_not_include:
+  - unsupported claims
+  - roadmap promises in release notes

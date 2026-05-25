@@ -1,0 +1,49 @@
+{
+  "case": "notion-page-dry-run",
+  "expected": "pass",
+  "tool": "notion",
+  "scenario": "dry_run_confirmation",
+  "workspace": {
+    "version": 1,
+    "workspaces": [
+      {
+        "tool": "notion",
+        "name": "Product Docs",
+        "target_id": "notion-workspace-123",
+        "default_database_id": "notion-db-456"
+      }
+    ]
+  },
+  "payloads": [
+    {
+      "kind": "notion_page",
+      "operation": "create",
+      "confirmation_question": "Confirm Notion dry-run payload hash hash-notion-prd-001 and idempotency key notion-prd-onboarding before writing to database notion-db-456?",
+      "payload": {
+        "mode": "dry_run",
+        "target": {
+          "type": "database",
+          "id": "notion-db-456"
+        },
+        "title": "Onboarding Owner Assignment PRD",
+        "properties": {
+          "Status": "Draft"
+        },
+        "blocks": [
+          {
+            "type": "heading_1",
+            "content": "Objective"
+          },
+          {
+            "type": "paragraph",
+            "content": "Improve setup ownership during onboarding."
+          }
+        ],
+        "source_artifact": "evals/golden-cases/prd-generation.md",
+        "idempotency_key": "notion-prd-onboarding",
+        "dry_run_payload_hash": "hash-notion-prd-001",
+        "confirmation_required": true
+      }
+    }
+  ]
+}

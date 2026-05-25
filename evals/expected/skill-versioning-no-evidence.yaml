@@ -1,0 +1,26 @@
+case: skill-versioning-no-evidence
+skill_ids:
+  - workflow-discovery-to-prd
+  - pm-discovery
+  - pm-validation
+rubrics:
+  - evidence_backed_artifact
+expected_sections:
+  - decision
+  - current_evidence
+  - assumptions
+  - riskiest_assumption
+  - research_method
+  - audience
+  - success_metric
+  - guardrail_metric
+  - decision_rule
+  - next_action
+must_include:
+  - states evidence is missing
+  - research plan before PRD
+  - approval gate before requirements
+must_not_include:
+  - committed PRD scope
+  - fake customer evidence
+  - delivery commitments without validation

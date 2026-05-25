@@ -1,0 +1,25 @@
+{
+  "case": "linear-partial-failure-checkpoint",
+  "expected": "pass",
+  "tool": "linear",
+  "scenario": "partial_failure_checkpoint",
+  "workspace": {
+    "version": 1,
+    "workspaces": [
+      {
+        "tool": "linear",
+        "name": "Product Team",
+        "target_id": "linear-workspace-123",
+        "default_team_key": "PROD"
+      }
+    ]
+  },
+  "batch_checkpoint": {
+    "state": "partial_failure",
+    "completed": ["LIN-42"],
+    "skipped": ["story-invite-status"],
+    "failed": ["story-first-action-reminder"],
+    "retryable_items": ["story-first-action-reminder"],
+    "manual_revert_plan": "If the confirmed write should be undone, manually edit or archive LIN-42 in Linear and rerun the dry-run preview."
+  }
+}

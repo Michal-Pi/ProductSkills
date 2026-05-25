@@ -1,0 +1,54 @@
+{
+  "case": "linear-existing-map-update",
+  "expected": "pass",
+  "tool": "linear",
+  "scenario": "duplicate_prevention",
+  "workspace": {
+    "version": 1,
+    "workspaces": [
+      {
+        "tool": "linear",
+        "name": "Product Team",
+        "target_id": "linear-workspace-123",
+        "default_team_key": "PROD"
+      }
+    ]
+  },
+  "external_id_map": {
+    "version": 1,
+    "mappings": [
+      {
+        "local_id": "story-owner-assignment",
+        "tool": "linear",
+        "external_id": "LIN-42",
+        "operation": "create",
+        "source_artifact": "evals/golden-cases/delivery-breakdown.md",
+        "idempotency_key": "linear-onboarding-owner-assignment",
+        "updated_at": "2026-05-24T00:00:00Z"
+      }
+    ]
+  },
+  "payloads": [
+    {
+      "kind": "linear_issue",
+      "operation": "update",
+      "confirmation_question": "Confirm update preview for existing Linear issue LIN-42 with idempotency key linear-onboarding-owner-assignment and hash hash-linear-onboarding-002?",
+      "payload": {
+        "mode": "dry_run",
+        "team_key": "PROD",
+        "title": "Assign setup owner during onboarding",
+        "description": "Update existing story rather than creating a duplicate.",
+        "issue_type": "story",
+        "priority": "medium",
+        "labels": ["onboarding", "activation"],
+        "acceptance_criteria": [
+          "Given an admin assigns an owner, the owner is visible in setup status."
+        ],
+        "dependencies": [],
+        "idempotency_key": "linear-onboarding-owner-assignment",
+        "dry_run_payload_hash": "hash-linear-onboarding-002",
+        "confirmation_required": true
+      }
+    }
+  ]
+}

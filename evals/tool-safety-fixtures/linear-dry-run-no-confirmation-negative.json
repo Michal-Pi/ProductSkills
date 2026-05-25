@@ -1,0 +1,27 @@
+{
+  "case": "linear-dry-run-no-confirmation-negative",
+  "expected": "fail",
+  "tool": "linear",
+  "scenario": "confirmation_required",
+  "payloads": [
+    {
+      "kind": "linear_issue",
+      "operation": "create",
+      "confirmation_question": "Confirm Linear dry-run payload hash hash-linear-no-confirmation-001 for team PROD?",
+      "payload": {
+        "mode": "dry_run",
+        "team_key": "PROD",
+        "title": "Unsafe dry-run confirmation flag",
+        "description": "This fixture must fail because dry-run payloads require confirmation_required true.",
+        "issue_type": "story",
+        "priority": "medium",
+        "labels": ["unsafe"],
+        "acceptance_criteria": ["Dry-run confirmation is required."],
+        "dependencies": [],
+        "idempotency_key": "linear-no-confirmation",
+        "dry_run_payload_hash": "hash-linear-no-confirmation-001",
+        "confirmation_required": false
+      }
+    }
+  ]
+}

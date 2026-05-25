@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Blocked Workflow Artifact",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "blocked_stage",
+    "status",
+    "reason",
+    "missing_inputs",
+    "risk_if_continued",
+    "safe_partial_output",
+    "recommended_next_action",
+    "questions_for_user",
+    "resume_status",
+    "handoff_target"
+  ],
+  "properties": {
+    "blocked_stage": {"type": "string"},
+    "status": {"const": "blocked"},
+    "reason": {"type": "string"},
+    "missing_inputs": {"type": "array", "items": {"type": "string"}},
+    "risk_if_continued": {"type": "string"},
+    "safe_partial_output": {"type": "string"},
+    "recommended_next_action": {"type": "array", "items": {"type": "string"}},
+    "questions_for_user": {"type": "array", "items": {"type": "string"}},
+    "resume_status": {"$ref": "workflow-stage.schema.json"},
+    "handoff_target": {"type": "string"}
+  }
+}

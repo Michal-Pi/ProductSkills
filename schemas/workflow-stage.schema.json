@@ -1,0 +1,27 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Workflow Lifecycle Status",
+  "type": "string",
+  "enum": [
+    "intake_received",
+    "evidence_insufficient",
+    "evidence_synthesized",
+    "opportunity_framed",
+    "needs_validation",
+    "validation_not_required",
+    "ready_for_prd",
+    "prd_review_required",
+    "prd_ready",
+    "ready_for_delivery_gate",
+    "approved_for_delivery",
+    "delivery_review_required",
+    "delivery_ready",
+    "ready_for_tool_preview",
+    "ready_for_human_write_confirmation",
+    "ready_for_launch_review",
+    "launch_ready",
+    "launched_or_handed_off",
+    "learning_loop_open",
+    "blocked"
+  ]
+}

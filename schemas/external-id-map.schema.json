@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://product-operating-system.local/schemas/external-id-map.schema.json",
+  "title": "Product OS External ID Map",
+  "type": "object",
+  "required": ["version", "mappings"],
+  "properties": {
+    "version": {
+      "type": "integer",
+      "const": 1
+    },
+    "mappings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["local_id", "tool", "external_id", "operation", "idempotency_key", "updated_at"],
+        "properties": {
+          "local_id": {"type": "string", "minLength": 1},
+          "tool": {"type": "string", "enum": ["notion", "linear"]},
+          "external_id": {"type": "string", "minLength": 1},
+          "operation": {"type": "string", "enum": ["create", "update", "archive", "link", "no-op"]},
+          "source_artifact": {"type": "string"},
+          "idempotency_key": {"type": "string", "minLength": 1},
+          "updated_at": {"type": "string", "minLength": 1}
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}

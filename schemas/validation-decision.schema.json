@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Evidence And Validation Decision",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "decision",
+    "evidence_strength",
+    "riskiest_assumption",
+    "rationale",
+    "approval_required",
+    "validation_plan",
+    "risk_acceptance_note",
+    "source_artifacts"
+  ],
+  "properties": {
+    "decision": {
+      "type": "string",
+      "enum": [
+        "proceed_to_prd",
+        "validation_not_required",
+        "run_validation_first",
+        "proceed_with_explicit_risk_acceptance",
+        "stop_for_missing_evidence",
+        "return_to_discovery"
+      ]
+    },
+    "evidence_strength": {"type": "string", "enum": ["none", "low", "medium", "high"]},
+    "riskiest_assumption": {"type": "string"},
+    "rationale": {"type": "string"},
+    "approval_required": {"type": "boolean"},
+    "validation_plan": {
+      "oneOf": [
+        {"type": "string"},
+        {"type": "object"}
+      ]
+    },
+    "risk_acceptance_note": {"type": "string"},
+    "source_artifacts": {"type": "array", "items": {"type": "string"}}
+  }
+}

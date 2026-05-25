@@ -1,0 +1,26 @@
+case: product-os-rough-prd-reentry
+skill_ids:
+  - workflow-product-operating-system
+  - pm-docs
+  - pm-validation
+rubrics:
+  - evidence_backed_artifact
+  - product_os_workflow
+expected_sections:
+  - entry_classification
+  - prd_readiness_review
+  - evidence_and_validation_decision
+  - unsupported_claims
+  - repair_plan
+  - approval_gates
+  - handoff
+must_include:
+  - prd_review_required
+  - direct evidence separated from inference
+  - non-goals
+  - success metrics
+  - readiness check
+must_not_include:
+  - forced discovery replay
+  - invented evidence
+  - approved for delivery without review

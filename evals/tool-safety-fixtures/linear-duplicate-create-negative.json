@@ -1,0 +1,41 @@
+{
+  "case": "linear-duplicate-create-negative",
+  "expected": "fail",
+  "tool": "linear",
+  "scenario": "duplicate_prevention",
+  "external_id_map": {
+    "version": 1,
+    "mappings": [
+      {
+        "local_id": "story-owner-assignment",
+        "tool": "linear",
+        "external_id": "LIN-42",
+        "operation": "create",
+        "source_artifact": "evals/golden-cases/delivery-breakdown.md",
+        "idempotency_key": "linear-onboarding-owner-assignment",
+        "updated_at": "2026-05-24T00:00:00Z"
+      }
+    ]
+  },
+  "payloads": [
+    {
+      "kind": "linear_issue",
+      "operation": "create",
+      "confirmation_question": "Confirm create for idempotency key linear-onboarding-owner-assignment?",
+      "payload": {
+        "mode": "dry_run",
+        "team_key": "PROD",
+        "title": "Assign setup owner during onboarding",
+        "description": "Incorrectly previews duplicate creation.",
+        "issue_type": "story",
+        "priority": "medium",
+        "labels": ["onboarding"],
+        "acceptance_criteria": ["Owner is visible in setup status."],
+        "dependencies": [],
+        "idempotency_key": "linear-onboarding-owner-assignment",
+        "dry_run_payload_hash": "hash-linear-duplicate-001",
+        "confirmation_required": true
+      }
+    }
+  ]
+}

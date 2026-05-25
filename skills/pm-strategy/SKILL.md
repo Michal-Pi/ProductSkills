@@ -1,0 +1,34 @@
+---
+name: pm-strategy
+description: Product strategy workflows for product vision, opportunity sizing, competitor evaluation, pricing analysis, OKRs, roadmap prioritization, RICE, WSJF, cost of delay, ICE, CD3, MoSCoW, opportunity scoring, Kano, weighted scorecards, and strategic tradeoff decisions. Use when the user asks what to build, how to prioritize, how to size an opportunity, or how to choose a strategic direction.
+---
+
+# PM Strategy
+
+Turn goals, constraints, and evidence into strategic product choices.
+
+## Core Procedures
+
+- For prioritization, use `procedures/prioritization.md`.
+- For opportunity sizing, use `procedures/opportunity-sizing.md`.
+- For competitive evaluation, use `procedures/competitive-evaluation.md`.
+- For pricing analysis, use `procedures/pricing-analysis.md`.
+- For OKRs, use `procedures/okr-setting.md`.
+
+## References
+
+- Use `../../references/frameworks/prioritization-models.md` for method selection.
+- Use `../../references/methods/strategy-analysis.md` for market, segment, pricing, and positioning tradeoffs.
+- Use `../../references/checklists/prioritization-method-coverage.md` before finalizing prioritization.
+- Use `../../templates/prioritization-decision.md` for prioritization outputs.
+
+## Method Selection
+
+Do not default to RICE. Choose the prioritization model based on the decision:
+
+- RICE for reach/impact/confidence/effort comparisons.
+- WSJF or cost of delay for time-critical sequencing.
+- ICE for lightweight experiment backlog scoring.
+- MoSCoW for release-scope negotiation.
+- Opportunity scoring for customer-discovered opportunities.
+- Weighted scorecards for strategy-specific tradeoffs.

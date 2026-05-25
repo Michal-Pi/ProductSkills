@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://product-operating-system.local/schemas/tool-safety-fixture.schema.json",
+  "title": "Tool Safety Fixture",
+  "type": "object",
+  "required": ["case", "expected", "tool", "scenario"],
+  "properties": {
+    "case": {"type": "string", "minLength": 1},
+    "expected": {"type": "string", "enum": ["pass", "fail"]},
+    "tool": {"type": "string", "enum": ["notion", "linear"]},
+    "scenario": {"type": "string", "minLength": 1},
+    "workspace": {"type": "object"},
+    "external_id_map": {"type": "object"},
+    "setup_instructions": {"type": "object"},
+    "payloads": {"type": "array"},
+    "batch_checkpoint": {"type": "object"}
+  },
+  "additionalProperties": false
+}

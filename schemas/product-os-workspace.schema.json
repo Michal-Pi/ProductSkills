@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://product-operating-system.local/schemas/product-os-workspace.schema.json",
+  "title": "Product OS Workspace Configuration",
+  "type": "object",
+  "required": ["version", "workspaces"],
+  "properties": {
+    "version": {
+      "type": "integer",
+      "const": 1
+    },
+    "workspaces": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["tool", "name", "target_id"],
+        "properties": {
+          "tool": {"type": "string", "enum": ["notion", "linear"]},
+          "name": {"type": "string", "minLength": 1},
+          "target_id": {"type": "string", "minLength": 1},
+          "default_team_key": {"type": "string"},
+          "default_database_id": {"type": "string"},
+          "notes": {"type": "string"}
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}

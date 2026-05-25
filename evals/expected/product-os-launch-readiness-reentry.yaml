@@ -1,0 +1,26 @@
+case: product-os-launch-readiness-reentry
+skill_ids:
+  - workflow-product-operating-system
+  - pm-gtm
+rubrics:
+  - evidence_backed_artifact
+  - product_os_workflow
+expected_sections:
+  - entry_classification
+  - validation_not_required
+  - launch_readiness_gate
+  - audience
+  - support_readiness
+  - enablement_readiness
+  - success_metrics
+  - post_launch_learning_plan
+must_include:
+  - ready_for_launch_review
+  - launch readiness
+  - customer impact
+  - rollout risk
+  - post-launch learning
+must_not_include:
+  - forced discovery replay
+  - unsupported launch claims
+  - roadmap promises

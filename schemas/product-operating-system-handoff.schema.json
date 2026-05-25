@@ -1,0 +1,39 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Product Operating System Handoff",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "workflow_id",
+    "current_status",
+    "entry_status",
+    "source_artifacts",
+    "stage_outputs",
+    "current_artifact",
+    "approval_gates",
+    "blocked_by",
+    "next_actions",
+    "handoff_target"
+  ],
+  "properties": {
+    "workflow_id": {"const": "workflow-product-operating-system"},
+    "current_status": {"$ref": "workflow-stage.schema.json"},
+    "entry_status": {"$ref": "workflow-stage.schema.json"},
+    "source_artifacts": {"type": "array", "items": {"type": "string"}},
+    "stage_outputs": {
+      "type": "array",
+      "items": {"$ref": "workflow-stage-output.schema.json"}
+    },
+    "current_artifact": {
+      "oneOf": [
+        {"type": "string"},
+        {"type": "object"},
+        {"type": "array"}
+      ]
+    },
+    "approval_gates": {"type": "array", "items": {"type": "string"}},
+    "blocked_by": {"type": "array", "items": {"type": "string"}},
+    "next_actions": {"type": "array", "items": {"type": "string"}},
+    "handoff_target": {"type": "string"}
+  }
+}

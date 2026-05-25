@@ -1,0 +1,32 @@
+case: product-os-full-happy-path
+skill_ids:
+  - workflow-product-operating-system
+  - workflow-discovery-to-prd
+  - workflow-prd-to-linear-delivery
+  - pm-gtm
+rubrics:
+  - evidence_backed_artifact
+  - delivery_readiness
+  - tooling_safety
+  - product_os_workflow
+expected_sections:
+  - entry_classification
+  - evidence_and_validation_decision
+  - prd
+  - delivery_split
+  - tool_dry_run_preview
+  - launch_readiness
+  - post_launch_learning_loop
+  - handoff
+must_include:
+  - direct evidence separated from inference
+  - lifecycle status
+  - validation decision
+  - PRD scope and non-goals
+  - epics or stories
+  - dry-run payload before write
+  - post-launch learning feeds discovery
+must_not_include:
+  - fake certainty
+  - live write without confirmation
+  - unsupported launch claims

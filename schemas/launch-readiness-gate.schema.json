@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Launch Readiness Gate",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "launch_type",
+    "audience",
+    "customer_impact",
+    "release_risk",
+    "support_readiness",
+    "enablement_readiness",
+    "rollout_plan",
+    "success_metrics",
+    "rollback_or_manual_revert_note",
+    "post_launch_learning_plan"
+  ],
+  "properties": {
+    "launch_type": {"type": "string"},
+    "audience": {"type": "array", "items": {"type": "string"}},
+    "customer_impact": {"type": "string"},
+    "positioning": {"type": "string"},
+    "release_risk": {"type": "array", "items": {"type": "string"}},
+    "support_readiness": {"type": "string"},
+    "enablement_readiness": {"type": "string"},
+    "rollout_plan": {"type": "array", "items": {"type": "string"}},
+    "success_metrics": {"type": "array", "items": {"type": "string"}},
+    "rollback_or_manual_revert_note": {"type": "string"},
+    "post_launch_learning_plan": {"type": "array", "items": {"type": "string"}}
+  }
+}

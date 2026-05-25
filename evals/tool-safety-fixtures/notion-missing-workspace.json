@@ -1,0 +1,12 @@
+{
+  "case": "notion-missing-workspace",
+  "expected": "pass",
+  "tool": "notion",
+  "scenario": "missing_workspace",
+  "setup_instructions": {
+    "known_identifiers": [],
+    "missing_identifiers": ["workspace_id", "database_id"],
+    "next_action": "Ask the user for the target Notion workspace and database before building a write payload."
+  },
+  "payloads": []
+}

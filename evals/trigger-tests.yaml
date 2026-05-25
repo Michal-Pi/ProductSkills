@@ -1,0 +1,201 @@
+version: 1
+thresholds:
+  family_proxy_self_consistency: 0.90
+  workflow_proxy_self_consistency: 0.95
+tests:
+  - id: pm-discovery-interview-synthesis
+    skill_id: pm-discovery
+    prompt: "Synthesize these customer interview notes into themes, evidence, assumptions, and next research questions."
+    should_trigger: true
+  - id: pm-strategy-prioritization
+    skill_id: pm-strategy
+    prompt: "Help prioritize these roadmap options using the right model, not necessarily RICE."
+    should_trigger: true
+  - id: pm-validation-experiment
+    skill_id: pm-validation
+    prompt: "Design an experiment to test whether this problem is real for our target segment."
+    should_trigger: true
+  - id: pm-design-prototype-brief
+    skill_id: pm-design
+    prompt: "Turn this feature idea into a prototype brief with states, edge cases, and usability test goals."
+    should_trigger: true
+  - id: pm-docs-prd
+    skill_id: pm-docs
+    prompt: "Write an evidence-backed PRD for this validated opportunity."
+    should_trigger: true
+  - id: pm-delivery-story-breakdown
+    skill_id: pm-delivery
+    prompt: "Break this scope into epics, user stories, acceptance criteria, and delivery risks."
+    should_trigger: true
+  - id: pm-growth-retention-diagnosis
+    skill_id: pm-growth
+    prompt: "Diagnose why activation is strong but week-four retention is weak, then propose experiments."
+    should_trigger: true
+  - id: pm-gtm-launch-plan
+    skill_id: pm-gtm
+    prompt: "Create a launch readiness plan, positioning, release comms, and enablement checklist."
+    should_trigger: true
+  - id: pm-tooling-notion-preview
+    skill_id: pm-tooling
+    prompt: "Prepare a Notion page payload for this PRD and show me the preview before writing."
+    should_trigger: true
+  - id: workflow-product-operating-system-full-path
+    skill_id: workflow-product-operating-system
+    prompt: "Take this product work from idea to launch: classify the evidence, decide validation, create the next product deliverable, prepare delivery and tool preview, then define launch learning."
+    should_trigger: true
+  - id: workflow-discovery-to-prd
+    skill_id: workflow-discovery-to-prd
+    prompt: "Turn these customer interviews and support tickets into an evidence-backed PRD."
+    should_trigger: true
+  - id: workflow-prd-to-linear-delivery
+    skill_id: workflow-prd-to-linear-delivery
+    prompt: "Convert this PRD into Linear-ready epics and user stories, but only preview the payloads."
+    should_trigger: true
+  - id: workflow-discovery-to-prd-ambiguous-research-requirements
+    skill_id: workflow-discovery-to-prd
+    prompt: "We have interview notes, support tickets, and funnel data. Turn the discovery into product requirements and a PRD, but call out weak evidence."
+    should_trigger: true
+  - id: workflow-prd-to-linear-delivery-ambiguous-build-plan
+    skill_id: workflow-prd-to-linear-delivery
+    prompt: "Take this PRD and create a Linear delivery preview with epics, stories, acceptance criteria, and dependencies."
+    should_trigger: true
+  - id: workflow-product-operating-system-rough-prd-reentry
+    skill_id: workflow-product-operating-system
+    prompt: "I have a rough PRD and need the next product workflow step. Continue this product work through readiness checks and tell me whether validation is required."
+    should_trigger: true
+  - id: workflow-product-operating-system-launch-reentry
+    skill_id: workflow-product-operating-system
+    prompt: "We have delivery artifacts and a launch request; what next in the product workflow before launch and post-launch learning?"
+    should_trigger: true
+  - id: workflow-product-operating-system-post-launch-learning
+    skill_id: workflow-product-operating-system
+    prompt: "We have post-launch metrics and customer signals. Continue this product work into assumption updates, next discovery inputs, and follow-up actions."
+    should_trigger: true
+  - id: pm-docs-prd-review-not-workflow
+    skill_id: pm-docs
+    prompt: "Review this PRD for clarity, evidence quality, missing risks, non-goals, and open questions."
+    should_trigger: true
+  - id: pm-delivery-no-linear
+    skill_id: pm-delivery
+    prompt: "Break this approved scope into epics, user stories, and acceptance criteria. Do not create Linear payloads yet."
+    should_trigger: true
+  - id: pm-tooling-linear-write-request
+    skill_id: pm-tooling
+    prompt: "Prepare to create these Linear issues, but show the dry-run payload and confirmation question first."
+    should_trigger: true
+  - id: pm-strategy-ambiguous-roadmap-tradeoff
+    skill_id: pm-strategy
+    prompt: "Choose a prioritization method for these roadmap tradeoffs and explain why RICE may or may not fit."
+    should_trigger: true
+  - id: pm-validation-ambiguous-assumption
+    skill_id: pm-validation
+    prompt: "Map the riskiest assumptions behind this feature idea and design the smallest experiment to test them."
+    should_trigger: true
+  - id: pm-growth-activation-experiment-backlog
+    skill_id: pm-growth
+    prompt: "Activation dropped after signup. Diagnose the growth loop and propose an experiment backlog."
+    should_trigger: true
+  - id: pm-gtm-release-readiness
+    skill_id: pm-gtm
+    prompt: "Build launch readiness, positioning, release comms, and enablement artifacts for this feature release."
+    should_trigger: true
+  - id: pm-discovery-negative-generic-code
+    skill_id: pm-discovery
+    prompt: "Debug this Python stack trace in my Flask app."
+    should_trigger: false
+  - id: pm-strategy-negative-personal-finance
+    skill_id: pm-strategy
+    prompt: "Pick the best personal savings account for my emergency fund."
+    should_trigger: false
+  - id: pm-validation-negative-form-validation
+    skill_id: pm-validation
+    prompt: "Add frontend form validation for an email input."
+    should_trigger: false
+  - id: pm-design-negative-logo
+    skill_id: pm-design
+    prompt: "Generate a logo concept for a coffee brand."
+    should_trigger: false
+  - id: pm-docs-negative-api-docs
+    skill_id: pm-docs
+    prompt: "Document this REST endpoint's request and response fields."
+    should_trigger: false
+  - id: pm-delivery-negative-shipping
+    skill_id: pm-delivery
+    prompt: "Track my package delivery and estimate arrival time."
+    should_trigger: false
+  - id: pm-growth-negative-garden
+    skill_id: pm-growth
+    prompt: "Why are my houseplants growing slowly?"
+    should_trigger: false
+  - id: pm-gtm-negative-travel
+    skill_id: pm-gtm
+    prompt: "Plan a weekend launch trip for a boat."
+    should_trigger: false
+  - id: pm-tooling-negative-local-script
+    skill_id: pm-tooling
+    prompt: "Write a shell script to rename image files in a folder."
+    should_trigger: false
+  - id: pm-tooling-negative-artifact-review
+    skill_id: pm-tooling
+    prompt: "Review this PRD for clarity, evidence quality, and missing risks."
+    should_trigger: false
+  - id: workflow-discovery-to-prd-negative-academic
+    skill_id: workflow-discovery-to-prd
+    prompt: "Summarize this academic paper into lecture notes."
+    should_trigger: false
+  - id: workflow-prd-to-linear-delivery-negative-grocery
+    skill_id: workflow-prd-to-linear-delivery
+    prompt: "Convert my grocery list into store aisles."
+    should_trigger: false
+  - id: workflow-discovery-to-prd-negative-product-history
+    skill_id: workflow-discovery-to-prd
+    prompt: "Summarize the history of product discovery as a management practice."
+    should_trigger: false
+  - id: workflow-prd-to-linear-delivery-negative-linear-algebra
+    skill_id: workflow-prd-to-linear-delivery
+    prompt: "Convert this linear algebra proof into simpler steps."
+    should_trigger: false
+  - id: workflow-prd-to-linear-delivery-negative-explicit-linear-opt-out
+    skill_id: workflow-prd-to-linear-delivery
+    prompt: "Convert this PRD into epics and user stories, but do not create Linear issues or payloads."
+    should_trigger: false
+  - id: workflow-product-operating-system-negative-single-prd-review
+    skill_id: workflow-product-operating-system
+    prompt: "Only review this PRD for clarity, evidence quality, missing risks, non-goals, and open questions."
+    should_trigger: false
+  - id: workflow-product-operating-system-negative-linear-only-tooling
+    skill_id: workflow-product-operating-system
+    prompt: "Prepare a Linear-only dry-run payload for these existing issues and ask for confirmation before writing."
+    should_trigger: false
+  - id: pm-tooling-negative-notion-style-writing
+    skill_id: pm-tooling
+    prompt: "Rewrite this memo in a Notion-style format without syncing or creating any page."
+    should_trigger: false
+negative_controls:
+  - id: generic-python-debugging
+    prompt: "Fix this Python stack trace in my Flask app."
+    should_trigger: false
+  - id: personal-calendar-planning
+    prompt: "Plan my weekend itinerary and dinner reservations."
+    should_trigger: false
+  - id: visual-logo-design
+    prompt: "Generate three logo concepts for a coffee brand."
+    should_trigger: false
+  - id: engineering-roadmap-status
+    prompt: "Summarize this engineering roadmap status update for the CTO."
+    should_trigger: false
+  - id: sales-enablement-deck
+    prompt: "Write a sales enablement deck for an already-launched feature."
+    should_trigger: false
+  - id: generic-project-plan
+    prompt: "Create a task plan for renovating an office kitchen."
+    should_trigger: false
+  - id: notion-as-writing-style
+    prompt: "Make this look like a Notion document, but do not use Notion or prepare a sync payload."
+    should_trigger: false
+  - id: linear-algebra
+    prompt: "Explain why this linear transformation is invertible."
+    should_trigger: false
+  - id: delivery-food
+    prompt: "Find a faster delivery option for dinner tonight."
+    should_trigger: false
