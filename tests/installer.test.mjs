@@ -21,6 +21,15 @@ function makeRepo(name) {
   return repo;
 }
 
+function copyPackageSource(name) {
+  const source = tempDir(name);
+  fs.cpSync(REPO_ROOT, source, {
+    recursive: true,
+    filter: (sourcePath) => !sourcePath.includes(`${path.sep}.git${path.sep}`),
+  });
+  return source;
+}
+
 function runCli(args, { cwd = REPO_ROOT, home = tempDir("home") } = {}) {
   return spawnSync(process.execPath, [CLI, ...args], {
     cwd,
@@ -47,6 +56,11 @@ test("parses scope aliases and adapter options", () => {
 
   const project = parseArgs(["status", "--project"]);
   assert.equal(project.options.scope, "repo");
+
+  const uninstall = parseArgs(["uninstall", "--remove-package-store", "--clean-backups", "--trust-source"]);
+  assert.equal(uninstall.options.removePackageStore, true);
+  assert.equal(uninstall.options.cleanBackups, true);
+  assert.equal(uninstall.options.trustSource, true);
 });
 
 test("marker replacement is idempotent and detects malformed markers", () => {
@@ -216,6 +230,274 @@ test("repo-scope Gemini install preserves existing GEMINI.md content", () => {
   assert.match(gemini, /# Existing Gemini Rules/);
   assert.match(gemini, /# ProductSkills/);
   assert.equal((gemini.match(/PRODUCT_SKILLS_START/g) ?? []).length, 1);
+});
+
+test("update requires force for non-dry-run package replacement", () => {
+  const repo = makeRepo("update-no-force");
+  runJson([
+    "install",
+    "--runtime",
+    "codex",
+    "--adapter",
+    "agents",
+    "--scope",
+    "repo",
+    "--repo",
+    repo,
+    "--source",
+    REPO_ROOT,
+  ]);
+
+  const result = runCli([
+    "update",
+    "--runtime",
+    "codex",
+    "--adapter",
+    "agents",
+    "--scope",
+    "repo",
+    "--repo",
+    repo,
+  ]);
+
+  assert.notEqual(result.status, 0);
+  assert.match(result.stderr, /Rerun with --force/);
+});
+
+test("update refreshes package store and replaces only managed marker block", () => {
+  const repo = makeRepo("update-force");
+  const source = copyPackageSource("update-source");
+  fs.writeFileSync(path.join(source, "VERSION"), "0.2.0\n", "utf8");
+  fs.writeFileSync(path.join(repo, "AGENTS.md"), "# Repo Rules\n", "utf8");
+
+  runJson([
+    "install",
+    "--runtime",
+    "codex",
+    "--adapter",
+    "agents",
+    "--scope",
+    "repo",
+    "--repo",
+    repo,
+    "--source",
+    REPO_ROOT,
+  ]);
+  const update = runJson([
+    "update",
+    "--runtime",
+    "codex",
+    "--adapter",
+    "agents",
+    "--scope",
+    "repo",
+    "--repo",
+    repo,
+    "--source",
+    source,
+    "--force",
+    "--trust-source",
+  ]);
+
+  assert.equal(update.previousVersion, "0.1.0");
+  assert.equal(update.version, "0.2.0");
+  assert.equal(fs.readFileSync(path.join(repo, ".product-skills", "VERSION"), "utf8").trim(), "0.2.0");
+  const agents = fs.readFileSync(path.join(repo, "AGENTS.md"), "utf8");
+  assert.match(agents, /# Repo Rules/);
+  assert.equal((agents.match(/PRODUCT_SKILLS_START/g) ?? []).length, 1);
+});
+
+test("update refuses untrusted source even when force confirms replacement", () => {
+  const repo = makeRepo("update-untrusted");
+  const source = copyPackageSource("update-untrusted-source");
+
+  runJson([
+    "install",
+    "--runtime",
+    "codex",
+    "--adapter",
+    "agents",
+    "--scope",
+    "repo",
+    "--repo",
+    repo,
+    "--source",
+    REPO_ROOT,
+  ]);
+  const result = runCli([
+    "update",
+    "--runtime",
+    "codex",
+    "--adapter",
+    "agents",
+    "--scope",
+    "repo",
+    "--repo",
+    repo,
+    "--source",
+    source,
+    "--force",
+  ]);
+
+  assert.notEqual(result.status, 0);
+  assert.match(result.stderr, /--trust-source/);
+  assert.equal(fs.readFileSync(path.join(repo, ".product-skills", "VERSION"), "utf8").trim(), "0.1.0");
+});
+
+test("failed update restores previous package store", () => {
+  const repo = makeRepo("update-rollback");
+  const source = copyPackageSource("update-broken-source");
+  fs.writeFileSync(path.join(source, "VERSION"), "0.3.0\n", "utf8");
+  fs.writeFileSync(path.join(source, "registry.json"), "{ broken json\n", "utf8");
+
+  runJson([
+    "install",
+    "--runtime",
+    "claude",
+    "--scope",
+    "repo",
+    "--repo",
+    repo,
+    "--source",
+    REPO_ROOT,
+  ]);
+
+  const result = runCli([
+    "update",
+    "--runtime",
+    "claude",
+    "--scope",
+    "repo",
+    "--repo",
+    repo,
+    "--source",
+    source,
+    "--force",
+    "--trust-source",
+  ]);
+
+  assert.notEqual(result.status, 0);
+  assert.match(result.stderr, /Package validation failed/);
+  assert.equal(fs.readFileSync(path.join(repo, ".product-skills", "VERSION"), "utf8").trim(), "0.1.0");
+  assert.equal(fs.existsSync(path.join(repo, ".product-skills", "registry.json")), true);
+});
+
+test("uninstall removes shared marker block and preserves package store by default", () => {
+  const repo = makeRepo("uninstall-shared");
+  fs.writeFileSync(path.join(repo, "GEMINI.md"), "# Existing Gemini Rules\n\nKeep this.\n", "utf8");
+
+  runJson([
+    "install",
+    "--runtime",
+    "gemini",
+    "--scope",
+    "repo",
+    "--repo",
+    repo,
+    "--source",
+    REPO_ROOT,
+  ]);
+  const uninstall = runJson([
+    "uninstall",
+    "--runtime",
+    "gemini",
+    "--scope",
+    "repo",
+    "--repo",
+    repo,
+  ]);
+
+  assert.equal(uninstall.removePackageStore, false);
+  assert.equal(fs.existsSync(path.join(repo, ".product-skills")), true);
+  const gemini = fs.readFileSync(path.join(repo, "GEMINI.md"), "utf8");
+  assert.match(gemini, /# Existing Gemini Rules/);
+  assert.doesNotMatch(gemini, /PRODUCT_SKILLS_START/);
+});
+
+test("uninstall removes generated adapters and package store when requested", () => {
+  const repo = makeRepo("uninstall-store");
+  runJson([
+    "install",
+    "--runtime",
+    "claude",
+    "--scope",
+    "repo",
+    "--repo",
+    repo,
+    "--source",
+    REPO_ROOT,
+  ]);
+  const adapterPath = path.join(repo, ".claude", "skills", "product-operating-system", "SKILL.md");
+  assert.equal(fs.existsSync(adapterPath), true);
+
+  runJson([
+    "uninstall",
+    "--runtime",
+    "claude",
+    "--scope",
+    "repo",
+    "--repo",
+    repo,
+    "--remove-package-store",
+  ]);
+
+  assert.equal(fs.existsSync(adapterPath), false);
+  assert.equal(fs.existsSync(path.join(repo, ".product-skills")), false);
+});
+
+test("uninstall refuses non-generated dedicated adapters unless forced", () => {
+  const repo = makeRepo("uninstall-custom");
+  const adapterPath = path.join(repo, ".claude", "skills", "product-operating-system", "SKILL.md");
+  fs.mkdirSync(path.dirname(adapterPath), { recursive: true });
+  fs.writeFileSync(adapterPath, "# Custom adapter\n", "utf8");
+
+  const failed = runCli([
+    "uninstall",
+    "--runtime",
+    "claude",
+    "--scope",
+    "repo",
+    "--repo",
+    repo,
+  ]);
+  assert.notEqual(failed.status, 0);
+  assert.match(failed.stderr, /not ProductSkills-generated/);
+
+  runJson([
+    "uninstall",
+    "--runtime",
+    "claude",
+    "--scope",
+    "repo",
+    "--repo",
+    repo,
+    "--force",
+  ]);
+  assert.equal(fs.existsSync(adapterPath), false);
+});
+
+test("user-scope uninstall all skips unsupported Cursor without aborting", () => {
+  const home = tempDir("uninstall-user-home");
+  const claudePath = path.join(home, ".claude", "skills", "product-operating-system", "SKILL.md");
+  fs.mkdirSync(path.dirname(claudePath), { recursive: true });
+  fs.writeFileSync(claudePath, [
+    "---",
+    "name: product-operating-system",
+    "description: Test",
+    "---",
+    "",
+  ].join("\n"), "utf8");
+
+  const result = runJson([
+    "uninstall",
+    "--runtime",
+    "all",
+    "--scope",
+    "user",
+  ], { home });
+
+  assert.equal(result.adapters.some((adapter) => adapter.runtime === "cursor" && adapter.reason.includes("Cursor user scope")), true);
+  assert.equal(fs.existsSync(claudePath), false);
 });
 
 test("dry-run Gemini with existing GEMINI.md does not mutate the file", () => {

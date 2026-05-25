@@ -89,6 +89,9 @@ export function parseArgs(argv) {
     dryRun: false,
     json: false,
     trackPackageStore: false,
+    removePackageStore: false,
+    cleanBackups: false,
+    trustSource: false,
   };
   const positionals = [];
 
@@ -147,6 +150,15 @@ export function parseArgs(argv) {
         break;
       case "track-package-store":
         options.trackPackageStore = true;
+        break;
+      case "remove-package-store":
+        options.removePackageStore = true;
+        break;
+      case "clean-backups":
+        options.cleanBackups = true;
+        break;
+      case "trust-source":
+        options.trustSource = true;
         break;
       case "global":
         options.scope = "user";
@@ -418,7 +430,7 @@ function isGeneratedDedicated(target, content) {
 function timestamp() {
   const date = new Date();
   const pad = (value) => String(value).padStart(2, "0");
-  return `${date.getUTCFullYear()}${pad(date.getUTCMonth() + 1)}${pad(date.getUTCDate())}T${pad(date.getUTCHours())}${pad(date.getUTCMinutes())}${pad(date.getUTCSeconds())}Z`;
+  return `${date.getUTCFullYear()}${pad(date.getUTCMonth() + 1)}${pad(date.getUTCDate())}T${pad(date.getUTCHours())}${pad(date.getUTCMinutes())}${pad(date.getUTCSeconds())}${String(date.getUTCMilliseconds()).padStart(3, "0")}Z`;
 }
 
 function backupPath(filePath) {
@@ -470,11 +482,46 @@ function writeSharedAdapter(plan, target, rendered, options) {
       plan.writeFile(target.path, rendered.trimEnd() + "\n");
       return;
     }
-    const next = upsertMarkerBlock(existing, rendered, target.path);
+    let next;
+    try {
+      next = upsertMarkerBlock(existing, rendered, target.path);
+    } catch (error) {
+      plan.backup(target.path, backupPath(target.path));
+      throw error;
+    }
     plan.writeFile(target.path, next);
     return;
   }
   plan.writeFile(target.path, rendered.trimEnd() + "\n");
+}
+
+function removeMarkerBlock(existing, filePath) {
+  const start = existing.indexOf(MARKER_START);
+  const end = existing.indexOf(MARKER_END);
+  const hasStart = start !== -1;
+  const hasEnd = end !== -1;
+
+  if (hasStart !== hasEnd || (hasStart && start > end)) {
+    throw new InstallerError(
+      `Malformed ProductSkills marker block in ${filePath}. Restore from backup or remove the partial ${MARKER_START}/${MARKER_END} block, then rerun uninstall.`
+    );
+  }
+  if (!hasStart) {
+    return existing;
+  }
+
+  const before = existing.slice(0, start).trimEnd();
+  const after = existing.slice(end + MARKER_END.length).trimStart();
+  if (before && after) {
+    return `${before}\n\n${after}`;
+  }
+  if (before) {
+    return `${before}\n`;
+  }
+  if (after) {
+    return after.endsWith("\n") ? after : `${after}\n`;
+  }
+  return "";
 }
 
 function writeAdapters(plan, context, options) {
@@ -657,31 +704,41 @@ function installPackageStore(plan, context, options) {
 
   const stagedSource = stagePackageSource(source, options.ref, plan, options);
   try {
-    if (!stagedSource.trusted && !options.force) {
+    if (!stagedSource.trusted && !options.allowUntrustedSource) {
       throw new InstallerError(
-        `Refusing to execute validation scripts from untrusted source: ${source}. Use the canonical repository, run from the current ProductSkills checkout, or rerun with --force if you trust this source.`
+        `Refusing to execute validation scripts from untrusted source: ${source}. Use the canonical repository, run from the current ProductSkills checkout, or rerun with --trust-source if you trust this source.`
       );
     }
     plan.mkdir(path.dirname(context.packageStore));
     const nextStore = `${context.packageStore}.tmp.${process.pid}.${Date.now()}`;
+    let previousStore = null;
     plan.record("copy-package", nextStore, `staged from ${stagedSource.sourceRoot}`);
     try {
       copyFiltered(stagedSource.staged, nextStore);
-      plan.remove(context.packageStore);
+      if (options.preservePreviousStore && fs.existsSync(context.packageStore)) {
+        previousStore = `${context.packageStore}.previous.${process.pid}.${Date.now()}`;
+        plan.record("backup-store", `${context.packageStore} -> ${previousStore}`);
+        fs.renameSync(context.packageStore, previousStore);
+      } else {
+        plan.remove(context.packageStore);
+      }
       plan.record("move", `${nextStore} -> ${context.packageStore}`);
       fs.renameSync(nextStore, context.packageStore);
     } catch (error) {
       fs.rmSync(nextStore, { recursive: true, force: true });
+      if (previousStore && !fs.existsSync(context.packageStore) && fs.existsSync(previousStore)) {
+        fs.renameSync(previousStore, context.packageStore);
+      }
       throw error;
     }
     writeInstallMetadata(context.packageStore, {
-      source: String(source),
+      source: isUrl(String(source)) ? String(source) : realpathIfExists(stagedSource.sourceRoot),
       sourceRoot: stagedSource.sourceRoot,
       trustedSource: stagedSource.trusted,
       ref: options.ref ?? null,
       installedAt: new Date().toISOString(),
     });
-    return { source, sourceRoot: stagedSource.sourceRoot };
+    return { source, sourceRoot: stagedSource.sourceRoot, previousStore };
   } finally {
     fs.rmSync(stagedSource.tempRoot, { recursive: true, force: true });
   }
@@ -708,6 +765,21 @@ function addRepoPackageStoreIgnore(plan, context, options) {
   }
   const prefix = existing.length > 0 && !existing.endsWith("\n") ? "\n" : "";
   plan.appendFile(gitignore, `${prefix}${entry}\n`);
+}
+
+function defaultUpdateSource(cwd) {
+  const currentPackageRoot = findProductSkillsRoot(cwd);
+  if (currentPackageRoot) {
+    return currentPackageRoot;
+  }
+  if (looksLikeProductSkillsRoot(PACKAGE_ROOT)) {
+    return PACKAGE_ROOT;
+  }
+  return CANONICAL_REPO;
+}
+
+function sourceExists(source) {
+  return isUrl(String(source)) || fs.existsSync(resolvePath(String(source)));
 }
 
 function runPackageValidation(packageStore) {
@@ -796,7 +868,10 @@ function readInstallMetadata(packageStore) {
 async function installCommand(options) {
   const context = resolveContext(options);
   const plan = new Plan({ dryRun: options.dryRun });
-  installPackageStore(plan, context, options);
+  installPackageStore(plan, context, {
+    ...options,
+    allowUntrustedSource: options.trustSource || options.force,
+  });
   addRepoPackageStoreIgnore(plan, context, options);
 
   let validation = [];
@@ -821,6 +896,74 @@ async function installCommand(options) {
   printResult(result, options);
 }
 
+async function updateCommand(options) {
+  const context = resolveContext(options);
+  if (!fs.existsSync(context.packageStore)) {
+    throw new InstallerError(`Package store does not exist: ${context.packageStore}. Run product-skills install first.`);
+  }
+  if (!options.dryRun && !options.force) {
+    throw new InstallerError("Update would replace the managed package store. Rerun with --force after reviewing status or use --dry-run first.");
+  }
+
+  const metadata = readInstallMetadata(context.packageStore);
+  const previousVersion = readVersion(context.packageStore);
+  const source = options.source
+    ?? (metadata.source && sourceExists(metadata.source) ? metadata.source : defaultUpdateSource(process.cwd()));
+  const ref = options.ref ?? metadata.ref ?? undefined;
+  const plan = new Plan({ dryRun: options.dryRun });
+  const updateOptions = {
+    ...options,
+    source,
+    ref,
+    allowUntrustedSource: options.trustSource,
+    preservePreviousStore: true,
+  };
+
+  if (options.dryRun) {
+    plan.record("detect-version", context.packageStore, `current ${previousVersion}`);
+  }
+
+  let installResult = null;
+  let validation = [];
+  try {
+    installResult = installPackageStore(plan, context, updateOptions);
+    addRepoPackageStoreIgnore(plan, context, updateOptions);
+
+    if (!options.dryRun) {
+      validation = runPackageValidation(context.packageStore);
+      cleanGeneratedValidationOutputs(context.packageStore);
+      if (installResult.previousStore) {
+        plan.remove(installResult.previousStore);
+      }
+    } else {
+      plan.record("validate", context.packageStore, "dry run skips validation because no package was copied");
+    }
+  } catch (error) {
+    if (installResult?.previousStore && fs.existsSync(installResult.previousStore)) {
+      fs.rmSync(context.packageStore, { recursive: true, force: true });
+      fs.renameSync(installResult.previousStore, context.packageStore);
+      plan.record("restore", `${installResult.previousStore} -> ${context.packageStore}`, "validation failed");
+    }
+    throw error;
+  }
+
+  const adapters = writeAdapters(plan, context, options);
+  printResult({
+    command: "update",
+    scope: context.scope,
+    runtime: context.runtime,
+    packageStore: context.packageStore,
+    previousVersion,
+    version: options.dryRun ? previousVersion : readVersion(context.packageStore),
+    source,
+    ref: ref ?? null,
+    adapters,
+    validation: validation.map((item) => ({ command: item.command, status: item.status })),
+    actions: plan.actions,
+    dryRun: options.dryRun,
+  }, options);
+}
+
 async function validateCommand(options) {
   const context = resolveContext(options);
   if (!fs.existsSync(context.packageStore)) {
@@ -840,6 +983,114 @@ async function validateCommand(options) {
     packageStore: context.packageStore,
     validation: validation.map((item) => ({ command: item.command, status: item.status })),
     adapters,
+  }, options);
+}
+
+function cleanBackupsForFile(filePath, plan) {
+  const dir = path.dirname(filePath);
+  if (!fs.existsSync(dir)) {
+    return;
+  }
+  const base = path.basename(filePath);
+  for (const entry of fs.readdirSync(dir)) {
+    if (entry.startsWith(`${base}.bak.`)) {
+      plan.remove(path.join(dir, entry));
+    }
+  }
+}
+
+function removeDedicatedAdapter(plan, target, options) {
+  if (!fs.existsSync(target.path)) {
+    plan.record("skip", target.path, "adapter missing");
+    return { ...target, removed: false, reason: "missing" };
+  }
+  const existing = fs.readFileSync(target.path, "utf8");
+  if (!isGeneratedDedicated(target, existing) && !options.force) {
+    throw new InstallerError(`Adapter exists but is not ProductSkills-generated: ${target.path}. Rerun with --force to remove it.`);
+  }
+  plan.remove(target.path);
+  if (options.cleanBackups) {
+    cleanBackupsForFile(target.path, plan);
+  }
+  return { ...target, removed: true };
+}
+
+function removeSharedAdapter(plan, target, options) {
+  if (!fs.existsSync(target.path)) {
+    plan.record("skip", target.path, "adapter missing");
+    return { ...target, removed: false, reason: "missing" };
+  }
+  const existing = fs.readFileSync(target.path, "utf8");
+  let next;
+  try {
+    next = removeMarkerBlock(existing, target.path);
+  } catch (error) {
+    plan.backup(target.path, backupPath(target.path));
+    throw error;
+  }
+  if (next === existing) {
+    plan.record("skip", target.path, "ProductSkills marker block missing");
+    return { ...target, removed: false, reason: "marker-missing" };
+  }
+  plan.writeFile(target.path, next);
+  if (options.cleanBackups) {
+    cleanBackupsForFile(target.path, plan);
+  }
+  return { ...target, removed: true };
+}
+
+function removeAdapters(plan, context, options) {
+  const removed = [];
+  for (const runtime of runtimeList(context.runtime)) {
+    let targets;
+    try {
+      targets = adapterTargets(runtime, context);
+    } catch (error) {
+      removed.push({
+        runtime,
+        adapter: "unsupported",
+        path: "",
+        removed: false,
+        reason: error.message,
+      });
+      continue;
+    }
+    for (const target of targets) {
+      const result = target.kind === "dedicated"
+        ? removeDedicatedAdapter(plan, target, options)
+        : removeSharedAdapter(plan, target, options);
+      removed.push({
+        runtime,
+        adapter: target.templateKind,
+        path: target.path,
+        removed: result.removed,
+        reason: result.reason,
+      });
+    }
+  }
+  return removed;
+}
+
+async function uninstallCommand(options) {
+  const context = resolveContext(options);
+  const plan = new Plan({ dryRun: options.dryRun });
+  const adapters = removeAdapters(plan, context, options);
+
+  if (options.removePackageStore) {
+    plan.remove(context.packageStore);
+  } else {
+    plan.record("keep", context.packageStore, "package store preserved");
+  }
+
+  printResult({
+    command: "uninstall",
+    scope: context.scope,
+    runtime: context.runtime,
+    packageStore: context.packageStore,
+    removePackageStore: options.removePackageStore,
+    adapters,
+    actions: plan.actions,
+    dryRun: options.dryRun,
   }, options);
 }
 
@@ -872,6 +1123,8 @@ function help() {
 
 Commands:
   install    Install the ProductSkills package store and runtime adapters.
+  update     Refresh the package store and regenerate selected adapters.
+  uninstall  Remove selected runtime adapters and optionally the package store.
   validate   Validate the package store and selected runtime adapters.
   status     Show installed package and adapter status.
 
@@ -888,22 +1141,44 @@ Options:
   --dry-run
   --json
   --track-package-store
+  --remove-package-store
+  --clean-backups
+  --trust-source
   --global      Alias for --scope user
   --project     Alias for --scope repo
 `;
 }
 
 function printTextResult(result) {
-  if (result.command === "install") {
-    console.log(`${result.dryRun ? "DRY RUN " : ""}Installed ProductSkills`);
+  if (result.command === "install" || result.command === "update") {
+    console.log(`${result.dryRun ? "DRY RUN " : ""}${result.command === "install" ? "Installed" : "Updated"} ProductSkills`);
     console.log(`- scope: ${result.scope}`);
     console.log(`- runtime: ${result.runtime}`);
     console.log(`- package store: ${result.packageStore}`);
+    if (result.previousVersion) {
+      console.log(`- version: ${result.previousVersion} -> ${result.version}`);
+    }
     for (const adapter of result.adapters) {
       console.log(`- adapter: ${adapter.runtime} ${adapter.adapter} -> ${adapter.path}`);
     }
     if (result.validation.length > 0) {
       console.log("- validation: pass");
+    }
+    if (result.dryRun) {
+      console.log("- dry-run actions:");
+      for (const action of result.actions) {
+        console.log(`  ${action.action}: ${action.target}${action.detail ? ` (${action.detail})` : ""}`);
+      }
+    }
+    return;
+  }
+  if (result.command === "uninstall") {
+    console.log(`${result.dryRun ? "DRY RUN " : ""}Uninstalled ProductSkills adapters`);
+    console.log(`- scope: ${result.scope}`);
+    console.log(`- runtime: ${result.runtime}`);
+    console.log(`- package store: ${result.removePackageStore ? "removed" : "preserved"} ${result.packageStore}`);
+    for (const adapter of result.adapters) {
+      console.log(`- adapter: ${adapter.runtime} ${adapter.removed ? "removed" : "kept"} ${adapter.path}`);
     }
     if (result.dryRun) {
       console.log("- dry-run actions:");
@@ -950,6 +1225,12 @@ async function main(argv = process.argv.slice(2)) {
     case "install":
       await installCommand(options);
       return 0;
+    case "update":
+      await updateCommand(options);
+      return 0;
+    case "uninstall":
+      await uninstallCommand(options);
+      return 0;
     case "validate":
       await validateCommand(options);
       return 0;
@@ -959,9 +1240,6 @@ async function main(argv = process.argv.slice(2)) {
     case "help":
       console.log(help());
       return 0;
-    case "update":
-    case "uninstall":
-      throw new InstallerError(`${command} is deferred to a later installer phase.`);
     default:
       throw new InstallerError(`Unknown command '${command}'.\n${help()}`);
   }
