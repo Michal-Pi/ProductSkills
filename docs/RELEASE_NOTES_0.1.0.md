@@ -28,6 +28,14 @@
   - `scripts/grade_artifact.py`
   - `scripts/check_tool_safety.py`
   - `scripts/check_forward_tests.py`
+- Dependency-free installer CLI for local package-store installation, update,
+  validation, status, and uninstall.
+- Distribution readiness scaffolding:
+  - npm package metadata and explicit package file inclusion controls;
+  - `install.sh` shell bootstrap that delegates to the Node.js CLI;
+  - `product-skills dist-check` for version consistency, npm pack dry-run, and
+    deterministic snapshot checksum reporting;
+  - `product-skills checksum` for deterministic package-store checksums.
 - Versioned eval fixtures for triggers, artifacts, tool safety, and forward-test prompts.
 
 ## Quality Gates
@@ -42,6 +50,9 @@ python3 scripts/grade_artifact.py --case delivery-breakdown evals/artifact-fixtu
 python3 scripts/check_tool_safety.py .
 python3 scripts/check_forward_tests.py .
 python3 -m py_compile scripts/check_package.py scripts/run_trigger_evals.py scripts/grade_artifact.py scripts/check_tool_safety.py scripts/check_forward_tests.py
+node --check bin/product-skills.mjs
+node --test tests/installer.test.mjs
+node bin/product-skills.mjs dist-check
 ```
 
 Trigger and forward-test pass rates are regression scaffolds, not proof of real router quality. They should be supplemented with real fresh-agent testing before a broader release.
@@ -60,4 +71,6 @@ See `docs/KNOWN_LIMITATIONS_0.1.0.md`.
 
 ## Next Work
 
-The next recommended milestone is real-use beta and refinement. The main post-0.1.0 product direction is documented in `docs/OPINIONATED_E2E_WORKFLOW_EXPANSION_PLAN.md`.
+The next recommended milestone is real-use beta and refinement. Construction
+and planning docs remain outside packaged release artifacts unless a maintainer
+explicitly opts into shipping them.

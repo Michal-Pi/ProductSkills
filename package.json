@@ -4,13 +4,63 @@
   "description": "Installer CLI for the Product Operating System skills package.",
   "license": "MIT",
   "type": "module",
+  "keywords": [
+    "product-management",
+    "ai-skills",
+    "product-operating-system",
+    "codex",
+    "claude",
+    "cursor",
+    "gemini"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Michal-Pi/ProductSkills.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Michal-Pi/ProductSkills/issues"
+  },
+  "homepage": "https://github.com/Michal-Pi/ProductSkills#readme",
   "bin": {
     "product-skills": "./bin/product-skills.mjs"
   },
+  "files": [
+    "VERSION",
+    "README.md",
+    "package.yaml",
+    "registry.json",
+    "install.sh",
+    "bin/",
+    "adapters/",
+    "docs/",
+    "evals/",
+    "references/",
+    "schemas/",
+    "scripts/",
+    "skills/",
+    "templates/",
+    "!docs/PACKAGE_INSTALLER_SDD.md",
+    "!docs/PACKAGE_INSTALLER_AGENT_PROMPT.md",
+    "!docs/PACKAGE_INSTALLER_PHASE_3_4_AGENT_PROMPT.md",
+    "!docs/END_TO_END_IMPLEMENTATION_PLAN.md",
+    "!docs/IMPLEMENTATION_PLAN.md",
+    "!docs/NEXT_PHASE_AGENT_PROMPT.md",
+    "!docs/OPINIONATED_E2E_WORKFLOW_EXPANSION_PLAN.md",
+    "!docs/OPINIONATED_E2E_WORKFLOW_IMPLEMENTATION_DESIGN.md",
+    "!docs/beta/",
+    "!docs/reviews/",
+    "!evals/results/",
+    "!**/__pycache__/",
+    "!.env",
+    "!.env.*",
+    "!.product-skills/",
+    "!*.tgz"
+  ],
   "engines": {
     "node": ">=20.0.0"
   },
   "scripts": {
-    "test:installer": "node --test tests/installer.test.mjs"
+    "test:installer": "node --test tests/installer.test.mjs",
+    "dist:check": "node bin/product-skills.mjs dist-check"
   }
 }

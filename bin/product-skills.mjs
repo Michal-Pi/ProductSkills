@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
 import { spawnSync } from "node:child_process";
+import crypto from "node:crypto";
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
@@ -282,6 +283,45 @@ function parsePackageYamlVersion(packageYaml) {
   return match ? match[1].trim().replace(/^["']|["']$/g, "") : null;
 }
 
+function readJsonFile(filePath) {
+  return JSON.parse(fs.readFileSync(filePath, "utf8"));
+}
+
+function readVersionSources(root) {
+  const sources = {};
+  const versionPath = path.join(root, "VERSION");
+  if (fs.existsSync(versionPath)) {
+    sources.VERSION = fs.readFileSync(versionPath, "utf8").trim();
+  }
+  const packageJsonPath = path.join(root, "package.json");
+  if (fs.existsSync(packageJsonPath)) {
+    sources["package.json"] = readJsonFile(packageJsonPath).version ?? null;
+  }
+  sources["package.yaml"] = parsePackageYamlVersion(path.join(root, "package.yaml"));
+  const registryPath = path.join(root, "registry.json");
+  if (fs.existsSync(registryPath)) {
+    sources["registry.json"] = readJsonFile(registryPath).version ?? null;
+  }
+  return sources;
+}
+
+export function checkVersionConsistency(root = PACKAGE_ROOT) {
+  const sources = readVersionSources(root);
+  const present = Object.entries(sources).filter(([, value]) => typeof value === "string" && value.length > 0);
+  const missing = Object.entries(sources).filter(([, value]) => !value).map(([name]) => name);
+  const expected = sources.VERSION ?? present[0]?.[1] ?? null;
+  const mismatches = expected
+    ? present.filter(([, value]) => value !== expected).map(([name, value]) => ({ name, version: value, expected }))
+    : [];
+  return {
+    ok: missing.length === 0 && mismatches.length === 0,
+    version: missing.length === 0 && mismatches.length === 0 ? expected : null,
+    sources,
+    mismatches,
+    missing,
+  };
+}
+
 function readVersion(root) {
   const versionPath = path.join(root, "VERSION");
   if (fs.existsSync(versionPath)) {
@@ -346,6 +386,35 @@ function adapterTemplatePath(runtime, adapterKind) {
   throw new InstallerError(`Unsupported runtime '${runtime}'`);
 }
 
+function detectCursorUserRulesDir(home = os.homedir()) {
+  const candidates = [];
+  if (process.env.PRODUCT_SKILLS_CURSOR_USER_RULES_DIR) {
+    candidates.push({
+      path: resolvePath(process.env.PRODUCT_SKILLS_CURSOR_USER_RULES_DIR),
+      source: "PRODUCT_SKILLS_CURSOR_USER_RULES_DIR",
+    });
+  }
+  candidates.push({
+    path: path.join(home, ".cursor", "rules"),
+    source: "existing ~/.cursor/rules",
+  });
+
+  for (const candidate of candidates) {
+    try {
+      if (fs.statSync(candidate.path).isDirectory()) {
+        return { supported: true, path: candidate.path, source: candidate.source };
+      }
+    } catch {
+      // Keep probing; absence is the expected unsupported case.
+    }
+  }
+
+  return {
+    supported: false,
+    reason: "Cursor user scope requires an existing supported global rules directory. Use --scope repo, or set PRODUCT_SKILLS_CURSOR_USER_RULES_DIR to a directory confirmed for your Cursor installation.",
+  };
+}
+
 function resolveCodexAdapterMode(scope, adapter) {
   if (adapter === "agents") {
     return "agents";
@@ -387,7 +456,17 @@ function adapterTargets(runtime, context) {
   }
   if (runtime === "cursor") {
     if (scope === "user") {
-      throw new InstallerError("Cursor user scope is not supported yet. Use --scope repo for Cursor installs.");
+      const detection = detectCursorUserRulesDir();
+      if (!detection.supported) {
+        throw new InstallerError(detection.reason);
+      }
+      return [{
+        runtime,
+        kind: "dedicated",
+        templateKind: "rules",
+        path: path.join(detection.path, "product-operating-system.mdc"),
+        compatibility: detection.source,
+      }];
     }
     return [{
       runtime,
@@ -405,6 +484,17 @@ function adapterTargets(runtime, context) {
     }];
   }
   throw new InstallerError(`Unsupported runtime '${runtime}'`);
+}
+
+function unsupportedAdapter(runtime, error) {
+  return {
+    runtime,
+    adapter: "unsupported",
+    path: "",
+    supported: false,
+    skipped: true,
+    reason: error.message,
+  };
 }
 
 function renderAdapter(target, context) {
@@ -527,7 +617,16 @@ function removeMarkerBlock(existing, filePath) {
 function writeAdapters(plan, context, options) {
   const installed = [];
   for (const runtime of runtimeList(context.runtime)) {
-    const targets = adapterTargets(runtime, context);
+    let targets;
+    try {
+      targets = adapterTargets(runtime, context);
+    } catch (error) {
+      if (context.runtime === "all") {
+        installed.push(unsupportedAdapter(runtime, error));
+        continue;
+      }
+      throw error;
+    }
     for (const target of targets) {
       const rendered = renderAdapter(target, context);
       if (target.kind === "dedicated") {
@@ -535,7 +634,14 @@ function writeAdapters(plan, context, options) {
       } else {
         writeSharedAdapter(plan, target, rendered, options);
       }
-      installed.push({ runtime, adapter: target.templateKind, path: target.path });
+      installed.push({
+        runtime,
+        adapter: target.templateKind,
+        path: target.path,
+        supported: true,
+        skipped: false,
+        compatibility: target.compatibility ?? null,
+      });
     }
   }
   return installed;
@@ -614,6 +720,7 @@ function shouldCopyPackagePath(sourceRoot, currentPath) {
   const constructionDocs = new Set([
     "docs/PACKAGE_INSTALLER_SDD.md",
     "docs/PACKAGE_INSTALLER_AGENT_PROMPT.md",
+    "docs/PACKAGE_INSTALLER_PHASE_3_4_AGENT_PROMPT.md",
     "docs/END_TO_END_IMPLEMENTATION_PLAN.md",
     "docs/IMPLEMENTATION_PLAN.md",
     "docs/NEXT_PHASE_AGENT_PROMPT.md",
@@ -629,6 +736,45 @@ function shouldCopyPackagePath(sourceRoot, currentPath) {
     return false;
   }
   return true;
+}
+
+function listChecksumFiles(root) {
+  const files = [];
+  const stack = [root];
+  while (stack.length > 0) {
+    const current = stack.pop();
+    for (const entry of fs.readdirSync(current, { withFileTypes: true })) {
+      const entryPath = path.join(current, entry.name);
+      if (!shouldCopyPackagePath(root, entryPath)) {
+        continue;
+      }
+      if (entry.isDirectory()) {
+        stack.push(entryPath);
+      } else if (entry.isFile()) {
+        files.push(entryPath);
+      }
+    }
+  }
+  return files.sort((left, right) => path.relative(root, left).localeCompare(path.relative(root, right)));
+}
+
+export function computeSnapshotChecksum(root = PACKAGE_ROOT) {
+  const hash = crypto.createHash("sha256");
+  const files = listChecksumFiles(root);
+  for (const filePath of files) {
+    const relative = path.relative(root, filePath).split(path.sep).join("/");
+    const fileHash = crypto.createHash("sha256").update(fs.readFileSync(filePath)).digest("hex");
+    hash.update(relative);
+    hash.update("\0");
+    hash.update(fileHash);
+    hash.update("\n");
+  }
+  return {
+    algorithm: "sha256",
+    checksum: hash.digest("hex"),
+    fileCount: files.length,
+    files: files.map((filePath) => path.relative(root, filePath).split(path.sep).join("/")),
+  };
 }
 
 function copyFiltered(sourceRoot, destinationRoot) {
@@ -811,6 +957,68 @@ function runPackageValidation(packageStore) {
   return results;
 }
 
+function parseNpmPackDryRun(stdout) {
+  try {
+    const parsed = JSON.parse(stdout);
+    const first = Array.isArray(parsed) ? parsed[0] : parsed;
+    return {
+      name: first.name,
+      version: first.version,
+      filename: first.filename,
+      files: (first.files ?? []).map((file) => file.path).sort(),
+      unpackedSize: first.unpackedSize,
+    };
+  } catch (error) {
+    throw new InstallerError(`Could not parse npm pack --dry-run output: ${error.message}\n${stdout}`);
+  }
+}
+
+function validatePackedFileList(root, files) {
+  const disallowed = [
+    /^\.env(?:\.|$)/,
+    /^\.product-skills(?:\/|$)/,
+    /(?:^|\/)__pycache__(?:\/|$)/,
+    /^evals\/results(?:\/|$)/,
+    /^docs\/PACKAGE_INSTALLER_/,
+    /\.tgz$/,
+  ];
+  return files.filter((file) => {
+    const wouldCopyToPackageStore = shouldCopyPackagePath(root, path.join(root, file));
+    return !wouldCopyToPackageStore || disallowed.some((pattern) => pattern.test(file));
+  });
+}
+
+function runDistributionValidation(root = PACKAGE_ROOT) {
+  const version = checkVersionConsistency(root);
+  if (!version.ok) {
+    const reason = version.missing.length > 0
+      ? `Missing version metadata: ${version.missing.join(", ")}`
+      : `Version mismatch across release metadata: ${JSON.stringify(version.mismatches)}`;
+    throw new InstallerError(`${reason}. Sources: ${JSON.stringify(version.sources)}`);
+  }
+  requireCommand("npm", "npm");
+  const pack = run("npm", ["pack", "--dry-run", "--json", "--ignore-scripts"], {
+    cwd: root,
+    env: {
+      ...process.env,
+      npm_config_cache: path.join(os.tmpdir(), "product-skills-npm-cache"),
+    },
+  });
+  if (pack.status !== 0) {
+    throw new InstallerError(`npm pack --dry-run failed.\n${pack.stdout}${pack.stderr}`);
+  }
+  const packResult = parseNpmPackDryRun(pack.stdout);
+  const disallowed = validatePackedFileList(root, packResult.files);
+  if (disallowed.length > 0) {
+    throw new InstallerError(`npm pack --dry-run included excluded files: ${disallowed.join(", ")}`);
+  }
+  return {
+    version,
+    pack: packResult,
+    checksum: computeSnapshotChecksum(root),
+  };
+}
+
 function cleanGeneratedValidationOutputs(root) {
   const evalResults = path.join(root, "evals", "results");
   fs.rmSync(evalResults, { recursive: true, force: true });
@@ -841,15 +1049,12 @@ function adapterExistsForRuntime(runtime, context) {
       adapter: target.templateKind,
       path: target.path,
       exists: fs.existsSync(target.path),
+      supported: true,
+      skipped: false,
+      compatibility: target.compatibility ?? null,
     }));
   } catch (error) {
-    return [{
-      runtime,
-      adapter: "unsupported",
-      path: "",
-      exists: false,
-      error: error.message,
-    }];
+    return [unsupportedAdapter(runtime, error)];
   }
 }
 
@@ -972,9 +1177,13 @@ async function validateCommand(options) {
   const validation = runPackageValidation(context.packageStore);
   cleanGeneratedValidationOutputs(context.packageStore);
   const adapters = runtimeList(context.runtime).flatMap((runtime) => adapterExistsForRuntime(runtime, context));
-  const missing = adapters.filter((adapter) => !adapter.exists);
+  const missing = adapters.filter((adapter) => !adapter.skipped && !adapter.exists);
+  const unsupported = adapters.filter((adapter) => adapter.skipped);
+  if (unsupported.length > 0 && context.runtime !== "all") {
+    throw new InstallerError(unsupported.map((adapter) => adapter.reason).join("; "));
+  }
   if (missing.length > 0) {
-    throw new InstallerError(`Missing adapter(s): ${missing.map((item) => `${item.runtime}:${item.path || item.error}`).join(", ")}`);
+    throw new InstallerError(`Missing adapter(s): ${missing.map((item) => `${item.runtime}:${item.path || item.reason || item.error}`).join(", ")}`);
   }
   printResult({
     command: "validate",
@@ -1118,6 +1327,33 @@ async function statusCommand(options) {
   }, options);
 }
 
+async function checksumCommand(options) {
+  const root = options.packageStore ? resolvePath(options.packageStore) : PACKAGE_ROOT;
+  if (!fs.existsSync(root) || !fs.statSync(root).isDirectory()) {
+    throw new InstallerError(`Checksum target is not a directory: ${root}`);
+  }
+  printResult({
+    command: "checksum",
+    root,
+    ...computeSnapshotChecksum(root),
+  }, options);
+}
+
+async function distCheckCommand(options) {
+  const root = options.source ? resolvePath(options.source) : PACKAGE_ROOT;
+  if (!fs.existsSync(root) || !fs.statSync(root).isDirectory()) {
+    throw new InstallerError(`Distribution check source is not a directory: ${root}`);
+  }
+  const result = runDistributionValidation(root);
+  printResult({
+    command: "dist-check",
+    root,
+    version: result.version,
+    pack: result.pack,
+    checksum: result.checksum,
+  }, options);
+}
+
 function help() {
   return `Usage: product-skills <command> [options]
 
@@ -1127,6 +1363,8 @@ Commands:
   uninstall  Remove selected runtime adapters and optionally the package store.
   validate   Validate the package store and selected runtime adapters.
   status     Show installed package and adapter status.
+  checksum   Compute a deterministic package snapshot checksum.
+  dist-check Validate release metadata and npm pack dry-run contents.
 
 Options:
   --runtime claude|codex|cursor|gemini|all
@@ -1205,8 +1443,22 @@ function printTextResult(result) {
     console.log(`- ref: ${result.ref ?? "none"}`);
     console.log(`- validation: ${result.validationStatus}`);
     for (const adapter of result.adapters) {
-      console.log(`- adapter: ${adapter.runtime} ${adapter.exists ? "present" : "missing"} ${adapter.path || adapter.error}`);
+      console.log(`- adapter: ${adapter.runtime} ${adapter.exists ? "present" : "missing"} ${adapter.path || adapter.reason || adapter.error}`);
     }
+    return;
+  }
+  if (result.command === "checksum") {
+    console.log(`ProductSkills checksum ${result.algorithm}:${result.checksum}`);
+    console.log(`- root: ${result.root}`);
+    console.log(`- files: ${result.fileCount}`);
+    return;
+  }
+  if (result.command === "dist-check") {
+    console.log("ProductSkills distribution check passed");
+    console.log(`- root: ${result.root}`);
+    console.log(`- version: ${result.version.version}`);
+    console.log(`- npm pack files: ${result.pack.files.length}`);
+    console.log(`- checksum: ${result.checksum.algorithm}:${result.checksum.checksum}`);
   }
 }
 
@@ -1236,6 +1488,12 @@ async function main(argv = process.argv.slice(2)) {
       return 0;
     case "status":
       await statusCommand(options);
+      return 0;
+    case "checksum":
+      await checksumCommand(options);
+      return 0;
+    case "dist-check":
+      await distCheckCommand(options);
       return 0;
     case "help":
       console.log(help());

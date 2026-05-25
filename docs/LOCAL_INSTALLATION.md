@@ -31,6 +31,13 @@ Preview a user-level install:
 node bin/product-skills.mjs install --runtime codex --scope user --dry-run
 ```
 
+The shell bootstrap delegates to the same Node.js CLI and is also safe to run in
+dry-run mode:
+
+```bash
+./install.sh --runtime all --scope repo --dry-run
+```
+
 ## CLI Install
 
 Repo scope stores the package at `<repo>/.product-skills/` and writes runtime
@@ -55,7 +62,18 @@ node bin/product-skills.mjs install --runtime codex --scope user
 node bin/product-skills.mjs install --runtime gemini --scope user
 ```
 
-Cursor user scope is not supported in this phase. Use repo scope for Cursor.
+Cursor user scope is supported only when the installer can detect a supported
+global rules directory. By default it checks for an existing
+`~/.cursor/rules/` directory. If your Cursor installation uses another
+confirmed user rules directory, pass it through
+`PRODUCT_SKILLS_CURSOR_USER_RULES_DIR`:
+
+```bash
+PRODUCT_SKILLS_CURSOR_USER_RULES_DIR="$HOME/.cursor/rules" \
+  node bin/product-skills.mjs install --runtime cursor --scope user --dry-run
+```
+
+When detection is unavailable, use repo scope for Cursor.
 
 After installing, validate the package store and adapters:
 
@@ -87,6 +105,40 @@ the ProductSkills marker block.
 If you update from a non-canonical `--source`, pass `--trust-source` only after
 reviewing that source. Package validation executes scripts from the copied
 package.
+
+## Package Manager Install After Publication
+
+Publishing is deferred for this release-candidate workflow. After maintainers
+approve publication, consumers can install or run the package through their Node
+package manager, then invoke the same CLI:
+
+```bash
+npx product-skills install --runtime all --scope user --dry-run
+npx product-skills install --runtime codex --scope user
+```
+
+Do not use package-manager installation until the release checklist has passed
+and the package has been intentionally published by a maintainer.
+
+## Release Dry Run
+
+Before tagging or publishing, run the deterministic distribution check:
+
+```bash
+node bin/product-skills.mjs dist-check
+npm pack --dry-run --json --ignore-scripts
+```
+
+The CLI check verifies version consistency across `VERSION`, `package.json`,
+`package.yaml`, and `registry.json`, runs `npm pack --dry-run --json`, rejects
+excluded construction files, and reports a deterministic package snapshot
+checksum.
+
+To compute the checksum for an installed package store:
+
+```bash
+node bin/product-skills.mjs checksum --package-store .product-skills
+```
 
 ## CLI Uninstall
 
@@ -186,4 +238,14 @@ Expected behavior:
 
 ## Rollback
 
-There is no automatic rollback. To remove a local copy, delete the copied package folder after confirming the path.
+Updates restore the previous managed package store automatically if validation
+fails before adapter regeneration. To roll back a successful install, remove the
+generated adapters first and remove the package store only when intended:
+
+```bash
+node bin/product-skills.mjs uninstall --runtime all --scope repo --dry-run
+node bin/product-skills.mjs uninstall --runtime all --scope repo --remove-package-store
+```
+
+Uninstall removes only generated dedicated adapters or the ProductSkills marker
+block in shared files unless `--force` is provided.

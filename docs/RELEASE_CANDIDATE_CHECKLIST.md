@@ -5,12 +5,15 @@ Use this checklist before tagging or distributing `product-operating-system` 0.1
 ## Package Integrity
 
 - [ ] `package.yaml` version is correct.
+- [ ] `VERSION`, `package.json`, `package.yaml`, and `registry.json` versions match.
 - [ ] `registry.json` includes every shipping skill and workflow.
 - [ ] `README.md` reflects current scope.
+- [ ] `package.json` has explicit package file inclusion controls.
+- [ ] `.npmignore` excludes construction docs, `.env*`, `.product-skills/`, pycache, generated eval results, and packed tarballs.
 - [ ] `docs/RELEASE_NOTES_0.1.0.md` exists.
 - [ ] `docs/KNOWN_LIMITATIONS_0.1.0.md` exists.
 - [ ] `docs/LOCAL_INSTALLATION.md` exists.
-- [ ] `docs/OPINIONATED_E2E_WORKFLOW_EXPANSION_PLAN.md` is referenced as post-0.1.0 next-work guidance.
+- [ ] Construction and planning docs are excluded from package-store and npm dry-run artifacts unless explicitly approved.
 
 ## Validation
 
@@ -24,6 +27,10 @@ python3 scripts/grade_artifact.py --case delivery-breakdown evals/artifact-fixtu
 python3 scripts/check_tool_safety.py .
 python3 scripts/check_forward_tests.py .
 python3 -m py_compile scripts/check_package.py scripts/run_trigger_evals.py scripts/grade_artifact.py scripts/check_tool_safety.py scripts/check_forward_tests.py
+node --check bin/product-skills.mjs
+node --test tests/installer.test.mjs
+node bin/product-skills.mjs dist-check
+npm pack --dry-run --json --ignore-scripts
 ```
 
 All commands must pass.
@@ -32,8 +39,18 @@ All commands must pass.
 
 - [ ] Copy package to a temporary directory.
 - [ ] Run `scripts/check_package.py` against the copied package.
+- [ ] Run `./install.sh --runtime all --scope repo --dry-run` from a checkout.
+- [ ] Run dry-run install, update, adapter-only uninstall, package-store uninstall, and Cursor user-scope detected/unsupported smoke checks.
 - [ ] Run the smoke prompts from `docs/LOCAL_INSTALLATION.md`.
 - [ ] Confirm Notion and Linear behavior stays dry-run-first.
+
+## Deferred Release Work
+
+- [ ] npm publish is explicitly approved.
+- [ ] release tags and GitHub releases are explicitly approved.
+- [ ] signing infrastructure is approved before adding signature checks.
+- [ ] Gemini extension packaging remains deferred unless the extension surface is documented.
+- [ ] Codex plugin packaging remains deferred until the plugin surface is stable and documented locally.
 
 ## Manual Review
 
