@@ -1,0 +1,16 @@
+{
+  "name": "product-skills",
+  "version": "0.1.0",
+  "description": "Installer CLI for the Product Operating System skills package.",
+  "license": "MIT",
+  "type": "module",
+  "bin": {
+    "product-skills": "./bin/product-skills.mjs"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "scripts": {
+    "test:installer": "node --test tests/installer.test.mjs"
+  }
+}

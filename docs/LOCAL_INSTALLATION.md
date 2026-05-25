@@ -14,7 +14,65 @@ python3 scripts/check_forward_tests.py .
 python3 -m py_compile scripts/check_package.py scripts/run_trigger_evals.py scripts/grade_artifact.py scripts/check_tool_safety.py scripts/check_forward_tests.py
 ```
 
-## Non-Destructive Install Preview
+## CLI Install Preview
+
+The package includes a dependency-free Node.js installer. It copies the shared
+ProductSkills package into a package store and writes small runtime adapters.
+
+Preview a repo-level install without writing files:
+
+```bash
+node bin/product-skills.mjs install --runtime all --scope repo --dry-run
+```
+
+Preview a user-level install:
+
+```bash
+node bin/product-skills.mjs install --runtime codex --scope user --dry-run
+```
+
+## CLI Install
+
+Repo scope stores the package at `<repo>/.product-skills/` and writes runtime
+adapters inside the repo. The installer adds `.product-skills/` to `.gitignore`
+unless `--track-package-store` is passed.
+
+Examples:
+
+```bash
+node bin/product-skills.mjs install --runtime claude --scope repo
+node bin/product-skills.mjs install --runtime codex --scope repo --adapter agents
+node bin/product-skills.mjs install --runtime cursor --scope repo
+node bin/product-skills.mjs install --runtime gemini --scope repo
+```
+
+User scope stores the package at `~/.product-skills/` and writes user-level
+adapters where the runtime supports them:
+
+```bash
+node bin/product-skills.mjs install --runtime claude --scope user
+node bin/product-skills.mjs install --runtime codex --scope user
+node bin/product-skills.mjs install --runtime gemini --scope user
+```
+
+Cursor user scope is not supported in this phase. Use repo scope for Cursor.
+
+After installing, validate the package store and adapters:
+
+```bash
+node bin/product-skills.mjs validate --runtime all --scope repo
+node bin/product-skills.mjs status --runtime all --scope repo
+```
+
+Use `product-skills` instead of `node bin/product-skills.mjs` when the package
+is installed through a Node package manager or linked locally.
+
+Installs from the canonical repository or the current ProductSkills checkout run
+the package validation scripts automatically. Installs from any other `--source`
+are refused unless `--force` is passed, because validation executes scripts from
+the copied package.
+
+## Manual Non-Destructive Install Preview
 
 Use a temporary directory to verify the package can be copied as a skillset artifact:
 
@@ -26,7 +84,7 @@ python3 /tmp/product-operating-system-skillset/scripts/check_package.py /tmp/pro
 
 This does not modify your Codex skill directory.
 
-## Local Codex Skill Copy
+## Manual Local Codex Skill Copy
 
 When you are ready to install locally, copy the package into your Codex skills area using a package folder:
 
