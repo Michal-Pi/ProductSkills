@@ -1,0 +1,24 @@
+.DS_Store
+__pycache__/
+*.pyc
+.product-os/
+evals/results/
+dist/
+node_modules/
+.env
+.env.*
+!.env.example
+
+# Local design, planning, and handoff docs used during package construction.
+product-management-skills-package-design.md
+product-management-skills-package-final.md
+task_plan.md
+progress.md
+findings.md
+docs/END_TO_END_IMPLEMENTATION_PLAN.md
+docs/IMPLEMENTATION_PLAN.md
+docs/OPINIONATED_E2E_WORKFLOW_EXPANSION_PLAN.md
+docs/OPINIONATED_E2E_WORKFLOW_IMPLEMENTATION_DESIGN.md
+docs/NEXT_PHASE_AGENT_PROMPT.md
+docs/beta/
+docs/reviews/
