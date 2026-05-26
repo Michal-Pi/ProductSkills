@@ -1,0 +1,37 @@
+{
+  "name": "product-skills",
+  "version": "0.1.0",
+  "description": "Product Operating System workflows for product discovery, PRDs, delivery, launch readiness, and post-launch learning.",
+  "author": {
+    "name": "Product OS Team"
+  },
+  "homepage": "https://github.com/Michal-Pi/ProductSkills#readme",
+  "repository": "https://github.com/Michal-Pi/ProductSkills",
+  "license": "MIT",
+  "keywords": [
+    "product-management",
+    "product-operating-system",
+    "prd",
+    "delivery",
+    "launch"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "ProductSkills",
+    "shortDescription": "Product operating workflows for discovery, PRDs, delivery, launch, and learning.",
+    "longDescription": "Use ProductSkills to route product work across discovery, strategy, validation, PRDs, delivery breakdown, safe tool previews, launch readiness, and post-launch learning.",
+    "developerName": "Product OS Team",
+    "category": "Productivity",
+    "capabilities": [
+      "Read",
+      "Write"
+    ],
+    "websiteURL": "https://github.com/Michal-Pi/ProductSkills",
+    "defaultPrompt": [
+      "Use ProductSkills to turn this customer evidence into an evidence-backed PRD.",
+      "Use ProductSkills to review this PRD and prepare a delivery-ready breakdown.",
+      "Use ProductSkills to continue this launched feature into post-launch learning."
+    ],
+    "brandColor": "#10A37F"
+  }
+}

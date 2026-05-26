@@ -30,6 +30,7 @@
     "package.yaml",
     "registry.json",
     "install.sh",
+    ".codex-plugin/",
     "bin/",
     "adapters/",
     "docs/",

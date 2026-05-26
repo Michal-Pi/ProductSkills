@@ -75,6 +75,20 @@ PRODUCT_SKILLS_CURSOR_USER_RULES_DIR="$HOME/.cursor/rules" \
 
 When detection is unavailable, use repo scope for Cursor.
 
+Gemini can be installed either as a marker-managed `GEMINI.md` context block or
+as a dedicated Gemini CLI extension. The extension adapter is user-scope only
+because current Gemini CLI extension discovery loads extensions from
+`~/.gemini/extensions/`:
+
+```bash
+node bin/product-skills.mjs install --runtime gemini --scope user --adapter extension --dry-run
+node bin/product-skills.mjs install --runtime gemini --scope user --adapter extension
+```
+
+After installing the extension adapter, restart Gemini CLI. Gemini extension
+updates still run through `product-skills update` so the shared package store
+and generated extension context stay aligned.
+
 After installing, validate the package store and adapters:
 
 ```bash
@@ -108,9 +122,8 @@ package.
 
 ## Package Manager Install After Publication
 
-Publishing is deferred for this release-candidate workflow. After maintainers
-approve publication, consumers can install or run the package through their Node
-package manager, then invoke the same CLI:
+After maintainers approve publication, consumers can install or run the package
+through their Node package manager, then invoke the same CLI:
 
 ```bash
 npx product-skills install --runtime all --scope user --dry-run
@@ -119,6 +132,14 @@ npx product-skills install --runtime codex --scope user
 
 Do not use package-manager installation until the release checklist has passed
 and the package has been intentionally published by a maintainer.
+
+## Codex Plugin Package
+
+The repository root is also a Codex plugin package. Its manifest lives at
+`.codex-plugin/plugin.json` and points Codex to the package `skills/` directory.
+For local testing, add this repository as a plugin marketplace source from
+Codex, then install the `product-skills` plugin from that marketplace. Codex
+plugins require a new thread or restart after install.
 
 ## Release Dry Run
 

@@ -49,8 +49,9 @@ All commands must pass.
 - [ ] npm publish is explicitly approved.
 - [ ] release tags and GitHub releases are explicitly approved.
 - [ ] signing infrastructure is approved before adding signature checks.
-- [ ] Gemini extension packaging remains deferred unless the extension surface is documented.
-- [ ] Codex plugin packaging remains deferred until the plugin surface is stable and documented locally.
+- [ ] Optional release artifact signing has an approved signing key and detached-signature process.
+- [ ] Gemini extension adapter smoke test passes with `--adapter extension`.
+- [ ] Codex plugin manifest is validated and local marketplace install is smoke-tested.
 
 ## Manual Review
 

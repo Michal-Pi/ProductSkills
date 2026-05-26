@@ -36,6 +36,9 @@
   - `product-skills dist-check` for version consistency, npm pack dry-run, and
     deterministic snapshot checksum reporting;
   - `product-skills checksum` for deterministic package-store checksums.
+- Runtime packaging:
+  - Codex plugin manifest at `.codex-plugin/plugin.json`;
+  - Gemini CLI extension adapter support through `--adapter extension`.
 - Versioned eval fixtures for triggers, artifacts, tool safety, and forward-test prompts.
 
 ## Quality Gates
