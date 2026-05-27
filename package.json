@@ -22,7 +22,7 @@
   },
   "homepage": "https://github.com/Michal-Pi/ProductSkills#readme",
   "bin": {
-    "product-skills": "./bin/product-skills.mjs"
+    "product-skills": "bin/product-skills.mjs"
   },
   "files": [
     "VERSION",
