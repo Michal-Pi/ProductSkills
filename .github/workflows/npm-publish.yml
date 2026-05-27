@@ -1,0 +1,50 @@
+name: Publish npm package
+
+on:
+  release:
+    types: [published]
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  publish:
+    name: Validate and publish
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out release tag
+        uses: actions/checkout@v6
+
+      - name: Set up Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: "24"
+          registry-url: "https://registry.npmjs.org"
+          package-manager-cache: false
+
+      - name: Check tag matches package version
+        run: |
+          PACKAGE_VERSION="$(node -p "require('./package.json').version")"
+          TAG_VERSION="${GITHUB_REF_NAME#v}"
+          if [ "$PACKAGE_VERSION" != "$TAG_VERSION" ]; then
+            echo "Tag $GITHUB_REF_NAME does not match package version $PACKAGE_VERSION"
+            exit 1
+          fi
+
+      - name: Validate package
+        run: |
+          python3 scripts/check_package.py .
+          python3 scripts/run_trigger_evals.py .
+          python3 scripts/grade_artifact.py --case prd-generation evals/artifact-fixtures/passing-prd-generation.md
+          python3 scripts/grade_artifact.py --case delivery-breakdown evals/artifact-fixtures/passing-delivery-breakdown.md
+          python3 scripts/check_tool_safety.py .
+          python3 scripts/check_forward_tests.py .
+          python3 -m py_compile scripts/check_package.py scripts/run_trigger_evals.py scripts/grade_artifact.py scripts/check_tool_safety.py scripts/check_forward_tests.py
+          node --check bin/product-skills.mjs
+          node --test tests/installer.test.mjs
+          node bin/product-skills.mjs dist-check
+          npm pack --dry-run --json --ignore-scripts
+
+      - name: Publish to npm
+        run: npm publish --access public

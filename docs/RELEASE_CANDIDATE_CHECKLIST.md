@@ -53,6 +53,25 @@ All commands must pass.
 - [ ] Gemini extension adapter smoke test passes with `--adapter extension`.
 - [ ] Codex plugin manifest is validated and local marketplace install is smoke-tested.
 
+## Post-Publish Smoke
+
+- [ ] npm shows the intended public package version:
+  `npm view @pm-musketeers/product-skills version dist-tags.latest name bin`.
+- [ ] Published CLI help works from npm:
+  `npx @pm-musketeers/product-skills --help`.
+- [ ] Published dry-run install works:
+  `npx @pm-musketeers/product-skills install --runtime codex --scope user --dry-run`.
+- [ ] GitHub release exists for the published version tag.
+- [ ] npm org package is associated with the intended team.
+
+## Future Trusted Publishing Setup
+
+- [ ] npm package trusted publisher is configured for GitHub Actions.
+- [ ] Trusted publisher owner is `Michal-Pi`, repository is `ProductSkills`, and workflow file is `.github/workflows/npm-publish.yml`.
+- [ ] Release workflow uses GitHub-hosted runners, `id-token: write`, Node 24, and npm 11.5.1 or newer.
+- [ ] Next release is published through the GitHub release workflow instead of local interactive npm publish.
+- [ ] After trusted publishing is verified, npm package settings disallow traditional token publishing if maintainers want stricter release controls.
+
 ## Manual Review
 
 - [ ] Confirm docs do not overclaim trigger evals as real router quality.
