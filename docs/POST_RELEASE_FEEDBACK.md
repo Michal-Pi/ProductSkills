@@ -51,6 +51,28 @@ runtime-native, but they mix "visible skill/rule packages" with
 - `--runtime all --scope user` also mixes concepts:
   Claude skill, Codex skill, Cursor conditional rule, Gemini shared `GEMINI.md`.
 
+### Direction
+
+Adopt a clearer product rule: default adapters should prefer each platform's
+most visible/package-like install surface when that surface exists and is safe
+to write.
+
+- Codex should default to visible `skills` in both user and repo scope.
+  `AGENTS.md` should remain available as explicit `--adapter agents` for users
+  who want repo-level project instructions.
+- Gemini CLI should default to `--adapter extension` for user scope because
+  extensions are the closest Gemini CLI equivalent to an installable package.
+  `GEMINI.md` should remain available as the repo-scope/default context-file
+  path where extensions are not supported.
+- Gemini Gems are not the current distribution target. Gems are custom Gemini
+  app assistants, not the Gemini CLI package surface. Revisit only if Google
+  exposes a stable Gem packaging/import API suitable for local/CLI
+  distribution.
+- Cursor should keep dedicated rules as the package-like surface. User-scope
+  behavior should stay conditional until Cursor's global rules location is
+  reliably documented or detectable.
+- Claude can keep the current dedicated skills behavior.
+
 ### Why It Matters
 
 - `AGENTS.md` modifies project-level instructions but does not make
@@ -75,6 +97,8 @@ runtime-native, but they mix "visible skill/rule packages" with
   visibility is the release goal?
 - Should `--runtime all` prefer each platform's most visible/package-like
   adapter instead of shared instruction files?
+- Should command output call out when an adapter is context-only and will not
+  appear in a runtime's package/skill UI?
 
 ### Candidate Plan
 
@@ -93,10 +117,11 @@ runtime-native, but they mix "visible skill/rule packages" with
    - Cursor rules;
    - Gemini extensions and context files.
 4. Decide the new defaults:
-   - likely prefer visible skills as the default Codex adapter;
-   - keep AGENTS.md as an explicit `--adapter agents` mode.
-   - decide whether Gemini should default to `--adapter extension` for user
-     scope, while keeping `GEMINI.md` as an explicit context adapter.
+   - prefer visible skills as the default Codex adapter;
+   - keep AGENTS.md as an explicit `--adapter agents` mode;
+   - default Gemini user scope to `--adapter extension`;
+   - keep `GEMINI.md` as the repo-scope/default context adapter where
+     extensions are unsupported.
 5. Update CLI help and install output to explain the difference between visible
    runtime packages and shared instruction/context files.
 6. Add tests that assert runtime defaults and output copy match the intended UX.
