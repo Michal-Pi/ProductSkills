@@ -1,5 +1,5 @@
 {
-  "name": "product-skills",
+  "name": "@pm-musketeers/product-skills",
   "version": "0.1.0",
   "description": "Installer CLI for the Product Operating System skills package.",
   "license": "MIT",

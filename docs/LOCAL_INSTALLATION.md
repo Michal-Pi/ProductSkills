@@ -126,8 +126,8 @@ After maintainers approve publication, consumers can install or run the package
 through their Node package manager, then invoke the same CLI:
 
 ```bash
-npx product-skills install --runtime all --scope user --dry-run
-npx product-skills install --runtime codex --scope user
+npx @pm-musketeers/product-skills install --runtime all --scope user --dry-run
+npx @pm-musketeers/product-skills install --runtime codex --scope user
 ```
 
 Do not use package-manager installation until the release checklist has passed
@@ -179,8 +179,9 @@ Uninstall removes only generated dedicated adapters or marker-managed blocks by
 default. Use `--force` only when you intentionally want to remove a
 non-generated dedicated adapter at the ProductSkills adapter path.
 
-Use `product-skills` instead of `node bin/product-skills.mjs` when the package
-is installed through a Node package manager or linked locally.
+Use `product-skills` instead of `node bin/product-skills.mjs` when the
+`@pm-musketeers/product-skills` package is installed through a Node package
+manager or linked locally.
 
 Installs from the canonical repository or the current ProductSkills checkout run
 the package validation scripts automatically. Installs from any other `--source`

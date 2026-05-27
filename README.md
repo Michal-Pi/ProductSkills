@@ -75,4 +75,7 @@ Use `workflow-product-operating-system` when a product artifact may need routing
 
 ## Installation
 
-See `docs/LOCAL_INSTALLATION.md`.
+After publication, the npm package name is `@pm-musketeers/product-skills` and
+the installed CLI command is `product-skills`. Until publication is complete,
+see `docs/LOCAL_INSTALLATION.md` for local install and release-candidate
+instructions.
