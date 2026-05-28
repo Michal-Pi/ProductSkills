@@ -9,7 +9,7 @@ This contract connects docs, delivery, and Linear tooling.
 ## Consumers
 
 - `pm-delivery` for iteration on epics, stories, and acceptance criteria.
-- `pm-tooling` for Linear dry-run payloads.
+- Linear dry-run payloads are produced by this workflow under the canonical safety contract at `references/mcp/dry-run-preview.md`.
 - Engineering planning or sprint planning after product approval.
 
 ## Required Fields
@@ -39,4 +39,4 @@ This contract connects docs, delivery, and Linear tooling.
 
 ## Linear Safety
 
-`linear_preview` must follow `references/methods/tooling-dry-run.md` and `references/mcp/linear-mcp-contract.md`. A confirmed write requires explicit user approval for the exact preview, including target team, issue list, idempotency keys, and `dry_run_payload_hash`.
+`linear_preview` must follow `references/mcp/dry-run-preview.md` (canonical safety contract) and `references/mcp/linear-mcp-contract.md` (payload field expectations). A confirmed write requires explicit user approval for the exact preview, including target team, issue list, idempotency keys, and `dry_run_payload_hash`.

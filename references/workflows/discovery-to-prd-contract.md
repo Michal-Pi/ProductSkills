@@ -10,7 +10,7 @@ This contract connects discovery, validation, docs, and optional Notion tooling.
 
 - `pm-docs` for PRD review or revision.
 - `workflow-prd-to-linear-delivery` after scope approval.
-- `pm-tooling` for optional Notion dry-run payloads.
+- Optional Notion dry-run payloads follow `references/mcp/dry-run-preview.md` (canonical safety contract). The producing workflow keeps the safety summary in its SKILL.md.
 
 ## Required Fields
 
@@ -37,4 +37,4 @@ This contract connects discovery, validation, docs, and optional Notion tooling.
 
 ## Optional Notion Handoff
 
-Only include `notion_preview` when the user requests Notion sync. It must follow `references/methods/tooling-dry-run.md` and keep `mode: dry_run` until explicit confirmation.
+Only include `notion_preview` when the user requests Notion sync. It must follow `references/mcp/dry-run-preview.md` (canonical safety contract) and keep `mode: dry_run` until explicit confirmation.

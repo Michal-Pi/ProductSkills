@@ -22,7 +22,7 @@ If no target user, product area, or decision is stated, ask for the missing cont
 6. Research or validation plan if the riskiest assumption is not already supported, using `../../../skills/pm-discovery/procedures/research-plan.md` or `../../../templates/validation-plan.md`.
 7. PRD drafting using `../../../skills/pm-docs/procedures/prd.md` and `../../../templates/prd.md`.
 8. Spec review using `../../../skills/pm-docs/procedures/spec-review.md`.
-9. Optional Notion preview using `../../../skills/pm-tooling/procedures/notion-preview.md`.
+9. Optional Notion preview using `../../../references/mcp/dry-run-preview.md` (canonical safety contract). See `../../../references/mcp/notion-mcp-contract.md` for payload field expectations.
 
 ## Intermediate Artifacts
 

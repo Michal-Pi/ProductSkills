@@ -9,7 +9,7 @@ Use when breaking epics into sprint-ready user stories.
 3. Keep each story valuable and testable.
 4. Note dependencies and non-goals.
 5. Add edge cases and failure states.
-6. Route tool payloads through `pm-tooling`.
+6. Route tool payloads through `workflow-prd-to-linear-delivery` (which honors the canonical safety contract at `../../../references/mcp/dry-run-preview.md`).
 
 ## Output
 

@@ -21,7 +21,7 @@ If scope is unclear, run a spec review first and stop with blocking questions in
 3. Story splitting using `../../../skills/pm-delivery/procedures/story-splitting.md`.
 4. Acceptance criteria using `../../../skills/pm-delivery/procedures/acceptance-criteria.md`.
 5. Dependency, sequencing, and release-risk review using `../../../references/methods/delivery-handoff.md`.
-6. Linear dry-run preview using `../../../skills/pm-tooling/procedures/linear-preview.md` and `../../../templates/linear-delivery-handoff.md`.
+6. Linear dry-run preview using `../../../references/mcp/dry-run-preview.md` (canonical safety contract) and `../../../templates/linear-delivery-handoff.md`. See `../../../references/mcp/linear-mcp-contract.md` for payload field expectations.
 
 ## Intermediate Artifacts
 

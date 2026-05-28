@@ -121,17 +121,6 @@ PROFILES: dict[str, dict[str, float]] = {
         "post-launch": 3,
         "launch plan": 3,
     },
-    "pm-tooling": {
-        "notion": 5,
-        "linear": 5,
-        "payload": 3,
-        "preview": 2,
-        "sync": 3,
-        "external id": 3,
-        "workspace": 2,
-        "dry-run": 3,
-        "dry run": 3,
-    },
     "workflow-product-operating-system": {
         "product operating system": 8,
         "idea to launch": 7,
@@ -178,18 +167,6 @@ PENALTIES: dict[str, dict[str, float]] = {
     "pm-delivery": {"package delivery": -6, "arrival time": -4},
     "pm-growth": {"houseplants": -6, "garden": -4},
     "pm-gtm": {"boat": -6, "weekend launch trip": -6, "sales enablement deck": -5},
-    "pm-tooling": {
-        "shell script": -6,
-        "rename image files": -6,
-        "notion-style": -7,
-        "notion style": -7,
-        "notion document": -6,
-        "do not use notion": -8,
-        "without syncing": -8,
-        "sync payload": -5,
-        "linear algebra": -8,
-        "linear transformation": -8,
-    },
     "workflow-product-operating-system": {
         "single prd review": -5,
         "only review this prd": -6,
@@ -379,20 +356,6 @@ def score_skill(prompt: str, skill_id: str, description: str) -> float:
             score += 3.0
     if skill_id.startswith("workflow-") and "workflow" in normalized:
         score += 1.0
-    if skill_id == "pm-tooling" and any(tool in normalized for tool in ("notion", "linear")):
-        if any(
-            term in normalized
-            for term in (
-                "do not create linear",
-                "do not use linear",
-                "without linear",
-                "skip linear",
-                "no linear",
-            )
-        ):
-            score -= 10.0
-        score += 1.0
-
     return score
 
 

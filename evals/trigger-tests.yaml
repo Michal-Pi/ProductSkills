@@ -35,10 +35,6 @@ tests:
     skill_id: pm-gtm
     prompt: "Create a launch readiness plan, positioning, release comms, and enablement checklist."
     should_trigger: true
-  - id: pm-tooling-notion-preview
-    skill_id: pm-tooling
-    prompt: "Prepare a Notion page payload for this PRD and show me the preview before writing."
-    should_trigger: true
   - id: workflow-product-operating-system-full-path
     skill_id: workflow-product-operating-system
     prompt: "Take this product work from idea to launch: classify the evidence, decide validation, create the next product deliverable, prepare delivery and tool preview, then define launch learning."
@@ -78,10 +74,6 @@ tests:
   - id: pm-delivery-no-linear
     skill_id: pm-delivery
     prompt: "Break this approved scope into epics, user stories, and acceptance criteria. Do not create Linear payloads yet."
-    should_trigger: true
-  - id: pm-tooling-linear-write-request
-    skill_id: pm-tooling
-    prompt: "Prepare to create these Linear issues, but show the dry-run payload and confirmation question first."
     should_trigger: true
   - id: pm-strategy-ambiguous-roadmap-tradeoff
     skill_id: pm-strategy
@@ -131,14 +123,6 @@ tests:
     skill_id: pm-gtm
     prompt: "Plan a weekend launch trip for a boat."
     should_trigger: false
-  - id: pm-tooling-negative-local-script
-    skill_id: pm-tooling
-    prompt: "Write a shell script to rename image files in a folder."
-    should_trigger: false
-  - id: pm-tooling-negative-artifact-review
-    skill_id: pm-tooling
-    prompt: "Review this PRD for clarity, evidence quality, and missing risks."
-    should_trigger: false
   - id: workflow-discovery-to-prd-negative-academic
     skill_id: workflow-discovery-to-prd
     prompt: "Summarize this academic paper into lecture notes."
@@ -166,10 +150,6 @@ tests:
   - id: workflow-product-operating-system-negative-linear-only-tooling
     skill_id: workflow-product-operating-system
     prompt: "Prepare a Linear-only dry-run payload for these existing issues and ask for confirmation before writing."
-    should_trigger: false
-  - id: pm-tooling-negative-notion-style-writing
-    skill_id: pm-tooling
-    prompt: "Rewrite this memo in a Notion-style format without syncing or creating any page."
     should_trigger: false
 negative_controls:
   - id: generic-python-debugging

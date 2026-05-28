@@ -8,4 +8,4 @@ Use this checklist when drafting or reviewing PRDs, specs, and product decisions
 - Requirements are testable without over-specifying implementation.
 - Risks, open questions, and decision owners are explicit.
 - Next actions are concrete.
-- Tool payloads are not implied unless routed through `pm-tooling`.
+- Tool payloads are not implied unless routed through `workflow-prd-to-linear-delivery` (or `workflow-discovery-to-prd` for optional Notion), which honors the canonical safety contract at `references/mcp/dry-run-preview.md`.
