@@ -18,3 +18,4 @@ Turn messy product discovery evidence into an evidence-backed PRD.
 - Do not invent evidence or collapse assumptions into facts.
 - Stop for user approval before promoting weak evidence into PRD scope.
 - If Notion sync is requested, produce a dry-run preview first and require explicit confirmation before any write.
+- When this workflow halts with `status: blocked` for missing evidence, set `resume_target: pm-discovery` on the blocked-workflow envelope. Use `pm-validation` only when the gap is specifically a validation gap (testable hypothesis lacks a test method). See `../../references/workflows/workflow-lifecycle-statuses.md` §"Canonical resume targets" for the full rule.

@@ -20,3 +20,7 @@ Use this scale whenever a product artifact depends on uncertain evidence.
 ## Output Rule
 
 When confidence is low or medium, include the next learning step needed to raise confidence.
+
+## Resume target when evidence is missing
+
+If a workflow blocks because evidence is insufficient (Low confidence with no clear next learning step, or no evidence at all for a load-bearing claim), set the blocked-workflow envelope's `resume_target` to `pm-discovery`. See `../workflows/workflow-lifecycle-statuses.md` §"Canonical resume targets" for the full disambiguation rule between `pm-discovery`, `pm-validation`, `pm-metrics`, and `pm-stakeholder-comms`.

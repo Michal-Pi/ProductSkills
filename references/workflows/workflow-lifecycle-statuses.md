@@ -30,3 +30,24 @@ Rules:
 - Prefer the closest canonical status over local synonyms.
 - Use `blocked` only when the next action is unsafe or impossible without missing input.
 - Use `validation_not_required` for approved, validated, delivery, launch, or post-launch re-entry when readiness checks pass.
+
+## Canonical resume targets
+
+When a workflow halts with `status: blocked` because evidence, validation, or context is missing, the blocked-workflow envelope MUST name a `resume_target` skill so the next-step actor knows where to continue. Pick the resume target by the nature of the gap:
+
+| Gap type | Canonical `resume_target` | Use when |
+|---|---|---|
+| Missing or weak **evidence** (no interviews, thin VoC, stale data, unproven problem) | `pm-discovery` | The blocker is "we don't yet know enough to commit." Discovery owns evidence gathering and synthesis. **Default for evidence-blocked workflows.** |
+| Missing **validation** of a stated assumption (testable hypothesis exists but lacks a test method, audience, or instrumentation plan) | `pm-validation` | The blocker is "we have a claim but no way to test it yet." Use only when the gap is specifically a validation gap, not an evidence gap. |
+| Missing **metric tree, north-star, or instrumentation definition** | `pm-metrics` | The blocker is "we cannot measure outcome or guardrails." |
+| Missing **stakeholder alignment, exec decision, or async ask** | `pm-stakeholder-comms` | The blocker is "we need a decision from a named audience, not more evidence." |
+
+### Anti-patterns (do not use as `resume_target`)
+
+- **`voc-synthesis`** — this is a procedure inside `pm-discovery`, not a skill. Resume targets must be skill IDs from `registry.json`.
+- **`pm-strategy`** — strategy chooses bets given evidence; it does not gather evidence. Routing here when evidence is missing creates strategy work on top of a weak base.
+- **`workflow-discovery-to-prd`** or **`workflow-prd-to-linear-delivery`** — workflows orchestrate skills; they should not be resume targets for their own blocks.
+
+### Why this convention exists
+
+The 0.2.1 corpus (see `.review-tmp/C-tests.md` analysis) showed runtime divergence on evidence-blocked re-entry: some artifacts resumed to `pm-discovery`, others to `pm-validation`, others to a procedure name (`voc-synthesis`). Pinning a single canonical target removes the ambiguity at grader-check time and at resume-actor time. Per SDD-0.3.0 §0 R3 G8.
