@@ -1,6 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "title": "Product Operating System Handoff",
+  "title": "Workflow Chain Handoff",
+  "description": "Generic handoff envelope for a single workflow OR a chained sequence of workflows. After 0.3.0 the master workflow is retired; this schema covers either the narrower workflows individually (workflow-discovery-to-prd, workflow-prd-to-linear-delivery) or an adapter-routed chain of them.",
   "type": "object",
   "additionalProperties": false,
   "required": [
@@ -16,7 +17,30 @@
     "handoff_target"
   ],
   "properties": {
-    "workflow_id": {"const": "workflow-product-operating-system"},
+    "workflow_id": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": [
+            "workflow-discovery-to-prd",
+            "workflow-prd-to-linear-delivery"
+          ],
+          "description": "Single-workflow handoff."
+        },
+        {
+          "type": "array",
+          "minItems": 2,
+          "items": {
+            "type": "string",
+            "enum": [
+              "workflow-discovery-to-prd",
+              "workflow-prd-to-linear-delivery"
+            ]
+          },
+          "description": "Chained-workflow handoff. List the workflows in order of execution."
+        }
+      ]
+    },
     "current_status": {"$ref": "workflow-stage.schema.json"},
     "entry_status": {"$ref": "workflow-stage.schema.json"},
     "source_artifacts": {"type": "array", "items": {"type": "string"}},

@@ -275,7 +275,7 @@ function findGitRoot(start) {
 function looksLikeProductSkillsRoot(candidate) {
   return fs.existsSync(path.join(candidate, "package.yaml"))
     && fs.existsSync(path.join(candidate, "registry.json"))
-    && fs.existsSync(path.join(candidate, "skills", "workflow-product-operating-system", "SKILL.md"));
+    && fs.existsSync(path.join(candidate, "skills", "workflow-discovery-to-prd", "SKILL.md"));
 }
 
 function findProductSkillsRoot(start) {

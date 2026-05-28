@@ -121,24 +121,6 @@ PROFILES: dict[str, dict[str, float]] = {
         "post-launch": 3,
         "launch plan": 3,
     },
-    "workflow-product-operating-system": {
-        "product operating system": 8,
-        "idea to launch": 7,
-        "from idea to launch": 7,
-        "next product workflow step": 7,
-        "next workflow step": 6,
-        "continue this product work": 6,
-        "turn this artifact into the next product deliverable": 7,
-        "full workflow": 5,
-        "end-to-end workflow": 5,
-        "launch learning": 5,
-        "post-launch metrics": 5,
-        "post launch metrics": 5,
-        "rough prd": 4,
-        "approved prd": 4,
-        "launch request": 5,
-        "what next": 3,
-    },
     "workflow-discovery-to-prd": {
         "discovery to prd": 6,
         "research into requirements": 5,
@@ -167,18 +149,6 @@ PENALTIES: dict[str, dict[str, float]] = {
     "pm-delivery": {"package delivery": -6, "arrival time": -4},
     "pm-growth": {"houseplants": -6, "garden": -4},
     "pm-gtm": {"boat": -6, "weekend launch trip": -6, "sales enablement deck": -5},
-    "workflow-product-operating-system": {
-        "single prd review": -5,
-        "only review this prd": -6,
-        "linear-only": -6,
-        "linear only": -6,
-        "just create linear": -5,
-        "engineering-only": -6,
-        "engineering only": -6,
-        "academic paper": -6,
-        "lecture notes": -5,
-        "sales enablement deck": -5,
-    },
     "workflow-discovery-to-prd": {"academic paper": -6, "lecture notes": -5},
     "workflow-prd-to-linear-delivery": {
         "grocery list": -6,
@@ -319,41 +289,6 @@ def score_skill(prompt: str, skill_id: str, description: str) -> float:
         )
         if has_artifact_and_linear and has_delivery:
             score += 10.0
-    if skill_id == "workflow-product-operating-system":
-        has_multi_stage_language = any(
-            term in normalized
-            for term in (
-                "idea to launch",
-                "next product workflow step",
-                "next workflow step",
-                "continue this product work",
-                "full workflow",
-                "end-to-end workflow",
-                "what next",
-            )
-        )
-        has_reentry_artifact = any(
-            term in normalized
-            for term in (
-                "rough prd",
-                "approved prd",
-                "delivery plan",
-                "launch request",
-                "launch readiness",
-                "post-launch metrics",
-                "post launch metrics",
-            )
-        )
-        has_product_context = any(
-            term in normalized
-            for term in ("product", "prd", "delivery", "launch", "customer", "metric", "roadmap")
-        )
-        if has_multi_stage_language and has_product_context:
-            score += 8.0
-        if has_reentry_artifact and any(term in normalized for term in ("what next", "continue", "next stage")):
-            score += 7.0
-        if "validation" in normalized and "not required" in normalized:
-            score += 3.0
     if skill_id.startswith("workflow-") and "workflow" in normalized:
         score += 1.0
     return score

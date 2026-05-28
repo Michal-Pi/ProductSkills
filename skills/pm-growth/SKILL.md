@@ -36,3 +36,9 @@ Diagnose growth systems and turn bottlenecks into product experiments.
 ## Output Standard
 
 Growth outputs must identify target metric, current bottleneck, affected segment, loop/funnel stage, experiment hypothesis, guardrail metric, and decision rule. Every primary-metric claim has a baseline + cited source; invented numbers are refused.
+
+## Guardrails
+
+- Post-launch signals feed back into discovery. When `experiment-readout` or `funnel-stage-analysis` surfaces an opportunity for new product investigation (a segment underserved, a value hypothesis disconfirmed, a new bottleneck), the output explicitly names the discovery input that should follow and recommends routing it to `pm-discovery`.
+- Every experiment readout requires a pre-stated decision rule; rules retrofitted after the result are refused (see `procedures/experiment-readout.md` refusal contract).
+- No baseline or industry benchmark is invented. Every claim has a cited source.

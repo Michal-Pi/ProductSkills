@@ -1068,10 +1068,10 @@ test("dry-run Gemini with existing GEMINI.md does not mutate the file", () => {
 test("install refuses to execute validation scripts from an untrusted source without force", () => {
   const repo = makeRepo("untrusted-target");
   const source = tempDir("untrusted-source");
-  fs.writeFileSync(path.join(source, "package.yaml"), "name: product-operating-system\nversion: 0.1.0\n", "utf8");
+  fs.writeFileSync(path.join(source, "package.yaml"), "name: product-skills\nversion: 0.1.0\n", "utf8");
   fs.writeFileSync(path.join(source, "registry.json"), "{\"skills\":[]}\n", "utf8");
-  fs.mkdirSync(path.join(source, "skills", "workflow-product-operating-system"), { recursive: true });
-  fs.writeFileSync(path.join(source, "skills", "workflow-product-operating-system", "SKILL.md"), "---\nname: workflow-product-operating-system\ndescription: Test\n---\n", "utf8");
+  fs.mkdirSync(path.join(source, "skills", "workflow-discovery-to-prd"), { recursive: true });
+  fs.writeFileSync(path.join(source, "skills", "workflow-discovery-to-prd", "SKILL.md"), "---\nname: workflow-discovery-to-prd\ndescription: Test\n---\n", "utf8");
 
   const result = runCli([
     "install",

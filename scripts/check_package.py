@@ -38,11 +38,6 @@ REQUIRED_METHOD_CHECKLISTS = (
     "references/checklists/tooling-safety.md",
 )
 REQUIRED_WORKFLOW_CONTRACTS = {
-    "workflow-product-operating-system": (
-        "references/workflows/product-operating-system-contract.md",
-        "references/workflows/workflow-lifecycle-statuses.md",
-        "schemas/product-operating-system-handoff.schema.json",
-    ),
     "workflow-discovery-to-prd": (
         "references/workflows/discovery-to-prd-contract.md",
         "schemas/discovery-to-prd-handoff.schema.json",
@@ -52,11 +47,12 @@ REQUIRED_WORKFLOW_CONTRACTS = {
         "schemas/prd-to-delivery-handoff.schema.json",
     ),
 }
-REQUIRED_PRODUCT_OS_ASSETS = (
-    "skills/workflow-product-operating-system/SKILL.md",
-    "skills/workflow-product-operating-system/procedures/product-operating-system.md",
-    "references/workflows/product-operating-system-contract.md",
+# After 0.3.0 the master workflow is retired; the adapter routes via
+# references/routing/artifact-to-workflow.md. The remaining shared assets are
+# still required because the narrower workflows reference them.
+REQUIRED_SHARED_WORKFLOW_ASSETS = (
     "references/workflows/workflow-lifecycle-statuses.md",
+    "references/routing/artifact-to-workflow.md",
     "templates/workflow-stage-output.md",
     "templates/blocked-workflow.md",
     "templates/validation-decision.md",
@@ -68,7 +64,7 @@ REQUIRED_PRODUCT_OS_ASSETS = (
     "schemas/validation-decision.schema.json",
     "schemas/launch-readiness-gate.schema.json",
     "schemas/post-launch-learning.schema.json",
-    "schemas/product-operating-system-handoff.schema.json",
+    "schemas/workflow-chain-handoff.schema.json",
 )
 REQUIRED_WORKFLOW_STATUSES = (
     "intake_received",
@@ -366,9 +362,9 @@ def validate_json_files(root: Path, errors: list[str]) -> None:
 
 
 def validate_product_os_assets(root: Path, errors: list[str]) -> None:
-    for filename in REQUIRED_PRODUCT_OS_ASSETS:
+    for filename in REQUIRED_SHARED_WORKFLOW_ASSETS:
         if not (root / filename).exists():
-            errors.append(f"Missing Product OS workflow asset: {filename}")
+            errors.append(f"Missing shared workflow asset: {filename}")
 
     status_schema = root / "schemas/workflow-stage.schema.json"
     if status_schema.exists():

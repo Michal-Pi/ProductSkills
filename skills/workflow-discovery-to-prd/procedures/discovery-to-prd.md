@@ -15,7 +15,7 @@ If no target user, product area, or decision is stated, ask for the missing cont
 ## Workflow Steps
 
 1. Intake and evidence inventory using `../../../skills/pm-discovery/procedures/intake-triage.md`.
-2. VoC synthesis using `../../../skills/pm-discovery/procedures/voc-synthesis.md`.
+2. VoC synthesis using `../../../skills/pm-discovery/procedures/voc-synthesis.md`. When the input is a **large noisy evidence corpus** (≥500 evidence rows, repeated source files, or likely duplicates/conflicts/noisy entries), apply `../../../references/methods/large-corpus-synthesis.md` before committing scope. Required scale artifacts: batch summaries, `evidence_ledger` with source IDs, dedupe table, conflict register, missing-field table, minority-signal carry-forward, noisy-signal suppression. At 1000+ rows, broad file-level citations are insufficient for material decisions — the working ledger must preserve exhaustive source-ID coverage for opportunities, conflicts, blockers, minority signals, and suppressed noise.
 3. Opportunity framing using `../../../skills/pm-discovery/procedures/opportunity-framing.md`.
 4. Assumption mapping using `../../../skills/pm-validation/procedures/assumption-map.md`.
 5. Evidence and validation decision using `../../../templates/validation-decision.md`. Validation is not mandatory when evidence is already sufficient or the user starts from an approved or future-state artifact.

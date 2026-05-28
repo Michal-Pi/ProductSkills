@@ -35,10 +35,6 @@ tests:
     skill_id: pm-gtm
     prompt: "Create a launch readiness plan, positioning, release comms, and enablement checklist."
     should_trigger: true
-  - id: workflow-product-operating-system-full-path
-    skill_id: workflow-product-operating-system
-    prompt: "Take this product work from idea to launch: classify the evidence, decide validation, create the next product deliverable, prepare delivery and tool preview, then define launch learning."
-    should_trigger: true
   - id: workflow-discovery-to-prd
     skill_id: workflow-discovery-to-prd
     prompt: "Turn these customer interviews and support tickets into an evidence-backed PRD."
@@ -54,18 +50,6 @@ tests:
   - id: workflow-prd-to-linear-delivery-ambiguous-build-plan
     skill_id: workflow-prd-to-linear-delivery
     prompt: "Take this PRD and create a Linear delivery preview with epics, stories, acceptance criteria, and dependencies."
-    should_trigger: true
-  - id: workflow-product-operating-system-rough-prd-reentry
-    skill_id: workflow-product-operating-system
-    prompt: "I have a rough PRD and need the next product workflow step. Continue this product work through readiness checks and tell me whether validation is required."
-    should_trigger: true
-  - id: workflow-product-operating-system-launch-reentry
-    skill_id: workflow-product-operating-system
-    prompt: "We have delivery artifacts and a launch request; what next in the product workflow before launch and post-launch learning?"
-    should_trigger: true
-  - id: workflow-product-operating-system-post-launch-learning
-    skill_id: workflow-product-operating-system
-    prompt: "We have post-launch metrics and customer signals. Continue this product work into assumption updates, next discovery inputs, and follow-up actions."
     should_trigger: true
   - id: pm-docs-prd-review-not-workflow
     skill_id: pm-docs
@@ -142,14 +126,6 @@ tests:
   - id: workflow-prd-to-linear-delivery-negative-explicit-linear-opt-out
     skill_id: workflow-prd-to-linear-delivery
     prompt: "Convert this PRD into epics and user stories, but do not create Linear issues or payloads."
-    should_trigger: false
-  - id: workflow-product-operating-system-negative-single-prd-review
-    skill_id: workflow-product-operating-system
-    prompt: "Only review this PRD for clarity, evidence quality, missing risks, non-goals, and open questions."
-    should_trigger: false
-  - id: workflow-product-operating-system-negative-linear-only-tooling
-    skill_id: workflow-product-operating-system
-    prompt: "Prepare a Linear-only dry-run payload for these existing issues and ask for confirmation before writing."
     should_trigger: false
 negative_controls:
   - id: generic-python-debugging
