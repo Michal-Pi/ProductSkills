@@ -6,6 +6,10 @@ committed decisions until they are promoted into a scoped plan.
 ## Feedback 1: Codex Skills Visibility
 
 Date captured: 2026-05-27
+Status: promoted to implementation. Defaults now prefer visible/package-like
+adapters where supported: Codex `skills` for user and repo scope, Gemini
+`extension` for user scope, and Gemini `GEMINI.md` context for repo scope.
+Codex `AGENTS.md` and Gemini user `GEMINI.md` remain explicit adapters.
 
 ### Feedback
 
@@ -15,7 +19,7 @@ because the current Codex repo adapter writes project instructions into
 installed as visible Codex skills instead, or at least make the distinction
 clear during install.
 
-### Current Behavior
+### Original Behavior
 
 - `--runtime codex --scope user` installs the Codex skills adapter under the
   user Codex skills directory.

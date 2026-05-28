@@ -4,12 +4,12 @@
 
 ## Current Status
 
-This repo is at local release-candidate preparation for `0.1.0`. The package is suitable for controlled local use and beta refinement, but it should not yet claim category leadership or broad production reliability.
+This repo is at local release-candidate preparation for `0.2.1`. The package is suitable for controlled local use and beta refinement, but it should not yet claim category leadership or broad production reliability.
 
 Release-candidate docs:
 
-- `docs/RELEASE_NOTES_0.1.0.md`
-- `docs/KNOWN_LIMITATIONS_0.1.0.md`
+- `docs/RELEASE_NOTES_0.2.1.md`
+- `docs/KNOWN_LIMITATIONS_0.2.1.md`
 - `docs/LOCAL_INSTALLATION.md`
 - `docs/RELEASE_CANDIDATE_CHECKLIST.md`
 

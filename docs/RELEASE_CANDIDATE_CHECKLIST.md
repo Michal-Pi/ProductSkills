@@ -1,6 +1,6 @@
 # Release Candidate Checklist
 
-Use this checklist before tagging or distributing `product-operating-system` 0.1.0.
+Use this checklist before tagging or distributing `product-operating-system` 0.2.1.
 
 ## Package Integrity
 
@@ -10,8 +10,8 @@ Use this checklist before tagging or distributing `product-operating-system` 0.1
 - [ ] `README.md` reflects current scope.
 - [ ] `package.json` has explicit package file inclusion controls.
 - [ ] `.npmignore` excludes construction docs, `.env*`, `.product-skills/`, pycache, generated eval results, and packed tarballs.
-- [ ] `docs/RELEASE_NOTES_0.1.0.md` exists.
-- [ ] `docs/KNOWN_LIMITATIONS_0.1.0.md` exists.
+- [ ] `docs/RELEASE_NOTES_0.2.1.md` exists.
+- [ ] `docs/KNOWN_LIMITATIONS_0.2.1.md` exists.
 - [ ] `docs/LOCAL_INSTALLATION.md` exists.
 - [ ] Construction and planning docs are excluded from package-store and npm dry-run artifacts unless explicitly approved.
 
@@ -82,7 +82,7 @@ All commands must pass.
 
 ## Release Decision
 
-0.1.0 can be considered a local release candidate when:
+0.2.1 can be considered a local release candidate when:
 
 - all validation passes;
 - install smoke passes;

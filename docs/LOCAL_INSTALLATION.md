@@ -44,13 +44,26 @@ Repo scope stores the package at `<repo>/.product-skills/` and writes runtime
 adapters inside the repo. The installer adds `.product-skills/` to `.gitignore`
 unless `--track-package-store` is passed.
 
+Default adapters prefer the most visible or package-like runtime surface that is
+safe for the selected scope. Claude uses skills, Codex uses skills in both user
+and repo scope, Cursor uses rules, Gemini user scope uses a Gemini CLI
+extension, and Gemini repo scope uses a `GEMINI.md` context block. Context-only
+adapters such as Codex `AGENTS.md` remain available when requested explicitly.
+
 Examples:
 
 ```bash
 node bin/product-skills.mjs install --runtime claude --scope repo
-node bin/product-skills.mjs install --runtime codex --scope repo --adapter agents
+node bin/product-skills.mjs install --runtime codex --scope repo
 node bin/product-skills.mjs install --runtime cursor --scope repo
 node bin/product-skills.mjs install --runtime gemini --scope repo
+```
+
+Use the Codex `AGENTS.md` adapter only when you want shared project
+instructions instead of visible Codex skills:
+
+```bash
+node bin/product-skills.mjs install --runtime codex --scope repo --adapter agents
 ```
 
 User scope stores the package at `~/.product-skills/` and writes user-level
@@ -76,18 +89,26 @@ PRODUCT_SKILLS_CURSOR_USER_RULES_DIR="$HOME/.cursor/rules" \
 When detection is unavailable, use repo scope for Cursor.
 
 Gemini can be installed either as a marker-managed `GEMINI.md` context block or
-as a dedicated Gemini CLI extension. The extension adapter is user-scope only
-because current Gemini CLI extension discovery loads extensions from
-`~/.gemini/extensions/`:
+as a dedicated Gemini CLI extension. User scope defaults to the extension
+adapter because it is the package-like Gemini CLI surface. The extension adapter
+is user-scope only because current Gemini CLI extension discovery loads
+extensions from `~/.gemini/extensions/`:
 
 ```bash
-node bin/product-skills.mjs install --runtime gemini --scope user --adapter extension --dry-run
-node bin/product-skills.mjs install --runtime gemini --scope user --adapter extension
+node bin/product-skills.mjs install --runtime gemini --scope user --dry-run
+node bin/product-skills.mjs install --runtime gemini --scope user
 ```
 
 After installing the extension adapter, restart Gemini CLI. Gemini extension
 updates still run through `product-skills update` so the shared package store
 and generated extension context stay aligned.
+
+Use the explicit context adapter when you want marker-managed user-scope
+`~/.gemini/GEMINI.md` instead of an extension:
+
+```bash
+node bin/product-skills.mjs install --runtime gemini --scope user --adapter context
+```
 
 After installing, validate the package store and adapters:
 

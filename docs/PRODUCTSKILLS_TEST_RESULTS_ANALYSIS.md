@@ -2,6 +2,26 @@
 
 Date: 2026-05-27
 
+## Synthetic E2E Grading Update
+
+The curated E2E pack now has an artifact-first grading path:
+
+- generated artifacts go under
+  `test-results/productskills-e2e-synthetic/generated/<runtime>/<prompt-id>.md`;
+- deterministic grader output goes under
+  `test-results/productskills-e2e-synthetic/graded/<runtime>/<prompt-id>.json`;
+- `test-results/productskills-e2e-synthetic/eval-map.json` maps each of the
+  12 core prompts to an expected YAML fixture under `evals/expected/`;
+- `scripts/grade_productskills_synthetic_e2e.py` calls the existing
+  `scripts/grade_artifact.py` harness for each captured artifact and reuses
+  `scripts/check_tool_safety.py` logic for optional runtime-local tooling
+  fixtures.
+
+From this point forward, PASS for a mapped core prompt requires both a stored
+generated artifact and a passing grader result. Summary-only files under
+`test-results/productskills-e2e-synthetic/results/` are smoke evidence and
+comparison notes only.
+
 ## Scope
 
 This review covers the post-release synthetic test corpus in
@@ -33,8 +53,8 @@ The strongest product issues are not basic skill failures. They are:
 
 - the install UX issue where Codex repo-scope installation writes `AGENTS.md`
   instead of visible Codex skills;
-- missing negative-path runtime prompts in the new synthetic pack, even though
-  shipped fixtures already cover these cases;
+- negative-path runtime prompts are present, but they remain manual/adversarial
+  smoke evidence until mapped to deterministic fixtures;
 - manual/prose grading in the new synthetic pack where release confidence
   should come from the existing deterministic graders;
 - lack of a required large-corpus synthesis protocol, which makes scale
@@ -79,8 +99,7 @@ Verified findings:
 | --- | --- | --- |
 | All 9 PM skills plus 3 workflows are reported PASS in the curated run files. | Smoke evidence only | The run files are self-attested summaries, not stored generated artifacts. |
 | The package already ships no-evidence blocked and adversarial tooling fixtures. | Not a product gap | `evals/artifact-fixtures/passing-product-os-no-evidence-blocked.md`, `evals/expected/product-os-no-evidence-blocked.yaml`, and `evals/tool-safety-fixtures/*negative.json` exist. |
-| The new synthetic pack has no pure no-evidence blocked-state prompt. | Synthetic-pack coverage gap | Every main prompt supplies meaningful product/evidence context. |
-| The new synthetic pack has no adversarial live-write prompt. | Synthetic-pack coverage gap | `09-pm-tooling.md` says to block live write requests, but the prompt does not pressure the runtime to write. |
+| Negative runtime prompts exist for no-evidence and adversarial tooling pressure, but are not yet machine-graded. | Synthetic-pack wiring gap | `negative-prompts/13-*` through `18-*` and matching expected observations exist, but `eval-map.json` currently maps only the 12 core prompts. |
 | E2E grading in the new pack is mostly prose/manual. | Wiring gap | The repo has `scripts/grade_artifact.py`, `scripts/check_tool_safety.py`, expected YAML fixtures, and schemas, but this pack does not use them. |
 | `pm-design` PARTIAL is defensible under stricter grading. | Test coverage gap | `04-pm-design.md` asks for design from validated needs but does not require each design decision to cite evidence or be labeled as an assumption. |
 | Full workflow output can be shallow and still pass. | Test coverage gap | `10-workflow-product-operating-system-full.md` asks to "produce or outline" stage artifacts. |
@@ -137,8 +156,8 @@ unsafe confirmed-write behavior.
 | H1 | Codex repo-scope install does not create visible skills by default. | Product bug | Default Codex repo scope to the visible `skills` adapter. Keep `AGENTS.md` as explicit `--adapter agents`. Update help/output to distinguish visible packages from context-only adapters. |
 | H2 | Gemini user-scope install defaults to context file rather than package-like extension. | Product improvement | Prefer Gemini extension for user scope when the goal is visible/package-like install. Keep `GEMINI.md` for repo scope or explicit context-file mode. |
 | H3 | Existing shipped eval suite was not executed and stored with the new results. | Release-confidence gap | Run and store output for `scripts/grade_artifact.py`, `scripts/check_tool_safety.py`, `scripts/run_trigger_evals.py`, and `scripts/check_forward_tests.py`; use those results as the deterministic gate. |
-| H4 | Curated E2E run files are self-attested PASS summaries, not graded artifacts. | Test evidence gap | Store generated artifacts for each runtime/prompt, then grade them against expected YAML fixtures, schemas, forbidden strings, required evidence IDs, and dry-run fields. |
-| H5 | Negative safety paths are not present as runtime prompts in the new synthetic pack. | Synthetic-pack coverage gap | Port shipped no-evidence and negative tooling fixtures into E2E runtime prompts: no-evidence blocked workflow, live-write pressure, skip-confirmation, fake workspace ID, unsupported pricing/security, and launch-without-readiness. |
+| H4 | Curated E2E run files are self-attested PASS summaries, not graded artifacts. | Test evidence gap | Implemented the artifact/graded layout, fixture map, and `scripts/grade_productskills_synthetic_e2e.py`; remaining work is to rerun each runtime and store actual generated artifacts. |
+| H5 | Negative safety paths are present as runtime prompts but are not yet deterministic grader cases. | Synthetic-pack wiring gap | Map the negative prompts to expected YAML/tool-safety fixtures or keep them explicitly labeled as manual/adversarial smoke evidence. |
 | H6 | Large-corpus synthesis lacks a required scale/batching protocol. | Skill instruction gap | Add a ProductSkills scale protocol that reuses existing evidence-ledger concepts and adds batch summaries, dedupe table, conflict register, missing-field table, minority-signal carry-forward, noisy-signal suppression, representative-vs-exhaustive citation rules, and final roll-up with counts and confidence. |
 | H7 | Scale scorecards are projected, not measured from stored prompt outputs. | Test evidence gap | Store outputs for scale prompts `01` through `08` at each scale and grade them before relying on breakpoint conclusions. |
 | H8 | Scale ground truth conflates ranking goals. | Corpus or rubric gap | Split `expected_top_opportunities` into frequency top, ARR top, strategic top, risky/minority top, and noise controls. Document the ranking rule used by graders. |
@@ -173,7 +192,7 @@ unsafe confirmed-write behavior.
    grader output.
 3. Fix adapter visibility defaults and messaging. This is the confirmed
    user-facing product bug imported from field feedback.
-4. Port shipped negative cases into the new runtime synthetic pack.
+4. Map negative runtime prompts to deterministic fixtures or keep them explicitly labeled as smoke evidence.
 5. Add the large-corpus protocol to the ProductSkills workflow instructions and
    discovery/strategy references.
 6. Rebuild the scale pack ground truth so ranking, citation, dedupe, and
@@ -198,6 +217,30 @@ locally against the repository. These checks passed:
 These checks confirm the shipped eval harness exists and passes. They do not
 replace the missing synthetic-pack work: the new E2E and scale packs still need
 stored generated artifacts and grader output.
+
+## Curated E2E Fixture Map
+
+The 12 core synthetic E2E prompts are mapped to the existing ProductSkills
+artifact grader as follows:
+
+| Prompt | Expected fixture |
+| --- | --- |
+| `01-pm-discovery` | `evals/expected/discovery-synthesis.yaml` |
+| `02-pm-strategy` | `evals/expected/prioritization-method-selection.yaml` |
+| `03-pm-validation` | `evals/expected/validation-plan.yaml` |
+| `04-pm-design` | `evals/expected/design-brief.yaml` |
+| `05-pm-docs` | `evals/expected/prd-generation.yaml` |
+| `06-pm-delivery` | `evals/expected/delivery-breakdown.yaml` |
+| `07-pm-growth` | `evals/expected/growth-loop-diagnosis.yaml` |
+| `08-pm-gtm` | `evals/expected/launch-readiness.yaml` |
+| `09-pm-tooling` | `evals/expected/tool-dry-run-preview.yaml` |
+| `10-workflow-product-operating-system-full` | `evals/expected/product-os-full-happy-path.yaml` |
+| `11-workflow-discovery-to-prd` | `evals/expected/workflow-discovery-to-prd.yaml` |
+| `12-workflow-prd-to-linear-delivery` | `evals/expected/workflow-prd-to-linear-delivery.yaml` |
+
+Only three new expected fixtures were added because existing fixtures did not
+cover standalone validation planning, design brief generation, or standalone
+Linear plus Notion dry-run preview output.
 
 ## File-by-File Audit Log
 
@@ -265,8 +308,8 @@ stored generated artifacts and grader output.
 | `expected-observations/07-pm-growth.md` | Useful prose checklist; add richer metric expectations. |
 | `prompts/08-pm-gtm.md` | Appropriate launch readiness prompt, but input data is thin for security/pricing claims. |
 | `expected-observations/08-pm-gtm.md` | Useful prose checklist; add stricter unsupported-claim assertions. |
-| `prompts/09-pm-tooling.md` | Good dry-run prompt, but not adversarial. |
-| `expected-observations/09-pm-tooling.md` | Correctly expects live-write blocking; needs an adversarial input to prove it. |
+| `prompts/09-pm-tooling.md` | Good dry-run prompt; adversarial write pressure is covered by separate negative prompts and still needs deterministic fixture mapping. |
+| `expected-observations/09-pm-tooling.md` | Correctly expects live-write blocking for the positive tooling path. |
 | `prompts/10-workflow-product-operating-system-full.md` | Allows outline-depth artifacts; split routing versus full-artifact tests. |
 | `expected-observations/10-workflow-product-operating-system-full.md` | Useful lifecycle expectations; needs depth criteria. |
 | `prompts/11-workflow-discovery-to-prd.md` | Appropriate workflow prompt. |
@@ -390,8 +433,8 @@ these corrections:
 Changes made after Claude review:
 
 - Added the shipped eval-suite execution as the first implementation step.
-- Re-attributed negative-path gaps to the new synthetic pack, not the shipped
-  package.
+- Re-attributed negative-path grading gaps to the new synthetic pack wiring,
+  not the shipped package.
 - Reframed manual grading as a wiring gap to existing graders.
 - Added high-priority items for self-attested E2E results and projected scale
   results.
