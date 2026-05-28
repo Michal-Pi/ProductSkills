@@ -21,7 +21,6 @@ Create evidence-backed product artifacts that can survive review by product, des
 
 - Use `../../references/methods/evidence-grading.md` when reviewing evidence strength.
 - Use `../../references/checklists/docs-quality.md` before finalizing PRDs or specs.
-- Use `../../schemas/skill-output-envelope.schema.json` as the shared output contract for major artifacts.
 
 ## Output Standard
 
