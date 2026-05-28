@@ -11,6 +11,7 @@ Route product work through the full operating loop without forcing unnecessary r
 
 - Use `procedures/product-operating-system.md` for entry classification, re-entry, lifecycle statuses, stop points, launch readiness, and learning-loop behavior.
 - Use `../../references/workflows/product-operating-system-contract.md` for the cross-stage handoff contract.
+- Use `../../references/methods/large-corpus-synthesis.md` when evidence is large, repetitive, contradictory, or noisy enough to require batching.
 - Use `../../schemas/product-operating-system-handoff.schema.json` for structured handoff fields.
 
 ## Guardrails

@@ -19,13 +19,14 @@ Turn messy customer and market inputs into structured product evidence.
 
 - Use `../../references/frameworks/continuous-discovery.md` for opportunity solution trees and assumption-first discovery.
 - Use `../../references/methods/evidence-grading.md` when rating confidence.
+- Use `../../references/methods/large-corpus-synthesis.md` when evidence volume requires batching, dedupe, conflict tracking, or noisy-signal suppression.
 - Use `../../references/methods/research-methods.md` when choosing discovery methods.
 - Use `../../references/checklists/discovery-method-coverage.md` before considering discovery work complete.
 - Use `../../templates/research-plan.md` when evidence is too thin for a PRD or delivery commitment.
 
 ## Output Standard
 
-Always separate direct evidence from inference. Preserve important quotes. Mark evidence confidence as high, medium, or low.
+Always separate direct evidence from inference. Preserve important quotes. Mark evidence confidence as high, medium, or low. For large corpora, preserve the `evidence_ledger`, batch summaries, duplicate handling, conflict register, missing fields, minority signals, and noisy-signal suppression decisions.
 
 ## Guardrails
 

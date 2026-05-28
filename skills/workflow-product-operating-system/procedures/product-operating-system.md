@@ -46,6 +46,23 @@ Every stage output must use `../../../templates/workflow-stage-output.md` and co
 9. Launch readiness using `../../../templates/launch-readiness-gate.md`, `../../../skills/pm-gtm/procedures/launch-readiness.md`, `../../../skills/pm-gtm/procedures/positioning-messaging.md`, and `../../../references/methods/launch-planning.md`.
 10. Post-launch learning loop using `../../../templates/post-launch-learning-loop.md`, `../../../skills/pm-gtm/procedures/post-launch-review.md`, `../../../skills/pm-growth/procedures/activation-analysis.md` when relevant, and `../../../skills/pm-discovery/procedures/intake-triage.md` for new signals.
 
+## Large-Corpus Evidence Protocol
+
+When the workflow receives 500+ evidence rows, multiple repeated source files, or likely duplicate/conflicting/noisy evidence, run `../../../references/methods/large-corpus-synthesis.md` before committing scope or routing downstream.
+
+Required scale artifacts:
+
+- batch summaries;
+- an `evidence_ledger` with source IDs for material claims;
+- a dedupe table;
+- a conflict register;
+- a missing-field table;
+- minority-signal carry-forward notes;
+- noisy-signal suppression notes;
+- a final roll-up with counts before and after dedupe, ARR sums from supplied data only, confidence, conflicts, duplicates removed, missing-field counts, and representative citations.
+
+At 1000+ rows, broad file-level citations are insufficient for material decisions. Narrative output may use representative citations, but the working ledger must preserve exhaustive source-ID coverage for opportunities, conflicts, blockers, minority signals, and suppressed noise.
+
 ## Evidence And Validation Decision
 
 Produce a validation decision before creating or changing committed scope unless the input starts from an approved, already validated, delivery, launch, or post-launch artifact.

@@ -18,6 +18,7 @@ Turn goals, constraints, and evidence into strategic product choices.
 ## References
 
 - Use `../../references/frameworks/prioritization-models.md` for method selection.
+- Use `../../references/methods/large-corpus-synthesis.md` before ranking opportunities from large, repeated, contradictory, or noisy evidence sets.
 - Use `../../references/methods/strategy-analysis.md` for market, segment, pricing, and positioning tradeoffs.
 - Use `../../references/checklists/prioritization-method-coverage.md` before finalizing prioritization.
 - Use `../../templates/prioritization-decision.md` for prioritization outputs.
