@@ -1,6 +1,6 @@
 {
   "package": "product-operating-system",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "release_stage": "scaffold",
   "skills": [
     {"id": "pm-discovery", "path": "skills/pm-discovery", "type": "family", "domain": "discovery"},
