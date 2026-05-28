@@ -15,7 +15,7 @@ const MARKER_START = "<!-- PRODUCT_SKILLS_START -->";
 const MARKER_END = "<!-- PRODUCT_SKILLS_END -->";
 const SUPPORTED_RUNTIMES = new Set(["claude", "codex", "cursor", "gemini", "all"]);
 const SUPPORTED_SCOPES = new Set(["user", "repo"]);
-const SUPPORTED_ADAPTERS = new Set(["skills", "agents", "extension", "auto"]);
+const SUPPORTED_ADAPTERS = new Set(["skills", "agents", "context", "extension", "auto"]);
 const REQUIRED_NODE_MAJOR = 20;
 
 class InstallerError extends Error {
@@ -236,7 +236,7 @@ function assertOptionValues(options) {
     throw new InstallerError(`Invalid scope '${options.scope}'. Use user or repo.`);
   }
   if (options.adapter && !SUPPORTED_ADAPTERS.has(options.adapter)) {
-    throw new InstallerError(`Invalid adapter '${options.adapter}'. Use skills, agents, extension, or auto.`);
+    throw new InstallerError(`Invalid adapter '${options.adapter}'. Use skills, agents, context, extension, or auto.`);
   }
 }
 
@@ -439,7 +439,20 @@ function resolveCodexAdapterMode(scope, adapter) {
   if (adapter === "skills") {
     return "skills";
   }
-  return scope === "repo" ? "agents" : "skills";
+  return "skills";
+}
+
+function resolveGeminiAdapterMode(scope, adapter) {
+  if (adapter === "extension") {
+    return "extension";
+  }
+  if (adapter === "context") {
+    return "context";
+  }
+  if (adapter === "auto") {
+    return scope === "user" ? "extension" : "context";
+  }
+  return "context";
 }
 
 function adapterTargets(runtime, context) {
@@ -493,9 +506,10 @@ function adapterTargets(runtime, context) {
     }];
   }
   if (runtime === "gemini") {
-    if (adapter === "extension") {
+    const mode = resolveGeminiAdapterMode(scope, adapter);
+    if (mode === "extension") {
       if (scope !== "user") {
-        throw new InstallerError("Gemini extension adapter is supported only for user scope because current Gemini CLI extension discovery uses ~/.gemini/extensions. Use --adapter auto for repo-scope GEMINI.md.");
+        throw new InstallerError("Gemini extension adapter is supported only for user scope because current Gemini CLI extension discovery uses ~/.gemini/extensions. Use --adapter auto or --adapter context for repo-scope GEMINI.md.");
       }
       const extensionRoot = path.join(os.homedir(), ".gemini", "extensions", "product-skills");
       return [
@@ -523,6 +537,25 @@ function adapterTargets(runtime, context) {
     }];
   }
   throw new InstallerError(`Unsupported runtime '${runtime}'`);
+}
+
+function adapterSurface(target) {
+  if (target.runtime === "claude" || target.templateKind === "skills") {
+    return "visible skills package";
+  }
+  if (target.runtime === "cursor") {
+    return "visible rules package";
+  }
+  if (target.templateKind === "extension-manifest" || target.templateKind === "extension-context") {
+    return "visible Gemini extension";
+  }
+  if (target.templateKind === "agents") {
+    return "context-only AGENTS.md";
+  }
+  if (target.templateKind === "context") {
+    return "context-only GEMINI.md";
+  }
+  return "runtime adapter";
 }
 
 function unsupportedAdapter(runtime, error) {
@@ -684,6 +717,7 @@ function writeAdapters(plan, context, options) {
       installed.push({
         runtime,
         adapter: target.templateKind,
+        surface: adapterSurface(target),
         path: target.path,
         supported: true,
         skipped: false,
@@ -972,6 +1006,47 @@ function defaultUpdateSource(cwd) {
   return CANONICAL_REPO;
 }
 
+function sameSource(left, right) {
+  if (isUrl(String(left)) || isUrl(String(right))) {
+    return normalizedSource(left) === normalizedSource(right);
+  }
+  return realpathIfExists(resolvePath(String(left))) === realpathIfExists(resolvePath(String(right)));
+}
+
+function sourceVersion(source) {
+  if (isUrl(String(source))) {
+    return null;
+  }
+  const sourceRoot = resolvePath(String(source));
+  if (!looksLikeProductSkillsRoot(sourceRoot)) {
+    return null;
+  }
+  return readVersion(sourceRoot);
+}
+
+function resolveUpdateSourceAndRef(options, metadata, previousVersion, cwd) {
+  if (options.source) {
+    return { source: options.source, ref: options.ref ?? undefined };
+  }
+
+  const defaultSource = defaultUpdateSource(cwd);
+  const metadataSource = metadata.source && sourceExists(metadata.source) ? metadata.source : null;
+  if (!metadataSource) {
+    return { source: defaultSource, ref: options.ref ?? undefined };
+  }
+
+  const defaultVersion = sourceVersion(defaultSource);
+  if (
+    defaultVersion
+    && defaultVersion !== previousVersion
+    && !sameSource(defaultSource, metadataSource)
+  ) {
+    return { source: defaultSource, ref: options.ref ?? undefined };
+  }
+
+  return { source: metadataSource, ref: options.ref ?? metadata.ref ?? undefined };
+}
+
 function sourceExists(source) {
   return isUrl(String(source)) || fs.existsSync(resolvePath(String(source)));
 }
@@ -1095,6 +1170,7 @@ function adapterExistsForRuntime(runtime, context) {
     return adapterTargets(runtime, context).map((target) => ({
       runtime,
       adapter: target.templateKind,
+      surface: adapterSurface(target),
       path: target.path,
       exists: fs.existsSync(target.path),
       supported: true,
@@ -1177,9 +1253,7 @@ async function updateCommand(options) {
 
   const metadata = resolved.metadata;
   const previousVersion = readVersion(context.packageStore);
-  const source = effectiveOptions.source
-    ?? (metadata.source && sourceExists(metadata.source) ? metadata.source : defaultUpdateSource(process.cwd()));
-  const ref = effectiveOptions.ref ?? metadata.ref ?? undefined;
+  const { source, ref } = resolveUpdateSourceAndRef(effectiveOptions, metadata, previousVersion, process.cwd());
   const plan = new Plan({ dryRun: effectiveOptions.dryRun });
   const updateOptions = {
     ...effectiveOptions,
@@ -1440,7 +1514,7 @@ Commands:
 Options:
   --runtime claude|codex|cursor|gemini|all
   --scope user|repo
-  --adapter skills|agents|extension|auto
+  --adapter skills|agents|context|extension|auto
   --repo <path>
   --package-store <path>
   --source <path-or-url>
@@ -1455,6 +1529,12 @@ Options:
   --trust-source
   --global      Alias for --scope user
   --project     Alias for --scope repo
+
+Default adapters prefer visible/package-like runtime surfaces where available:
+  Claude -> skills
+  Codex user/repo -> skills; use --adapter agents for AGENTS.md context only
+  Cursor -> rules
+  Gemini user -> extension; Gemini repo -> context/GEMINI.md
 `;
 }
 
@@ -1468,7 +1548,11 @@ function printTextResult(result) {
       console.log(`- version: ${result.previousVersion} -> ${result.version}`);
     }
     for (const adapter of result.adapters) {
-      console.log(`- adapter: ${adapter.runtime} ${adapter.adapter} -> ${adapter.path}`);
+      if (adapter.skipped) {
+        console.log(`- adapter: ${adapter.runtime} skipped (${adapter.reason})`);
+      } else {
+        console.log(`- adapter: ${adapter.runtime} ${adapter.adapter} [${adapter.surface ?? "runtime adapter"}] -> ${adapter.path}`);
+      }
     }
     if (result.validation.length > 0) {
       console.log("- validation: pass");
@@ -1501,7 +1585,7 @@ function printTextResult(result) {
     console.log("ProductSkills validation passed");
     console.log(`- package store: ${result.packageStore}`);
     for (const adapter of result.adapters) {
-      console.log(`- adapter: ${adapter.runtime} -> ${adapter.path}`);
+      console.log(`- adapter: ${adapter.runtime} [${adapter.surface ?? "runtime adapter"}] -> ${adapter.path}`);
     }
     return;
   }
@@ -1514,7 +1598,7 @@ function printTextResult(result) {
     console.log(`- ref: ${result.ref ?? "none"}`);
     console.log(`- validation: ${result.validationStatus}`);
     for (const adapter of result.adapters) {
-      console.log(`- adapter: ${adapter.runtime} ${adapter.exists ? "present" : "missing"} ${adapter.path || adapter.reason || adapter.error}`);
+      console.log(`- adapter: ${adapter.runtime} ${adapter.exists ? "present" : "missing"} [${adapter.surface ?? "runtime adapter"}] ${adapter.path || adapter.reason || adapter.error}`);
     }
     return;
   }

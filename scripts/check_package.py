@@ -12,8 +12,8 @@ from pathlib import Path
 
 REQUIRED_ROOT_DIRS = ("references", "templates", "schemas", "evals", "scripts")
 REQUIRED_DOC_FILES = (
-    "docs/RELEASE_NOTES_0.1.0.md",
-    "docs/KNOWN_LIMITATIONS_0.1.0.md",
+    "docs/RELEASE_NOTES_0.2.1.md",
+    "docs/KNOWN_LIMITATIONS_0.2.1.md",
     "docs/LOCAL_INSTALLATION.md",
     "docs/RELEASE_CANDIDATE_CHECKLIST.md",
     "docs/SCHEMA_SUBSET.md",
