@@ -19,10 +19,11 @@ Classify the input artifact, then invoke the corresponding skill.
 |---|---|---|---|
 | 1 | Raw interviews / support / sales notes | `intake_received` | **pm-discovery** (intake-triage → voc-synthesis) |
 | 2 | Inbound feature-request backlog needing routing | `intake_received` | **pm-roadmap** (intake-triage) |
-| 3 | Founder hypothesis, no customer evidence | `evidence_insufficient` | **pm-discovery** → research-plan (PRD blocked) |
+| 3 | Founder hypothesis, no customer evidence | `evidence_insufficient` | **workflow-discovery-to-prd** (will return `decision_status: blocked` + research plan) |
 | 4 | Synthesized research ready for PRD | `evidence_synthesized` | **workflow-discovery-to-prd** |
 | 5 | Opportunity or strategy note | `opportunity_framed` | **pm-strategy** (which bet) OR **pm-validation** (test assumption) |
-| 6 | Rough PRD with gaps | `prd_review_required` | **pm-docs** spec-review → prd revision |
+| 6 | Rough PRD with gaps — "continue the workflow" framing | `prd_review_required` | **workflow-discovery-to-prd** (spec-review internally; back to discovery if readiness fails) |
+| 6a | Standalone "review this PRD" request | `prd_review_required` | **pm-docs** spec-review (one-shot, no orchestration) |
 | 7 | Approved PRD ready for delivery | `approved_for_delivery` | **workflow-prd-to-linear-delivery** |
 | 8 | Delivery scope already split | `delivery_review_required` | **pm-delivery** (refine) — escalate to **workflow-prd-to-linear-delivery** if Linear preview requested |
 | 9 | Launch request | `ready_for_launch_review` | **pm-gtm** launch-readiness |
@@ -33,7 +34,8 @@ Classify the input artifact, then invoke the corresponding skill.
 ### Explicit routing rules
 
 - If the input is **a PRD ready for delivery** → invoke `workflow-prd-to-linear-delivery`.
-- If the input is **a rough PRD or PRD review request** → invoke `pm-docs/spec-review`, not a workflow.
+- If the input is **a standalone request to review a PRD** → invoke `pm-docs/spec-review` (one-shot, no orchestration).
+- If the input is **a rough PRD with a "continue the workflow" framing** → invoke `workflow-discovery-to-prd` (spec-reviews internally; routes back to discovery if readiness fails).
 - If the input is **raw evidence to synthesize** → invoke `pm-discovery` (use `workflow-discovery-to-prd` only when the request explicitly asks for a PRD as the output).
 - If the input is **a stakeholder ask, status update, or decision communication** → invoke `pm-stakeholder-comms` (not `pm-gtm`, which owns customer-facing comms).
 - If the input is **a Notion or Linear write request** → never write directly; route to `workflow-prd-to-linear-delivery` (Linear) or `workflow-discovery-to-prd` (Notion sync of a PRD) under the canonical dry-run safety contract at `{{PACKAGE_STORE}}/references/mcp/dry-run-preview.md`.

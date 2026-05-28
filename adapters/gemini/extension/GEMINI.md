@@ -10,10 +10,11 @@ ProductSkills is a PM skill pack at `{{PACKAGE_STORE}}`. There is no master work
 |---|---|
 | Raw interviews / support / sales notes | **pm-discovery** |
 | Feature-request backlog needing routing | **pm-roadmap** (intake-triage) |
-| Founder hypothesis, no evidence | **pm-discovery** → research-plan |
+| Founder hypothesis, no evidence | **workflow-discovery-to-prd** (returns `decision_status: blocked` + research plan) |
 | Synthesized research ready for PRD | **workflow-discovery-to-prd** |
 | Opportunity or strategy question | **pm-strategy** (which bet) OR **pm-validation** (test assumption) |
-| Rough PRD | **pm-docs** spec-review then prd |
+| Rough PRD ("continue the workflow" framing) | **workflow-discovery-to-prd** (spec-reviews internally) |
+| Standalone "review this PRD" request | **pm-docs** spec-review |
 | Approved PRD | **workflow-prd-to-linear-delivery** |
 | Delivery scope already split | **pm-delivery**; escalate to workflow-prd-to-linear-delivery for Linear preview |
 | Launch request | **pm-gtm** launch-readiness |

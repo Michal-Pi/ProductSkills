@@ -8,10 +8,11 @@ Canonical entry-classification table used by every ProductSkills adapter. Given 
 |---|---|---|---|---|
 | 1 | Raw interviews, support tickets, sales notes, analytics rows | `intake_received` | source inventory exists | **pm-discovery** — `intake-triage` then `voc-synthesis` |
 | 2 | Inbound feature-request backlog needing routing (sequence vs ignore vs research vs validate) | `intake_received` | source mix + strategic anchors named | **pm-roadmap** — `intake-triage` (the routing-decision flavor) |
-| 3 | Founder hypothesis with no customer evidence | `evidence_insufficient` | missing-evidence list explicit | **pm-discovery** — `research-plan` (block PRD work) |
+| 3 | Founder hypothesis with no customer evidence | `evidence_insufficient` | missing-evidence list explicit | **workflow-discovery-to-prd** — runs intake, fails readiness, returns `decision_status: blocked` with a research plan (via pm-discovery/research-plan) and a blocked-workflow envelope |
 | 4 | Synthesized research — themes and opportunities exist, ready to draft a PRD | `evidence_synthesized` | confidence per theme + gap list | **workflow-discovery-to-prd** |
 | 5 | Opportunity or strategy note (prioritization needed OR assumptions to test) | `opportunity_framed` | assumptions and risks listed | **pm-strategy** (`prioritization`) if the question is which bet; **pm-validation** (`assumption-map`) if the question is what must be true |
-| 6 | Rough PRD with gaps | `prd_review_required` | spec-review checklist | **pm-docs** — `spec-review` then revise via `prd` |
+| 6 | Rough PRD with gaps (the request is "continue the workflow from this PRD") | `prd_review_required` | spec-review checklist | **workflow-discovery-to-prd** — runs spec-review at Step 8 and routes back to discovery (research-plan) if readiness fails; converges to a completed PRD if readiness passes |
+| 6a | Standalone request to review a PRD (no orchestration ask) | `prd_review_required` | spec-review checklist only | **pm-docs/spec-review** — one-shot review with severity-classified findings; no orchestration |
 | 7 | Approved PRD ready to break into delivery work | `approved_for_delivery` | scope, non-goals, success metrics present | **workflow-prd-to-linear-delivery** |
 | 8 | Delivery-ready scope already split (epics/stories exist) | `delivery_review_required` | story value + acceptance criteria + edge cases | **pm-delivery** (refine) — escalate to **workflow-prd-to-linear-delivery** if Linear preview is requested |
 | 9 | Launch request (ship decision needed) | `ready_for_launch_review` | audience, impact, risk, support, enablement | **pm-gtm** — `launch-readiness` |
