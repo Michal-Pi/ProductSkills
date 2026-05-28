@@ -16,7 +16,6 @@ schemas_root: schemas
 evals_root: evals
 default_router: null
 entry_workflows:
-  - workflow-product-operating-system
   - workflow-discovery-to-prd
   - workflow-prd-to-linear-delivery
 quality_gates:
