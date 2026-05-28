@@ -2,16 +2,34 @@
 
 # ProductSkills
 
-Use the ProductSkills package at `{{PACKAGE_STORE}}`.
+ProductSkills is a PM skill pack at `{{PACKAGE_STORE}}`. There is no master workflow — route product work to the right skill based on the input artifact type.
 
-Read:
+## Routing (artifact → skill)
 
-- `{{PACKAGE_STORE}}/docs/HOW_TO_USE_PRODUCT_OS_WORKFLOW.md`
-- `{{PACKAGE_STORE}}/skills/workflow-product-operating-system/procedures/product-operating-system.md`
+| Input artifact | Routed skill / workflow |
+|---|---|
+| Raw interviews / support / sales notes | **pm-discovery** |
+| Feature-request backlog needing routing | **pm-roadmap** (intake-triage) |
+| Founder hypothesis, no evidence | **pm-discovery** → research-plan |
+| Synthesized research ready for PRD | **workflow-discovery-to-prd** |
+| Opportunity or strategy question | **pm-strategy** (which bet) OR **pm-validation** (test assumption) |
+| Rough PRD | **pm-docs** spec-review then prd |
+| Approved PRD | **workflow-prd-to-linear-delivery** |
+| Delivery scope already split | **pm-delivery**; escalate to workflow-prd-to-linear-delivery for Linear preview |
+| Launch request | **pm-gtm** launch-readiness |
+| Post-launch metrics or experiment result | **pm-growth** experiment-readout / funnel-stage-analysis; **pm-gtm** post-launch-review |
+| Decision to record | **pm-docs/decision-memo** |
+| Decision to socialize | **pm-stakeholder-comms/decision-comms** |
 
-Rules:
+If the input doesn't clearly match any row, **ask the user to clarify intent**; offer 2-3 most likely workflows. Do not silently pick.
+
+See `{{PACKAGE_STORE}}/references/routing/artifact-to-workflow.md` for the deeper reference.
+
+## Rules
 
 - Do not invent customer evidence.
-- Treat validation as an evidence and routing decision.
-- Keep external tool actions dry-run first.
-- Produce blocked workflow artifacts when evidence or approval is missing.
+- Treat validation as an evidence and routing decision; not mandatory replay.
+- Keep Notion/Linear actions dry-run first. Canonical safety contract: `{{PACKAGE_STORE}}/references/mcp/dry-run-preview.md`.
+- Produce blocked-workflow envelopes when evidence or approval is missing; canonical resume target is `pm-discovery`.
+- `pm-docs/postmortem` refuses SRE/ops incidents at intake.
+- `pm-stakeholder-comms` refuses output unless `audience.tier` and `intent` are supplied.

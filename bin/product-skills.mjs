@@ -389,7 +389,7 @@ function adapterTemplatePath(runtime, adapterKind) {
     return path.join(PACKAGE_ROOT, "adapters", "codex", "SKILL.md");
   }
   if (runtime === "cursor") {
-    return path.join(PACKAGE_ROOT, "adapters", "cursor", "product-operating-system.mdc");
+    return path.join(PACKAGE_ROOT, "adapters", "cursor", "product-skills.mdc");
   }
   if (runtime === "gemini") {
     if (adapterKind === "extension-manifest") {
@@ -581,10 +581,10 @@ function renderAdapter(target, context) {
 
 function isGeneratedDedicated(target, content) {
   if (target.path.endsWith("SKILL.md")) {
-    return /^---[\s\S]*?^name:\s*product-operating-system\s*$/m.test(content);
+    return /^---[\s\S]*?^name:\s*(?:product-operating-system|product-skills)\s*$/m.test(content);
   }
   if (target.path.endsWith(".mdc")) {
-    return /^---[\s\S]*?^description:\s*.*Product Operating System workflow.*$/m.test(content);
+    return /^---[\s\S]*?^description:\s*.*(?:Product Operating System workflow|Routes product work).*$/m.test(content);
   }
   if (target.path.endsWith("gemini-extension.json")) {
     try {
