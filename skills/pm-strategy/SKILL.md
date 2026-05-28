@@ -1,6 +1,7 @@
 ---
 name: pm-strategy
 description: Product strategy workflows for product vision, opportunity sizing, competitive evaluation, pricing analysis, OKRs, prioritization (RICE, WSJF, cost of delay, ICE, CD3, MoSCoW, opportunity scoring, Kano, weighted scorecards), market briefs, and strategic tradeoff decisions. Use when the user asks what to build, how to prioritize between bets, how to size an opportunity, how to choose a strategic direction, or to author a market brief. Do not use for sequencing chosen bets into a roadmap artifact (route to pm-roadmap); for designing success metrics or metric trees (route to pm-metrics); or for individual feature scoping (route to pm-discovery for problem framing or pm-docs for the spec).
+allowed-tools: [Read, Write, Edit, Grep, Glob]
 ---
 
 # PM Strategy

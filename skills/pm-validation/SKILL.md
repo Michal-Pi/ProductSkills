@@ -1,6 +1,7 @@
 ---
 name: pm-validation
 description: Product validation workflows for assumption mapping, problem validation, solution validation, experiment design pre-build, Teresa Torres-style opportunity solution trees, riskiest-assumption testing, and validation decisions (proceed / iterate / kill / needs more evidence). Use when the user asks to validate an idea, test whether a problem is real, test a prototype, map assumptions, design the smallest pre-build experiment, or decide whether evidence is sufficient to commit scope. Do not use for production experiments against shipped features (route to pm-growth); for designing the metric the experiment moves (route to pm-metrics); or for usability testing UX patterns (route to pm-design).
+allowed-tools: [Read, Write, Edit, Grep, Glob]
 ---
 
 # PM Validation

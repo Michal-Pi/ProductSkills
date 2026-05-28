@@ -1,6 +1,7 @@
 ---
 name: pm-growth
 description: Product growth workflows for growth models, growth loops, activation, retention, monetization, lifecycle strategy, product-led growth, funnel-stage diagnostics, experiment backlogs, experiment readouts, post-launch metric loops, and Reforge-style growth/product analysis. Use when the user asks to improve growth, activation, retention, conversion, monetization, expansion, PLG, lifecycle, run a growth experiment, write an experiment readout, or diagnose a post-launch learning loop. Do not use for designing the metric tree the experiments target (route to pm-metrics); for prioritization across non-growth bets (route to pm-strategy); or for customer-facing launch comms (route to pm-gtm).
+allowed-tools: [Read, Write, Edit, Grep, Glob]
 ---
 
 # PM Growth

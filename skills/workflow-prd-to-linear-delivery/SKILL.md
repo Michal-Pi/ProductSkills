@@ -1,6 +1,7 @@
 ---
 name: workflow-prd-to-linear-delivery
 description: End-to-end workflow that converts a PRD, product spec, feature brief, or validated scope into epics, user stories, acceptance criteria, sprint plan, and Linear-ready issue payloads — under the canonical dry-run safety contract (preview before write, explicit confirmation, idempotency, never claim rollback). Use when the user asks to break a PRD into delivery work, create Linear issues from product requirements, or produce a safe Linear dry-run preview. Do not use for standalone epic/story decomposition without Linear (route to pm-delivery); for PRD writing or review (route to pm-docs); or for sequencing initiatives into quarters (route to pm-roadmap).
+allowed-tools: [Read, Write, Edit, Grep, Glob, mcp__notion__*, mcp__linear__*]
 ---
 
 # Workflow: PRD to Linear Delivery

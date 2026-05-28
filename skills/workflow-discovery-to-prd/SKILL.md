@@ -1,6 +1,7 @@
 ---
 name: workflow-discovery-to-prd
 description: End-to-end workflow that turns customer research, interviews, VoC notes, support feedback, sales asks, market evidence, large noisy evidence corpora, and product goals into an evidence-backed PRD with assumption map, open questions, success metrics, and next actions. Use when the user asks to turn discovery or research into requirements, synthesize a large noisy evidence corpus into themes that ground a PRD, or move from messy evidence to a committed PRD. Do not use for standalone PRD writing without a discovery flow (route to pm-docs/prd); for prioritization between opportunities (route to pm-strategy); or for delivery work after the PRD is approved (route to workflow-prd-to-linear-delivery).
+allowed-tools: [Read, Write, Edit, Grep, Glob, mcp__notion__*]
 ---
 
 # Workflow: Discovery to PRD
