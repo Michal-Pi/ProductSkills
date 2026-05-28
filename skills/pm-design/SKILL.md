@@ -1,6 +1,6 @@
 ---
 name: pm-design
-description: Product design and prototyping workflows for wireframe briefs, prototype specs, usability test plans, design reviews, UX acceptance criteria, flow definitions, states, edge cases, and design-to-validation handoff. Use when the user asks for a UX brief, prototype plan, usability test, or product design review.
+description: Product design and prototyping workflows for wireframe briefs, prototype specs, usability test plans, design reviews, UX acceptance criteria, flow definitions, states, edge cases, and design-to-validation handoff. Use when the user asks for a UX brief, prototype plan, usability test, design review, or to specify flows, states, and edge cases for a product surface. Do not use for visual brand or marketing assets (out of scope); for code-level UI implementation (engineering-owned); for usability evidence without a planned test (route to pm-validation); or for general product or design strategy (route to pm-strategy).
 ---
 
 # PM Design

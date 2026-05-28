@@ -1,6 +1,6 @@
 ---
 name: pm-delivery
-description: Agile delivery workflows for epics, user stories, acceptance criteria, story mapping, sprint planning, task breakdown, roadmap sequencing, dependency mapping, and delivery handoff. Use when the user asks to break product work into epics, stories, acceptance criteria, tasks, milestones, sprints, or Linear-ready delivery plans.
+description: Convert validated product scope into agile delivery artifacts — epics, user stories with split rationale, acceptance criteria including edge cases and failure states, sprint plans, task breakdowns, and the delivery handoff envelope. Use when the user asks to break product work into epics, stories, acceptance criteria, tasks, milestones, or sprint plans. Do not use for sequencing themes across quarters or capacity planning (route to pm-roadmap); for tool payload safety or Linear dry-run previews (route to workflow-prd-to-linear-delivery, which carries the canonical dry-run safety contract); or for choosing what to build in the first place (route to pm-strategy).
 ---
 
 # PM Delivery

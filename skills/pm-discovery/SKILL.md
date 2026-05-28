@@ -1,6 +1,6 @@
 ---
 name: pm-discovery
-description: Product discovery workflows for customer interviews, VoC synthesis, research planning, feature request intake, support/sales feedback triage, customer pains, jobs-to-be-done, evidence clustering, and discovery-to-PRD preparation. Use when the user asks to analyze customer evidence, synthesize interviews, triage incoming product feedback, or plan product research.
+description: Product discovery workflows for customer interviews, VoC synthesis, research planning, raw-evidence intake clustering, support/sales feedback triage, customer pains, jobs-to-be-done, opportunity framing, and discovery-to-PRD preparation. Use when the user asks to analyze customer evidence, synthesize interviews, cluster raw evidence into themes, or plan product research. Do not use for routing inbound feature requests into roadmap-sequencing decisions (route to pm-roadmap/intake-triage); for the end-to-end discovery-to-PRD orchestration (route to workflow-discovery-to-prd, which calls this skill for the synthesis step); or for prioritization between opportunities (route to pm-strategy).
 ---
 
 # PM Discovery
