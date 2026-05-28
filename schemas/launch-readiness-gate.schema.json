@@ -26,6 +26,11 @@
     "rollout_plan": {"type": "array", "items": {"type": "string"}},
     "success_metrics": {"type": "array", "items": {"type": "string"}},
     "rollback_or_manual_revert_note": {"type": "string"},
-    "post_launch_learning_plan": {"type": "array", "items": {"type": "string"}}
+    "post_launch_learning_plan": {"type": "array", "items": {"type": "string"}},
+    "approval_gate": {
+      "type": "string",
+      "enum": ["pending", "granted", "rejected"],
+      "description": "Status of the human approval gate that must be granted before launch. Optional — when absent, treat as 'pending' for safety."
+    }
   }
 }

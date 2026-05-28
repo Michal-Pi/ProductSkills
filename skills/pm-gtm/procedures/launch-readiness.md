@@ -13,7 +13,7 @@ Use when assessing whether a feature or product is ready to launch.
 
 ## Output
 
-Use `../../../templates/launch-plan.md`.
+Use `../../../templates/launch-plan.md` for the launch plan narrative; the structured launch-readiness gate artifact conforms to `../../../schemas/launch-readiness-gate.schema.json` (use `../../../templates/launch-readiness-gate.md` to fill it). The `approval_gate` field is optional with enum `[pending, granted, rejected]`; treat absent as `pending` for safety.
 
 ## Done when
 

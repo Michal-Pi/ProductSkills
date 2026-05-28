@@ -47,8 +47,9 @@ A structured readout document with:
 ## Links
 
 - Template: `../../../templates/experiment-brief.md` (the upstream brief that this reads out)
-- Upstream: `lifecycle-experiment.md` (where briefs originate)
+- Upstream: the lifecycle-experiment procedure (where briefs originate)
 - Downstream: `../../pm-roadmap/SKILL.md` (roadmap shifts), `../../pm-metrics/SKILL.md` (tree updates)
+- Schema: when the experiment is a post-launch learning loop, the readout structured fields conform to `../../../schemas/post-launch-learning.schema.json` — `decision` uses the enum `[iterate, monitor, scale, rollback_or_pause, return_to_discovery, stop]`.
 
 ## Done when
 

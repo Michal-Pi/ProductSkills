@@ -54,6 +54,8 @@ Linear writes require explicit confirmation tied to the exact dry-run payload li
 
 ## Fallbacks for Missing Evidence
 
+When this workflow halts with `status: blocked`, the structured halt artifact conforms to `../../../schemas/blocked-workflow.schema.json`, with `handoff_target: pm-discovery` (canonical resume target per `../../../references/workflows/workflow-lifecycle-statuses.md`). `pm-validation` is acceptable only when the gap is specifically a validation gap, not a discovery gap.
+
 - Missing PRD sections: return `prd_readiness_review` with blocking questions and recommended PRD edits.
 - Missing target Linear team: produce payloads with `team_key: TBD` and setup instructions; do not infer a team.
 - Missing external ID map: use stable local IDs and preview creates; warn that reruns need `.product-os/external-id-map.json`.

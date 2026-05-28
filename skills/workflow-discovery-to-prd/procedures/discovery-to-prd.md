@@ -56,6 +56,8 @@ Ask for approval before:
 
 ## Fallbacks for Missing Evidence
 
+When this workflow halts with `status: blocked`, the structured halt artifact conforms to `../../../schemas/blocked-workflow.schema.json`, with `handoff_target: pm-discovery` (canonical resume target per `../../../references/workflows/workflow-lifecycle-statuses.md`).
+
 - Missing customer evidence: return a research plan and questions with `decision_status: blocked` or `needs_validation`; do not draft final requirements or committed PRD scope.
 - Approved, already validated, or future-state artifacts: use `validation_not_required`, run the relevant readiness check, and record missing earlier evidence as risk instead of replaying discovery.
 - Missing metrics: propose candidate metrics and mark them as assumptions.
