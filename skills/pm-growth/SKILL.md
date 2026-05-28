@@ -10,18 +10,28 @@ Diagnose growth systems and turn bottlenecks into product experiments.
 ## Core Procedures
 
 - Use `procedures/growth-model.md` to map the product growth model.
-- Use `procedures/growth-loop-diagnosis.md` to diagnose loops and bottlenecks.
-- Use `procedures/activation-analysis.md`, `retention-analysis.md`, or `monetization-analysis.md` for focused readouts.
+- Use `procedures/growth-loop-diagnosis.md` to diagnose loops and bottlenecks across stages.
+- Use `procedures/funnel-stage-analysis.md` for a focused single-stage analysis — pass `stage: activation | retention | monetization` as a parameter. (Replaces the previous activation-analysis / retention-analysis / monetization-analysis procedures, which differed only by stage parameter.)
 - Use `procedures/plg-motion.md` for product-led growth and sales-assist handoff questions.
-- Use `procedures/lifecycle-experiment.md` for growth experiment planning.
+- Use `procedures/lifecycle-experiment.md` for designing a growth experiment.
+- Use `procedures/experiment-readout.md` for writing up a completed experiment with decision and downstream implications.
 
 ## References
 
-- Use `../../references/frameworks/growth-models.md` for growth loops, lifecycle, PLG, and diagnosis.
+- Use `../../references/frameworks/growth-models.md` for growth loops, lifecycle, PLG, and stage-specific frameworks.
 - Use `../../references/checklists/growth-method-coverage.md` before finalizing growth recommendations.
 - Use `../../templates/growth-model.md` for model outputs.
-- Use `../../templates/experiment-brief.md` for experiments.
+- Use `../../templates/experiment-brief.md` for experiments and their readouts.
+
+## Method Selection
+
+- Bottleneck is unclear; "growth is slow" symptom → `growth-loop-diagnosis` (cross-stage diagnosis).
+- Bottleneck is named and lives at a specific funnel stage → `funnel-stage-analysis` with `stage: activation | retention | monetization`.
+- Question is about PLG vs sales-assist motion → `plg-motion`.
+- Ready to design an experiment with hypothesis + primary metric + decision rule → `lifecycle-experiment`.
+- An experiment finished and the team needs the readout + decision → `experiment-readout`.
+- Whole-product growth shape needs mapping (loops, lifecycle, monetization model) → `growth-model`.
 
 ## Output Standard
 
-Growth outputs must identify target metric, current bottleneck, affected segment, loop/funnel stage, experiment hypothesis, guardrail metric, and decision threshold.
+Growth outputs must identify target metric, current bottleneck, affected segment, loop/funnel stage, experiment hypothesis, guardrail metric, and decision rule. Every primary-metric claim has a baseline + cited source; invented numbers are refused.
