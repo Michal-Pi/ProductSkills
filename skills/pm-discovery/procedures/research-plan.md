@@ -14,3 +14,10 @@ Use when evidence is thin or a product decision needs customer learning.
 ## Output
 
 Use `../../../templates/research-plan.md`. Return research objective, method, audience, questions, timeline, risks, and decision use.
+
+## Done when
+
+- The product decision the research will inform is stated in one sentence, and what is already known versus what must be learned is recorded as two distinct lists.
+- The method is chosen from `../../../references/methods/research-methods.md` with a one-line rationale; target participants and recruiting criteria are concrete (segment, role, behavior trigger).
+- Questions or tasks are reviewed for leading wording; a synthesis approach and a decision rule are stated so post-research interpretation is bounded.
+- When the product decision is undefined or no recruiting path exists, the plan refuses to schedule research and instead returns the missing context as a blocker.

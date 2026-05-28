@@ -14,3 +14,10 @@ Use when specifying a prototype for validation or stakeholder review.
 ## Output
 
 Return prototype scope, screens or flows, states, data needs, validation tasks, and risks.
+
+## Done when
+
+- The decision the prototype must answer is stated in one sentence, and the chosen fidelity (sketch, clickable, coded, data-backed, or concierge) is justified against the risk being de-risked.
+- Paths, states, inputs, outputs, and realistic content are enumerated; an explicit "do not build" list rules out scope that would distort the test.
+- At least two usability tasks with named success signals are defined, and false-positive risks (politeness, novelty, content artifacts) are called out for the validation handoff.
+- When the decision being de-risked, the target user, or the underlying scenario is unstated, the procedure stops and asks rather than fabricating a prototype scope.

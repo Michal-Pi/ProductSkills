@@ -89,3 +89,10 @@ The workflow is complete when the user has either:
 - A deliberate stop artifact explaining why the PRD is blocked and what evidence or approval is needed next.
 
 If Notion sync is requested, completion means a dry-run payload exists and the user has been asked for explicit confirmation tied to the preview and idempotency key.
+
+## Done when
+
+- The VoC synthesis row set contains at least three rows, each with segment, problem, and evidence IDs; the assumption map lists at least four assumptions tagged across desirability, viability, feasibility, usability, GTM, and compliance (categories absent from the input are marked "not applicable" with a reason).
+- The `validation_decision` artifact records decision status (`validation_required`, `validation_not_required`, `needs_validation`, or `blocked`), the riskiest assumption, the rationale, and any risk-acceptance note; downstream PRD writing is gated on this artifact being populated.
+- The PRD covers objective, customer, evidence, problem, assumptions, scope, non-goals, solution outline, UX notes, metrics, risks, open questions, and next actions, each cited to discovery evidence IDs or explicitly marked as assumption; the handoff contract conforms to `../../../schemas/discovery-to-prd-handoff.schema.json`.
+- When customer evidence, target user, or product outcome is missing, the workflow stops with `decision_status: blocked` or `needs_validation` and returns a research plan instead of a committed PRD; Notion sync, if requested, produces only a dry-run payload until the user confirms against the preview and idempotency key.

@@ -15,3 +15,10 @@ Use when product feedback arrives from support, sales, interviews, reviews, anal
 ## Output
 
 Return clusters with evidence, confidence, assumptions, open questions, and next action. At scale, include final roll-up counts, ARR sums from supplied data only, confidence, conflicts, duplicates removed, missing-field counts, and representative citations.
+
+## Done when
+
+- Every input row is normalized into source, segment, problem, requested solution, evidence type, and date, with customer problem held separate from proposed solution.
+- Each cluster carries cited evidence IDs and a confidence grade per `../../../references/methods/evidence-grading.md`; duplicates, contradictions, and missing-field rows are surfaced rather than silently merged.
+- A recommended next action (ignore, monitor, research, validate, or route to PRD) is attached to each cluster, with the rule that produced it.
+- For large corpora the roll-up reports source counts before and after dedupe, ARR sums computed only from supplied data, conflict and missing-field counts, and at least one representative citation per cluster; if those fields cannot be populated from the inputs, the procedure flags them rather than inventing numbers.

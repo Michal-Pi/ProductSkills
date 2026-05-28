@@ -88,3 +88,10 @@ The workflow is complete when the user has either:
 - A deliberate stop artifact explaining why delivery planning is blocked and what product decisions are needed next.
 
 No live Linear write is complete until the user confirms the exact dry-run preview and idempotency keys.
+
+## Done when
+
+- The `epic_map` contains at least two epics with local IDs, outcomes, completion criteria, and sequencing notes; the `story_set` contains at least four user stories with stable local IDs grouped by epic and a noted split rationale.
+- Each story has at least three distinct acceptance-criterion bullets covering the primary path; every epic carries at least one edge-case bullet (permission, empty state, error, or failure). Stories destined for Linear creation carry external IDs (or use stable local IDs with `team_key: TBD` flagged for setup).
+- The `prd_readiness_review` separates blocking gaps from non-blocking improvements, the handoff conforms to `../../../schemas/prd-to-delivery-handoff.schema.json`, and dependencies plus sequencing notes are explicit (not implied).
+- When the PRD lacks objective, target user, or scope, the workflow refuses to draft stories and returns blocking questions instead; `linear_dry_run_payloads` are issued as previews only, and live writes require explicit confirmation tied to the exact payload list, `dry_run_payload_hash`, target team, and idempotency keys.

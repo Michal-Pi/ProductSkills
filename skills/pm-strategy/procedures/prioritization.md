@@ -16,3 +16,10 @@ Use when choosing what to build, sequence, cut, or test.
 ## Output
 
 Use `../../../templates/prioritization-decision.md`.
+
+## Done when
+
+- At least three prioritization methods are compared in a table (or one is chosen with a one-line reason the others were rejected), and the selected method is sourced from `../../../references/frameworks/prioritization-models.md`.
+- At least four options are scored against criteria whose weights sum to 1.0 ± 0.01; criteria and confidence are recorded before scores, not back-fitted after.
+- For large-corpus inputs, frequency, ARR, strategic weight, minority signals, and noise controls are scored as separate dimensions and not collapsed into a single rank; conflicts, duplicates removed, and missing fields are noted on each row.
+- A sensitivity check is run for close decisions (top-two within one weight-step of each other); when criteria or weights cannot be agreed by the decision-maker, the procedure refuses to publish a ranking and returns the criteria question instead.

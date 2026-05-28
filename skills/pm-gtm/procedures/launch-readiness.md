@@ -14,3 +14,10 @@ Use when assessing whether a feature or product is ready to launch.
 ## Output
 
 Use `../../../templates/launch-plan.md`.
+
+## Done when
+
+- At least four launch gates are named (e.g., product readiness, support and docs, messaging, instrumentation, legal or compliance, rollout plan), each with an explicit closure criterion and an owner.
+- Audience, customer impact, channels, timing, and enablement needs are populated with concrete values; items inherited from other artifacts cite their source.
+- Success metrics with baselines or targets are stated, and a post-launch review date is set; risks and limitations have mitigation or an explicit acceptance note.
+- When any launch gate cannot be closed and no mitigation is available, the procedure refuses to recommend "launch" and routes to beta, staged rollout, or hold with the unmet gate named.

@@ -14,3 +14,10 @@ Use when writing or reviewing acceptance criteria.
 ## Output
 
 Return acceptance criteria grouped by story or scenario.
+
+## Done when
+
+- Each story has at least three distinct acceptance-criterion bullets covering the primary success path; every epic carries at least one edge-case bullet (permission, empty state, error, or failure).
+- Each criterion is observable and testable from the user's perspective; implementation-only criteria are removed or flagged with the product behavior that requires them.
+- Instrumentation, audit, or analytics requirements named in the steps are either listed as their own criterion or explicitly marked "not required."
+- When inputs are missing user-visible behavior or scenario context, the procedure stops and returns the missing context as open questions rather than inventing criteria.

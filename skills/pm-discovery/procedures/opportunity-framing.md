@@ -14,3 +14,10 @@ Use when turning discovery evidence into product opportunities.
 ## Output
 
 Return outcome, opportunity list, evidence, assumptions, and recommended route.
+
+## Done when
+
+- A measurable product or customer outcome anchors the frame, and at least four opportunities are listed, each citing at least three distinct evidence IDs.
+- Every opportunity maps to user segment, job, pain, current workaround, and confidence; solution ideas are held in a separate list and never substituted for opportunities.
+- The top opportunities carry named assumptions (desirability, viability, feasibility, usability, GTM, or compliance) with the riskiest one called out for validation.
+- When evidence is too thin to support four opportunities, the procedure refuses to pad the list and instead routes to a research plan with the questions needed to unblock framing.

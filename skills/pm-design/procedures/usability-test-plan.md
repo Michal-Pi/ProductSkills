@@ -14,3 +14,10 @@ Use when testing whether users can understand and complete a product flow.
 ## Output
 
 Use `../../../templates/usability-test-plan.md`.
+
+## Done when
+
+- At least three scenarios are defined, each pinned to a persona and the evidence ID (interview, ticket, or analytics signal) that motivates it.
+- Each task has a non-leading wording, explicit success criteria, and the friction signals observers should record; required prototype state and test data are listed.
+- A synthesis rule and a decision rule are stated up front (what would change the build vs. ship vs. iterate call), so post-test interpretation is bounded.
+- When the underlying flow or persona is undefined, or when the prototype state cannot be reached, the plan refuses to schedule sessions and returns blockers instead.
