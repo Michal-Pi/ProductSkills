@@ -11,23 +11,24 @@
     {"id": "pm-delivery", "path": "skills/pm-delivery", "type": "family", "domain": "delivery"},
     {"id": "pm-growth", "path": "skills/pm-growth", "type": "family", "domain": "growth"},
     {"id": "pm-gtm", "path": "skills/pm-gtm", "type": "family", "domain": "gtm"},
-    {"id": "pm-tooling", "path": "skills/pm-tooling", "type": "family", "domain": "tooling"},
-    {"id": "workflow-product-operating-system", "path": "skills/workflow-product-operating-system", "type": "workflow", "domain": "end-to-end"},
+    {"id": "pm-roadmap", "path": "skills/pm-roadmap", "type": "family", "domain": "roadmap"},
+    {"id": "pm-metrics", "path": "skills/pm-metrics", "type": "family", "domain": "metrics"},
+    {"id": "pm-stakeholder-comms", "path": "skills/pm-stakeholder-comms", "type": "family", "domain": "comms"},
     {"id": "workflow-discovery-to-prd", "path": "skills/workflow-discovery-to-prd", "type": "workflow", "domain": "end-to-end"},
     {"id": "workflow-prd-to-linear-delivery", "path": "skills/workflow-prd-to-linear-delivery", "type": "workflow", "domain": "end-to-end"}
   ],
   "collections": [
     {
       "id": "pm-core",
-      "skills": ["pm-discovery", "pm-strategy", "pm-validation", "pm-design", "pm-docs", "workflow-product-operating-system", "workflow-discovery-to-prd"]
+      "skills": ["pm-discovery", "pm-strategy", "pm-validation", "pm-design", "pm-docs", "pm-roadmap", "pm-metrics", "pm-stakeholder-comms", "workflow-discovery-to-prd"]
     },
     {
-      "id": "pm-delivery-tooling",
-      "skills": ["pm-delivery", "pm-tooling", "workflow-product-operating-system", "workflow-prd-to-linear-delivery"]
+      "id": "pm-delivery",
+      "skills": ["pm-delivery", "workflow-prd-to-linear-delivery"]
     },
     {
       "id": "pm-growth-gtm",
-      "skills": ["pm-growth", "pm-gtm", "workflow-product-operating-system"]
+      "skills": ["pm-growth", "pm-gtm", "pm-metrics", "pm-stakeholder-comms"]
     }
   ]
 }
