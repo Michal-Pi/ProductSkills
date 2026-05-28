@@ -1,0 +1,37 @@
+{
+  "artifact_path": "/Users/michalpilawski/my_projects/test/productskills-e2e-synthetic/generated/codex/12-workflow-prd-to-linear-delivery.md",
+  "case": "workflow-prd-to-linear-delivery",
+  "expected_observation_path": "productskills-e2e-synthetic/expected-observations/12-workflow-prd-to-linear-delivery.md",
+  "expected_path": "/Users/michalpilawski/my_projects/test/productskills-e2e-synthetic/grader-fixtures/workflow-prd-to-linear-delivery.yaml",
+  "forbidden_found": [],
+  "golden_case_exists": false,
+  "golden_case_path": "/Users/michalpilawski/my_projects/test/evals/golden-cases/workflow-prd-to-linear-delivery.md",
+  "max_score": 4,
+  "missing_must_include": [],
+  "missing_rubric_checks": {},
+  "missing_sections": [],
+  "overall_score": 4,
+  "passed": true,
+  "prompt_id": "12-workflow-prd-to-linear-delivery",
+  "prompt_path": "productskills-e2e-synthetic/prompts/12-workflow-prd-to-linear-delivery.md",
+  "rubric_path": "/Users/michalpilawski/my_projects/test/.product-skills/evals/artifact-quality-rubrics.yaml",
+  "rubric_scores": {
+    "delivery_readiness": 4,
+    "tooling_safety": 4
+  },
+  "runtime": "codex",
+  "sections_found": [
+    "acceptance_criteria",
+    "approval_gates",
+    "dependencies",
+    "epic_map",
+    "linear_dry_run_payloads",
+    "next_actions",
+    "open_questions",
+    "prd_readiness_review",
+    "productskills_response_workflow_prd_to_linear_delivery",
+    "scope_map",
+    "story_set"
+  ],
+  "status": "graded"
+}

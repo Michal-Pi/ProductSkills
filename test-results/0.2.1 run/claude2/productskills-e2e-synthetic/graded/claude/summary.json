@@ -1,0 +1,14 @@
+{
+  "artifact_results": {
+    "failed": 0,
+    "graded": 12,
+    "missing": 0,
+    "passed": 12,
+    "total_prompts": 12
+  },
+  "generated_dir": "productskills-e2e-synthetic/generated/claude",
+  "graded_dir": "productskills-e2e-synthetic/graded/claude",
+  "pass_requires_generated_artifact_and_grader_result": true,
+  "runtime": "claude",
+  "tool_safety": null
+}

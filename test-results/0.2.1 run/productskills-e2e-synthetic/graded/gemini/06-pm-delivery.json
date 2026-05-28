@@ -1,0 +1,36 @@
+{
+  "artifact_path": "/Users/michalpilawski/my_projects/test/productskills-e2e-synthetic/generated/gemini/06-pm-delivery.md",
+  "case": "delivery-breakdown",
+  "expected_observation_path": "productskills-e2e-synthetic/expected-observations/06-pm-delivery.md",
+  "expected_path": "/Users/michalpilawski/my_projects/test/.product-skills/evals/expected/delivery-breakdown.yaml",
+  "forbidden_found": [],
+  "golden_case_exists": false,
+  "golden_case_path": "/Users/michalpilawski/my_projects/test/evals/golden-cases/delivery-breakdown.md",
+  "max_score": 4,
+  "missing_must_include": [],
+  "missing_rubric_checks": {},
+  "missing_sections": [],
+  "overall_score": 4,
+  "passed": true,
+  "prompt_id": "06-pm-delivery",
+  "prompt_path": "productskills-e2e-synthetic/prompts/06-pm-delivery.md",
+  "rubric_path": "/Users/michalpilawski/my_projects/test/.product-skills/evals/artifact-quality-rubrics.yaml",
+  "rubric_scores": {
+    "delivery_readiness": 4,
+    "tooling_safety": 4
+  },
+  "runtime": "gemini",
+  "sections_found": [
+    "acceptance_criteria",
+    "confirmation_question",
+    "delivery_plan_safe_handoff_linear_notion_preview",
+    "dependencies",
+    "dry_run_payloads",
+    "epic_1_admin_sync_safety_framework",
+    "epics",
+    "no_external_writes",
+    "source_outcome",
+    "stories"
+  ],
+  "status": "graded"
+}

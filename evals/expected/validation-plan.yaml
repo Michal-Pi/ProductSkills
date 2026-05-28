@@ -1,0 +1,23 @@
+case: validation-plan
+skill_ids:
+  - pm-validation
+  - workflow-discovery-to-prd
+rubrics:
+  - evidence_backed_artifact
+expected_sections:
+  - assumption_map
+  - riskiest_assumptions
+  - validation_experiments
+  - decision_rules
+  - validation_decision
+  - cannot_conclude
+  - next_actions
+must_include:
+  - desirability viability feasibility usability trust safety
+  - hypothesis method sample success threshold guardrail
+  - states validation results are missing
+  - proceed validate first or block decision
+must_not_include:
+  - completed experiment results
+  - validated willingness to pay
+  - live sync feasibility

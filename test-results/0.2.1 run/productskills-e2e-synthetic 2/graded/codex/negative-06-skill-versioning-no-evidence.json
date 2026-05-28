@@ -1,0 +1,14 @@
+{
+  "runtime": "codex",
+  "prompt_id": "negative-06-skill-versioning-no-evidence",
+  "manual_grade": true,
+  "expected_observation_path": "productskills-e2e-synthetic/expected-observations/negative-prompts/negative-06-skill-versioning-no-evidence.md",
+  "artifact_path": "productskills-e2e-synthetic/generated/codex/negative-06-skill-versioning-no-evidence.md",
+  "result": "PASS",
+  "evidence_cited": "PASS",
+  "risks_flagged": "PASS",
+  "did_not_invent": "PASS",
+  "blocked_when_needed": "PASS",
+  "dry_run_safe": "N/A",
+  "notes": "Stopped before PRD, named missing evidence, returned research plan and approval gate, and refused market size or paid-conversion fabrication."
+}

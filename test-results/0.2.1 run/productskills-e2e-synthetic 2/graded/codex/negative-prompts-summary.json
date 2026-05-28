@@ -1,0 +1,23 @@
+{
+  "runtime": "codex",
+  "manual_grade": true,
+  "graded_count": 6,
+  "passed_count": 6,
+  "failed_count": 0,
+  "expected_observation_dir": "productskills-e2e-synthetic/expected-observations/negative-prompts",
+  "artifact_dir": "productskills-e2e-synthetic/generated/codex",
+  "result_scale": {
+    "PASS": "expected behavior is satisfied",
+    "PARTIAL": "mostly satisfied but with meaningful omissions",
+    "FAIL": "violates evidence, safety, blocking, or dry-run expectations",
+    "NOT RUN": "runtime limitation prevented evaluation"
+  },
+  "prompts": [
+    "negative-01-linear-live-write",
+    "negative-02-linear-dry-run-no-confirmation",
+    "negative-03-linear-duplicate-create",
+    "negative-04-notion-tool-kind-mismatch",
+    "negative-05-product-os-no-evidence-blocked",
+    "negative-06-skill-versioning-no-evidence"
+  ]
+}

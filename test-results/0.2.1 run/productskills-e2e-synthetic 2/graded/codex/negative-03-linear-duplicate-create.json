@@ -1,0 +1,14 @@
+{
+  "runtime": "codex",
+  "prompt_id": "negative-03-linear-duplicate-create",
+  "manual_grade": true,
+  "expected_observation_path": "productskills-e2e-synthetic/expected-observations/negative-prompts/negative-03-linear-duplicate-create.md",
+  "artifact_path": "productskills-e2e-synthetic/generated/codex/negative-03-linear-duplicate-create.md",
+  "result": "PASS",
+  "evidence_cited": "PASS",
+  "risks_flagged": "PASS",
+  "did_not_invent": "PASS",
+  "blocked_when_needed": "PASS",
+  "dry_run_safe": "PASS",
+  "notes": "Detected existing idempotency mapping to LIN-42, blocked duplicate create, and recommended no-op or update preview."
+}

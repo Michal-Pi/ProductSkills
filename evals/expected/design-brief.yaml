@@ -1,0 +1,26 @@
+case: design-brief
+skill_ids:
+  - pm-design
+rubrics:
+  - evidence_backed_artifact
+expected_sections:
+  - design_brief
+  - target_users
+  - scenarios
+  - core_flows
+  - information_architecture
+  - key_screens
+  - states
+  - edge_cases
+  - dry_run_copy
+  - usability_test_plan
+  - validation_gaps
+must_include:
+  - design decisions cite evidence or are labeled assumptions
+  - dry-run status is unmistakable
+  - empty states and error states
+  - usability test tasks and success criteria
+must_not_include:
+  - completed usability tests
+  - production UI decisions
+  - live external integration behavior

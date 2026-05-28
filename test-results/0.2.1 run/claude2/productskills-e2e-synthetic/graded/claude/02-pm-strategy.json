@@ -1,0 +1,36 @@
+{
+  "artifact_path": "/Users/michalpilawski/my_projects/test/productskills-e2e-synthetic/generated/claude/02-pm-strategy.md",
+  "case": "prioritization-method-selection",
+  "expected_observation_path": "productskills-e2e-synthetic/expected-observations/02-pm-strategy.md",
+  "expected_path": "/Users/michalpilawski/my_projects/test/.product-skills/evals/expected/prioritization-method-selection.yaml",
+  "forbidden_found": [],
+  "golden_case_exists": false,
+  "golden_case_path": "/Users/michalpilawski/my_projects/test/evals/golden-cases/prioritization-method-selection.md",
+  "max_score": 4,
+  "missing_must_include": [],
+  "missing_rubric_checks": {},
+  "missing_sections": [],
+  "overall_score": 4,
+  "passed": true,
+  "prompt_id": "02-pm-strategy",
+  "prompt_path": "productskills-e2e-synthetic/prompts/02-pm-strategy.md",
+  "rubric_path": "/Users/michalpilawski/my_projects/test/.product-skills/evals/artifact-quality-rubrics.yaml",
+  "rubric_scores": {
+    "evidence_backed_artifact": 4
+  },
+  "runtime": "claude",
+  "sections_found": [
+    "confidence",
+    "criteria",
+    "decision_context",
+    "method_selection_rationale",
+    "options",
+    "productskills_pm_strategy_atlasboard_prioritization_method_selection",
+    "quality_bar",
+    "recommendation",
+    "risks",
+    "scores",
+    "selected_method"
+  ],
+  "status": "graded"
+}

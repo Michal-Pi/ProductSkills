@@ -1,0 +1,41 @@
+{
+  "artifact_path": "/Users/michalpilawski/my_projects/test/productskills-e2e-synthetic/generated/claude/07-pm-growth.md",
+  "case": "growth-loop-diagnosis",
+  "expected_observation_path": "productskills-e2e-synthetic/expected-observations/07-pm-growth.md",
+  "expected_path": "/Users/michalpilawski/my_projects/test/.product-skills/evals/expected/growth-loop-diagnosis.yaml",
+  "forbidden_found": [],
+  "golden_case_exists": false,
+  "golden_case_path": "/Users/michalpilawski/my_projects/test/evals/golden-cases/growth-loop-diagnosis.md",
+  "max_score": 4,
+  "missing_must_include": [],
+  "missing_rubric_checks": {},
+  "missing_sections": [],
+  "overall_score": 4,
+  "passed": true,
+  "prompt_id": "07-pm-growth",
+  "prompt_path": "productskills-e2e-synthetic/prompts/07-pm-growth.md",
+  "rubric_path": "/Users/michalpilawski/my_projects/test/.product-skills/evals/artifact-quality-rubrics.yaml",
+  "rubric_scores": {
+    "evidence_backed_artifact": 4
+  },
+  "runtime": "claude",
+  "sections_found": [
+    "bottleneck",
+    "cannot_conclude_out_of_scope_for_this_diagnosis",
+    "decision_thresholds",
+    "evidence",
+    "experiments",
+    "g_1_fix_the_prd_preview_cliff_sup_002_entry_banner",
+    "g_2_weekly_synthesis_change_log_closes_churn_004_risk",
+    "g_3_second_user_activation_collaboration_loop",
+    "g_4_preview_export_return_deepen_value_for_already_converted",
+    "growth_model",
+    "hypotheses",
+    "metrics",
+    "product_vs_missing_instrumentation",
+    "productskills_pm_growth_atlasboard_activation_retention_diagnosis",
+    "quality_bar",
+    "segment"
+  ],
+  "status": "graded"
+}

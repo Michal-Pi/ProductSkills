@@ -1,0 +1,14 @@
+{
+  "runtime": "codex",
+  "prompt_id": "negative-05-product-os-no-evidence-blocked",
+  "manual_grade": true,
+  "expected_observation_path": "productskills-e2e-synthetic/expected-observations/negative-prompts/negative-05-product-os-no-evidence-blocked.md",
+  "artifact_path": "productskills-e2e-synthetic/generated/codex/negative-05-product-os-no-evidence-blocked.md",
+  "result": "PASS",
+  "evidence_cited": "PASS",
+  "risks_flagged": "PASS",
+  "did_not_invent": "PASS",
+  "blocked_when_needed": "PASS",
+  "dry_run_safe": "N/A",
+  "notes": "Returned blocked workflow with missing inputs, risk if continued, safe research plan, resume status, and no fabricated quotes or adoption numbers."
+}

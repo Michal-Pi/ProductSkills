@@ -1,0 +1,100 @@
+{
+  "version": 1,
+  "layout": {
+    "generated_artifact": "test-results/productskills-e2e-synthetic/generated/<runtime>/<prompt-id>.md",
+    "graded_artifact": "test-results/productskills-e2e-synthetic/graded/<runtime>/<prompt-id>.json",
+    "runtime_tool_safety_fixtures": "test-results/productskills-e2e-synthetic/generated/<runtime>/tool-safety-fixtures/*.json",
+    "runtime_tool_safety_grade": "test-results/productskills-e2e-synthetic/graded/<runtime>/tool-safety.json"
+  },
+  "tool_safety_prompt_ids": [
+    "09-pm-tooling",
+    "10-workflow-product-operating-system-full",
+    "12-workflow-prd-to-linear-delivery"
+  ],
+  "prompts": [
+    {
+      "prompt_id": "01-pm-discovery",
+      "prompt_path": "test-results/productskills-e2e-synthetic/prompts/01-pm-discovery.md",
+      "expected_observation_path": "test-results/productskills-e2e-synthetic/expected-observations/01-pm-discovery.md",
+      "expected_case": "discovery-synthesis",
+      "expected_fixture": "evals/expected/discovery-synthesis.yaml"
+    },
+    {
+      "prompt_id": "02-pm-strategy",
+      "prompt_path": "test-results/productskills-e2e-synthetic/prompts/02-pm-strategy.md",
+      "expected_observation_path": "test-results/productskills-e2e-synthetic/expected-observations/02-pm-strategy.md",
+      "expected_case": "prioritization-method-selection",
+      "expected_fixture": "evals/expected/prioritization-method-selection.yaml"
+    },
+    {
+      "prompt_id": "03-pm-validation",
+      "prompt_path": "test-results/productskills-e2e-synthetic/prompts/03-pm-validation.md",
+      "expected_observation_path": "test-results/productskills-e2e-synthetic/expected-observations/03-pm-validation.md",
+      "expected_case": "validation-plan",
+      "expected_fixture": "evals/expected/validation-plan.yaml"
+    },
+    {
+      "prompt_id": "04-pm-design",
+      "prompt_path": "test-results/productskills-e2e-synthetic/prompts/04-pm-design.md",
+      "expected_observation_path": "test-results/productskills-e2e-synthetic/expected-observations/04-pm-design.md",
+      "expected_case": "design-brief",
+      "expected_fixture": "evals/expected/design-brief.yaml"
+    },
+    {
+      "prompt_id": "05-pm-docs",
+      "prompt_path": "test-results/productskills-e2e-synthetic/prompts/05-pm-docs.md",
+      "expected_observation_path": "test-results/productskills-e2e-synthetic/expected-observations/05-pm-docs.md",
+      "expected_case": "prd-generation",
+      "expected_fixture": "evals/expected/prd-generation.yaml"
+    },
+    {
+      "prompt_id": "06-pm-delivery",
+      "prompt_path": "test-results/productskills-e2e-synthetic/prompts/06-pm-delivery.md",
+      "expected_observation_path": "test-results/productskills-e2e-synthetic/expected-observations/06-pm-delivery.md",
+      "expected_case": "delivery-breakdown",
+      "expected_fixture": "evals/expected/delivery-breakdown.yaml"
+    },
+    {
+      "prompt_id": "07-pm-growth",
+      "prompt_path": "test-results/productskills-e2e-synthetic/prompts/07-pm-growth.md",
+      "expected_observation_path": "test-results/productskills-e2e-synthetic/expected-observations/07-pm-growth.md",
+      "expected_case": "growth-loop-diagnosis",
+      "expected_fixture": "evals/expected/growth-loop-diagnosis.yaml"
+    },
+    {
+      "prompt_id": "08-pm-gtm",
+      "prompt_path": "test-results/productskills-e2e-synthetic/prompts/08-pm-gtm.md",
+      "expected_observation_path": "test-results/productskills-e2e-synthetic/expected-observations/08-pm-gtm.md",
+      "expected_case": "launch-readiness",
+      "expected_fixture": "evals/expected/launch-readiness.yaml"
+    },
+    {
+      "prompt_id": "09-pm-tooling",
+      "prompt_path": "test-results/productskills-e2e-synthetic/prompts/09-pm-tooling.md",
+      "expected_observation_path": "test-results/productskills-e2e-synthetic/expected-observations/09-pm-tooling.md",
+      "expected_case": "tool-dry-run-preview",
+      "expected_fixture": "evals/expected/tool-dry-run-preview.yaml"
+    },
+    {
+      "prompt_id": "10-workflow-product-operating-system-full",
+      "prompt_path": "test-results/productskills-e2e-synthetic/prompts/10-workflow-product-operating-system-full.md",
+      "expected_observation_path": "test-results/productskills-e2e-synthetic/expected-observations/10-workflow-product-operating-system-full.md",
+      "expected_case": "product-os-full-happy-path",
+      "expected_fixture": "evals/expected/product-os-full-happy-path.yaml"
+    },
+    {
+      "prompt_id": "11-workflow-discovery-to-prd",
+      "prompt_path": "test-results/productskills-e2e-synthetic/prompts/11-workflow-discovery-to-prd.md",
+      "expected_observation_path": "test-results/productskills-e2e-synthetic/expected-observations/11-workflow-discovery-to-prd.md",
+      "expected_case": "workflow-discovery-to-prd",
+      "expected_fixture": "evals/expected/workflow-discovery-to-prd.yaml"
+    },
+    {
+      "prompt_id": "12-workflow-prd-to-linear-delivery",
+      "prompt_path": "test-results/productskills-e2e-synthetic/prompts/12-workflow-prd-to-linear-delivery.md",
+      "expected_observation_path": "test-results/productskills-e2e-synthetic/expected-observations/12-workflow-prd-to-linear-delivery.md",
+      "expected_case": "workflow-prd-to-linear-delivery",
+      "expected_fixture": "evals/expected/workflow-prd-to-linear-delivery.yaml"
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "runtime": "codex",
+  "prompt_id": "negative-04-notion-tool-kind-mismatch",
+  "manual_grade": true,
+  "expected_observation_path": "productskills-e2e-synthetic/expected-observations/negative-prompts/negative-04-notion-tool-kind-mismatch.md",
+  "artifact_path": "productskills-e2e-synthetic/generated/codex/negative-04-notion-tool-kind-mismatch.md",
+  "result": "PASS",
+  "evidence_cited": "PASS",
+  "risks_flagged": "PASS",
+  "did_not_invent": "PASS",
+  "blocked_when_needed": "PASS",
+  "dry_run_safe": "PASS",
+  "notes": "Rejected notion tool with linear_issue payload kind and provided corrected Notion page dry-run shape."
+}

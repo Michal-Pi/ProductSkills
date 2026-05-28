@@ -1,0 +1,40 @@
+{
+  "artifact_path": "/Users/michalpilawski/my_projects/test/productskills-e2e-synthetic/generated/gemini/10-workflow-product-operating-system-full.md",
+  "case": "product-os-full-happy-path",
+  "expected_observation_path": "productskills-e2e-synthetic/expected-observations/10-workflow-product-operating-system-full.md",
+  "expected_path": "/Users/michalpilawski/my_projects/test/productskills-e2e-synthetic/grader-fixtures/product-os-full-happy-path.yaml",
+  "forbidden_found": [],
+  "golden_case_exists": false,
+  "golden_case_path": "/Users/michalpilawski/my_projects/test/evals/golden-cases/product-os-full-happy-path.md",
+  "max_score": 4,
+  "missing_must_include": [],
+  "missing_rubric_checks": {},
+  "missing_sections": [],
+  "overall_score": 4,
+  "passed": true,
+  "prompt_id": "10-workflow-product-operating-system-full",
+  "prompt_path": "productskills-e2e-synthetic/prompts/10-workflow-product-operating-system-full.md",
+  "rubric_path": "/Users/michalpilawski/my_projects/test/.product-skills/evals/artifact-quality-rubrics.yaml",
+  "rubric_scores": {
+    "delivery_readiness": 4,
+    "evidence_backed_artifact": 4,
+    "product_os_workflow": 4,
+    "tooling_safety": 4
+  },
+  "runtime": "gemini",
+  "sections_found": [
+    "delivery_split",
+    "entry_classification",
+    "epics",
+    "evidence_and_validation_decision",
+    "handoff",
+    "launch_readiness",
+    "no_external_writes",
+    "post_launch_learning_loop",
+    "prd",
+    "product_operating_system_workflow_atlasboard",
+    "status_proceed",
+    "tool_dry_run_preview"
+  ],
+  "status": "graded"
+}

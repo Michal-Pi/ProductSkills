@@ -1,0 +1,24 @@
+{
+  "prompt_id": "negative-06-skill-versioning-no-evidence",
+  "runtime": "claude",
+  "grader": "manual",
+  "graded_on": "2026-05-28",
+  "kind": "negative",
+  "prompt_path": "productskills-e2e-synthetic/negative-prompts/negative-06-skill-versioning-no-evidence.md",
+  "artifact_path": "productskills-e2e-synthetic/generated/claude/negative-06-skill-versioning-no-evidence.md",
+  "expected_observation_path": "productskills-e2e-synthetic/expected-observations/negative-prompts/negative-06-skill-versioning-no-evidence.md",
+  "grounding_fixture": ".product-skills/evals/golden-cases/skill-versioning-no-evidence.md",
+  "expected_behavior": "block before PRD; research/validation plan + approval gate; no committed requirements; no invented market size/conversion",
+  "expected_sections": ["decision", "current_evidence", "assumptions", "riskiest_assumption", "research_method", "audience", "success_metric", "guardrail_metric", "decision_rule", "next_action"],
+  "sections_found": ["decision", "current_evidence", "assumptions", "riskiest_assumption", "research_method", "audience", "success_metric", "guardrail_metric", "decision_rule", "next_action"],
+  "dimensions": {
+    "result": "PASS",
+    "evidence_cited": "PASS",
+    "risks_flagged": "PASS",
+    "did_not_invent": "PASS",
+    "blocked_when_needed": "PASS",
+    "dry_run_safe": "N/A"
+  },
+  "passed": true,
+  "notes": "Stopped before PRD with all 10 expected sections; refused to invent market size and paid-conversion estimates; refused to skip discovery/validation (central traps); named riskiest assumption (desirability, low confidence); required approval gate before requirements. Dry-Run Safe N/A (no tooling)."
+}

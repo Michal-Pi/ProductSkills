@@ -1,0 +1,40 @@
+{
+  "artifact_path": "/Users/michalpilawski/my_projects/test/productskills-e2e-synthetic/generated/claude/01-pm-discovery.md",
+  "case": "discovery-synthesis",
+  "expected_observation_path": "productskills-e2e-synthetic/expected-observations/01-pm-discovery.md",
+  "expected_path": "/Users/michalpilawski/my_projects/test/.product-skills/evals/expected/discovery-synthesis.yaml",
+  "forbidden_found": [],
+  "golden_case_exists": false,
+  "golden_case_path": "/Users/michalpilawski/my_projects/test/evals/golden-cases/discovery-synthesis.md",
+  "max_score": 4,
+  "missing_must_include": [],
+  "missing_rubric_checks": {},
+  "missing_sections": [],
+  "overall_score": 4,
+  "passed": true,
+  "prompt_id": "01-pm-discovery",
+  "prompt_path": "productskills-e2e-synthetic/prompts/01-pm-discovery.md",
+  "rubric_path": "/Users/michalpilawski/my_projects/test/.product-skills/evals/artifact-quality-rubrics.yaml",
+  "rubric_scores": {
+    "evidence_backed_artifact": 4
+  },
+  "runtime": "claude",
+  "sections_found": [
+    "assumptions",
+    "confidence",
+    "direct_evidence",
+    "next_learning",
+    "opportunities",
+    "productskills_pm_discovery_atlasboard_opportunity_synthesis",
+    "quality_bar",
+    "risky_ambiguous_automatic_linear_notion_live_sync",
+    "risky_ambiguous_cs_visible_support_synthesis_pipeline_hannah_lane",
+    "risky_ambiguous_enterprise_wedge_before_security_evidence",
+    "risky_ambiguous_github_issues_delivery",
+    "sources",
+    "strong_evidence_linked_prd_dry_run_delivery_preview_for_notion_linear_mid_market_teams",
+    "themes",
+    "weak_free_tier_lightweight_templates_for_solo_founders"
+  ],
+  "status": "graded"
+}

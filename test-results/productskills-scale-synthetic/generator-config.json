@@ -1,0 +1,172 @@
+{
+  "seed": 20260527,
+  "sizes": [
+    100,
+    500,
+    1000,
+    5000
+  ],
+  "source_types": [
+    "interview",
+    "support_ticket",
+    "sales_note",
+    "churn_note",
+    "competitor_note"
+  ],
+  "corpus_variants": {
+    "labeled": {
+      "path": "corpus",
+      "description": "Prompt-visible corpus with planted labels retained for legacy/debug runs."
+    },
+    "unlabeled": {
+      "path": "corpus-unlabeled",
+      "description": "Prompt-visible corpus with opportunity, conflict, duplicate, and missing-field labels removed."
+    }
+  },
+  "opportunities": {
+    "OPP-STRONG-001": {
+      "name": "Evidence-linked PRD and opportunity synthesis",
+      "segment": "product_ops",
+      "strength": "strong",
+      "planted_weight": 0.22,
+      "keywords": [
+        "evidence links",
+        "source citations",
+        "PRD review",
+        "traceability"
+      ]
+    },
+    "OPP-STRONG-002": {
+      "name": "Dry-run Linear/Notion delivery preview",
+      "segment": "product_ops",
+      "strength": "strong",
+      "planted_weight": 0.2,
+      "keywords": [
+        "dry-run preview",
+        "Linear",
+        "Notion",
+        "external IDs"
+      ]
+    },
+    "OPP-RISKY-001": {
+      "name": "Automatic live sync to external tools",
+      "segment": "enterprise_pmo",
+      "strength": "risky",
+      "planted_weight": 0.12,
+      "keywords": [
+        "live sync",
+        "workspace IDs",
+        "admin controls",
+        "confirmation"
+      ]
+    },
+    "OPP-RISKY-002": {
+      "name": "Enterprise launch with incomplete security evidence",
+      "segment": "enterprise_pmo",
+      "strength": "risky",
+      "planted_weight": 0.1,
+      "keywords": [
+        "SOC 2",
+        "security review",
+        "admin policy",
+        "procurement"
+      ]
+    },
+    "OPP-WEAK-001": {
+      "name": "Free lightweight founder PRD templates",
+      "segment": "smb_founder",
+      "strength": "weak",
+      "planted_weight": 0.1,
+      "keywords": [
+        "simple template",
+        "free tier",
+        "contractor PRD",
+        "too much process"
+      ]
+    },
+    "OPP-AMBIG-001": {
+      "name": "GitHub Issues delivery preview",
+      "segment": "github_smb",
+      "strength": "ambiguous",
+      "planted_weight": 0.08,
+      "keywords": [
+        "GitHub Issues",
+        "Linear-first",
+        "delivery export",
+        "scope mismatch"
+      ]
+    },
+    "OPP-DATA-001": {
+      "name": "Support-ticket import quality controls",
+      "segment": "cs_ops",
+      "strength": "strong",
+      "planted_weight": 0.1,
+      "keywords": [
+        "Zendesk import",
+        "ARR risk",
+        "ticket priority",
+        "persona tags"
+      ]
+    },
+    "NOISE-LOW-001": {
+      "name": "Low-value cosmetic requests",
+      "segment": "smb_founder",
+      "strength": "noise",
+      "planted_weight": 0.08,
+      "keywords": [
+        "button color",
+        "dashboard theme",
+        "emoji labels",
+        "minor copy"
+      ]
+    }
+  },
+  "strategic_weights": {
+    "OPP-STRONG-001": 100,
+    "OPP-STRONG-002": 95,
+    "OPP-DATA-001": 82,
+    "OPP-RISKY-002": 78,
+    "OPP-RISKY-001": 70,
+    "OPP-AMBIG-001": 44,
+    "OPP-WEAK-001": 24,
+    "NOISE-LOW-001": 5
+  },
+  "segments": [
+    {
+      "id": "product_ops",
+      "name": "Product Ops",
+      "tool_stack": "Notion + Linear",
+      "base_arr": 180000
+    },
+    {
+      "id": "mid_market_pm",
+      "name": "Mid-market PM",
+      "tool_stack": "Notion + Linear",
+      "base_arr": 95000
+    },
+    {
+      "id": "enterprise_pmo",
+      "name": "Enterprise PMO",
+      "tool_stack": "Confluence + Jira",
+      "base_arr": 310000
+    },
+    {
+      "id": "smb_founder",
+      "name": "SMB founder-led",
+      "tool_stack": "Google Docs + Trello",
+      "base_arr": 15000
+    },
+    {
+      "id": "github_smb",
+      "name": "GitHub-first SMB",
+      "tool_stack": "Notion + GitHub Issues",
+      "base_arr": 28000
+    },
+    {
+      "id": "cs_ops",
+      "name": "Customer Success Ops",
+      "tool_stack": "Zendesk + Slack",
+      "base_arr": 115000
+    }
+  ]
+}

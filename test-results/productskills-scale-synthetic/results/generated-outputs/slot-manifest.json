@@ -1,0 +1,23 @@
+{
+  "schema_version": "1.0",
+  "purpose": "Slots for measured ProductSkills scale outputs. Store real generated artifacts here before grading.",
+  "naming_convention": "<prompt-id>/<runtime>-<scale>-pass-<n>.md",
+  "required_scales": [
+    "scale-100",
+    "scale-500",
+    "scale-1000",
+    "scale-5000"
+  ],
+  "required_prompt_slots": [
+    "01-scale-discovery",
+    "02-scale-strategy",
+    "03-scale-validation",
+    "04-scale-docs",
+    "05-scale-delivery",
+    "06-scale-tooling-safety",
+    "07-scale-full-workflow",
+    "08-scale-adversarial-edge-cases"
+  ],
+  "grading_source": "../../graders/scale-rubric.md",
+  "ground_truth_source": "../../ground-truth"
+}
