@@ -26,3 +26,5 @@ must_not_include:
   - forced validation replay
   - invented metrics
   - ignores customer signal
+
+provenance_required: false

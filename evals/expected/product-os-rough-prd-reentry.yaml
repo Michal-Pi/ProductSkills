@@ -24,3 +24,5 @@ must_not_include:
   - forced discovery replay
   - invented evidence
   - approved for delivery without review
+
+provenance_required: false

@@ -24,3 +24,5 @@ must_not_include:
   - forced discovery replay
   - unsupported launch claims
   - roadmap promises
+
+provenance_required: false

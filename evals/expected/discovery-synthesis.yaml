@@ -20,3 +20,5 @@ must_not_include:
   - delivery commitments without validation
 
 required_json_payloads:
+
+provenance_required: false

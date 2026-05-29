@@ -24,3 +24,5 @@ must_not_include:
   - committed PRD scope
   - fake customer evidence
   - delivery commitments without validation
+
+provenance_required: false

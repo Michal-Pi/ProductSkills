@@ -29,3 +29,5 @@ must_not_include:
   - live Notion write without confirmation
 
 required_json_payloads:
+
+provenance_required: false

@@ -590,6 +590,95 @@ def print_text_result(result: dict[str, object]) -> None:
                 print(f"    - {check}")
 
 
+# --- Task 3.5: conditional skill declaration extraction (G6 / A13) --------
+
+# Capture the rest of the line after `Skill[s]:`. Token-splitting +
+# strip happens in extract_declared_skills so we handle Claude's
+# backticked-and-comma-separated form like `Skills: \`a\`, \`b\`.`
+# without combinatorial regex backtracking.
+_SKILL_INLINE_RE = re.compile(r"^Skills?:\s*(.+)$", re.MULTILINE)
+_SKILL_TOKEN_RE = re.compile(r"[a-z][a-z0-9_-]+", re.IGNORECASE)
+
+
+def extract_declared_skills(markdown: str) -> set[str]:
+    """Return the union of `Skill[s]: <name>[, <name>, ...]` lines and
+    YAML frontmatter `skill_ids: [...]` entries.
+
+    Frontmatter is detected as the leading block delimited by `---`
+    lines. Inside the frontmatter we look for `skill_ids:` followed by
+    a list. The rest of the document is scanned line-by-line for the
+    inline `Skill:` / `Skills:` declaration form Claude uses.
+    """
+    declared: set[str] = set()
+
+    # YAML frontmatter (no-op if absent).
+    text = markdown.lstrip()
+    if text.startswith("---"):
+        end = text.find("\n---", 3)
+        if end != -1:
+            frontmatter_block = text[3:end]
+            in_block = False
+            for line in frontmatter_block.splitlines():
+                stripped = line.strip()
+                if stripped.startswith("skill_ids"):
+                    after = stripped.split(":", 1)[1].strip()
+                    if after.startswith("[") and after.endswith("]"):
+                        inner = after[1:-1].strip()
+                        for token in (t.strip().strip("`'\"") for t in inner.split(",")):
+                            if token:
+                                declared.add(token)
+                        in_block = False
+                    else:
+                        in_block = True
+                    continue
+                if in_block:
+                    if stripped.startswith("- "):
+                        token = stripped[2:].strip().strip("`'\"")
+                        if token:
+                            declared.add(token)
+                    elif stripped and not stripped.startswith("#"):
+                        in_block = False
+
+    # Inline `Skill: <name>` and `Skills: <name>, <name>`. We capture
+    # the entire post-colon segment of the line, then extract every
+    # kebab-case token: `pm-discovery`, `pm-strategy`, etc. This works
+    # for Claude's backticked form (`pm-discovery`, `pm-strategy`).
+    # Stop at the first sentence terminator so trailing prose (e.g.,
+    # "Synthetic only.") is not tokenized.
+    for match in _SKILL_INLINE_RE.finditer(markdown):
+        tail = match.group(1)
+        # Truncate at first period that ends the declaration sentence.
+        terminator = re.search(r"\.(?:\s|$)", tail)
+        if terminator:
+            tail = tail[: terminator.start()]
+        for token_match in _SKILL_TOKEN_RE.finditer(tail):
+            token = token_match.group(0)
+            # Only kebab-case skill identifiers (must contain a hyphen
+            # to distinguish from "Synthetic" / "Only" / etc.).
+            if "-" in token:
+                declared.add(token)
+
+    return declared
+
+
+def check_provenance(
+    artifact_text: str,
+    expected_skill_ids: list[str],
+    provenance_required: bool,
+) -> dict:
+    """Per A13: enforce declared ⊇ expected ONLY when
+    provenance_required=True. Otherwise treat as advisory pass."""
+    if not provenance_required:
+        return {"passed": True, "missing": [], "declared": []}
+    declared = extract_declared_skills(artifact_text)
+    missing = [sid for sid in expected_skill_ids if sid not in declared]
+    return {
+        "passed": not missing,
+        "missing": missing,
+        "declared": sorted(declared),
+    }
+
+
 # --- Task 3.3: forbidden-phrase scanner (G3 + G11) -----------------------
 
 _HEADING_RE = re.compile(r"^\s{0,3}(#{1,6})\s+(.+?)\s*#*\s*$")

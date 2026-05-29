@@ -26,3 +26,5 @@ must_not_include:
   - forced validation replay
   - live Linear write
   - missing approval gate
+
+provenance_required: false

@@ -23,3 +23,5 @@ must_not_include:
   - roadmap promises in release notes
 
 required_json_payloads:
+
+provenance_required: false

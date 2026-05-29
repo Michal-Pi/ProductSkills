@@ -33,3 +33,5 @@ must_not_include:
 
 required_json_payloads:
   - linear_issue_batch
+
+provenance_required: false

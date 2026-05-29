@@ -21,3 +21,5 @@ must_not_include:
   - experiment without measurable threshold
 
 required_json_payloads:
+
+provenance_required: false

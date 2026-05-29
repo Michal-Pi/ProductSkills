@@ -23,3 +23,5 @@ must_not_include:
   - live sync feasibility
 
 required_json_payloads:
+
+provenance_required: false

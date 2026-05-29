@@ -26,3 +26,5 @@ must_not_include:
   - live external integration behavior
 
 required_json_payloads:
+
+provenance_required: false
