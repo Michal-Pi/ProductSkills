@@ -22,3 +22,5 @@ must_include:
 must_not_include:
   - fake certainty
   - implementation tasks masquerading as requirements
+
+required_json_payloads:

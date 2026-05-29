@@ -27,3 +27,7 @@ must_not_include:
   - created page URLs
   - successful sync
   - live rollback
+
+required_json_payloads:
+  - linear_issue_batch
+  - notion_page_batch

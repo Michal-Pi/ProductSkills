@@ -30,3 +30,6 @@ must_not_include:
   - fake certainty
   - live write without confirmation
   - unsupported launch claims
+
+required_json_payloads:
+  - linear_issue_batch

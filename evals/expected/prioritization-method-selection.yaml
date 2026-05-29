@@ -19,3 +19,5 @@ must_include:
 must_not_include:
   - automatic RICE scoring for every scenario
   - hidden criteria weights
+
+required_json_payloads:

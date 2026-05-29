@@ -21,3 +21,6 @@ must_include:
 must_not_include:
   - live write without confirmation
   - duplicate issue creation when an external ID mapping exists
+
+required_json_payloads:
+  - linear_issue_batch

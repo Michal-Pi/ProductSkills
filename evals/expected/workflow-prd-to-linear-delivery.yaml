@@ -28,3 +28,6 @@ must_not_include:
   - implementation-only tasks without user value
   - live Linear write without confirmation
   - duplicate issue creation when external ID mapping exists
+
+required_json_payloads:
+  - linear_issue_batch

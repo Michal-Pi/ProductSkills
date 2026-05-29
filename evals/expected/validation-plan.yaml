@@ -21,3 +21,5 @@ must_not_include:
   - completed experiment results
   - validated willingness to pay
   - live sync feasibility
+
+required_json_payloads:

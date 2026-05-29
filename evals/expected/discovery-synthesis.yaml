@@ -18,3 +18,5 @@ must_include:
 must_not_include:
   - invented customer quotes
   - delivery commitments without validation
+
+required_json_payloads:

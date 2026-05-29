@@ -19,3 +19,5 @@ must_include:
 must_not_include:
   - acquisition-only recommendation when activation or retention is constrained
   - experiment without measurable threshold
+
+required_json_payloads:

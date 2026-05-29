@@ -27,3 +27,5 @@ must_not_include:
   - fake certainty
   - unsupported delivery commitment
   - live Notion write without confirmation
+
+required_json_payloads:
