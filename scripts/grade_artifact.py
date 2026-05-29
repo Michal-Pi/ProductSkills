@@ -79,6 +79,23 @@ class Rubric:
     required_checks: list[str]
 
 
+@dataclass(frozen=True)
+class ForbiddenPhrase:
+    """One forbidden-phrase entry from evals/forbidden-phrases.yaml.
+
+    `allowed_in_quality_bar`: when True, ≤1 occurrence inside the
+    ## Quality Bar section is tolerated (per R3 — Claude legitimately
+    recaps rubric criteria as a self-attestation block); >1 in QB or
+    any outside QB is a blocking fail. When False, any match anywhere
+    is a fail.
+    """
+
+    id: str
+    pattern: str
+    reason: str
+    allowed_in_quality_bar: bool
+
+
 def unquote(value: str) -> str:
     return value.strip().strip('"').strip("'")
 
@@ -571,6 +588,136 @@ def print_text_result(result: dict[str, object]) -> None:
             print(f"  - {rubric_id}:")
             for check in checks:
                 print(f"    - {check}")
+
+
+# --- Task 3.3: forbidden-phrase scanner (G3 + G11) -----------------------
+
+_HEADING_RE = re.compile(r"^\s{0,3}(#{1,6})\s+(.+?)\s*#*\s*$")
+
+
+def load_forbidden_phrases(path: Path) -> list[ForbiddenPhrase]:
+    """Load evals/forbidden-phrases.yaml using parse_simple_fixture."""
+    parsed = parse_simple_fixture(path)
+    phrases_raw = parsed.get("phrases", [])
+    if not isinstance(phrases_raw, list):
+        raise ArtifactEvalError(f"{path}: phrases must be a list")
+    phrases: list[ForbiddenPhrase] = []
+    for index, item in enumerate(phrases_raw):
+        if not isinstance(item, dict):
+            raise ArtifactEvalError(f"{path}: phrases[{index}] not a mapping")
+        for key in ("id", "pattern", "reason"):
+            if not isinstance(item.get(key), str) or not item[key]:
+                raise ArtifactEvalError(f"{path}: phrases[{index}] missing scalar {key}")
+        allowed = item.get("allowed_in_quality_bar", False)
+        if not isinstance(allowed, bool):
+            raise ArtifactEvalError(
+                f"{path}: phrases[{index}].allowed_in_quality_bar must be bool"
+            )
+        phrases.append(
+            ForbiddenPhrase(
+                id=item["id"],
+                pattern=item["pattern"],
+                reason=item["reason"],
+                allowed_in_quality_bar=allowed,
+            )
+        )
+    return phrases
+
+
+def _split_quality_bar(text: str) -> tuple[str, str]:
+    """Partition `text` into (quality_bar_text, rest_text). The Quality
+    Bar section starts at the first heading whose title contains "Quality
+    Bar" (case-insensitive) and ends at the next heading of equal or
+    higher level. If no Quality Bar section exists, returns ("", text)."""
+    lines = text.splitlines(keepends=True)
+    qb_start: int | None = None
+    qb_level: int | None = None
+    qb_end = len(lines)
+
+    for index, line in enumerate(lines):
+        match = _HEADING_RE.match(line)
+        if not match:
+            continue
+        level = len(match.group(1))
+        title = match.group(2).strip().lower()
+        if qb_start is None:
+            if "quality bar" in title:
+                qb_start = index
+                qb_level = level
+            continue
+        # Already inside Quality Bar — exit on equal-or-higher heading.
+        if qb_level is not None and level <= qb_level:
+            qb_end = index
+            break
+
+    if qb_start is None:
+        return "", text
+    qb_text = "".join(lines[qb_start:qb_end])
+    rest_text = "".join(lines[:qb_start] + lines[qb_end:])
+    return qb_text, rest_text
+
+
+def scan_forbidden_phrases(
+    artifact_text: str,
+    phrases: list[ForbiddenPhrase],
+) -> dict:
+    """Apply every phrase pattern to the artifact. Returns:
+        {
+          "passed": bool,
+          "hits": [
+            {"id": ..., "pattern": ..., "where": "quality_bar" | "body",
+             "count": int, "reason": ...}
+          ]
+        }
+    A phrase fails when:
+      - allowed_in_quality_bar=True AND (QB count > 1 OR body count > 0)
+      - allowed_in_quality_bar=False AND any match anywhere
+    """
+    qb_text, rest_text = _split_quality_bar(artifact_text)
+    hits: list[dict] = []
+    for phrase in phrases:
+        try:
+            regex = re.compile(phrase.pattern, re.IGNORECASE | re.MULTILINE)
+        except re.error as exc:
+            raise ArtifactEvalError(
+                f"forbidden phrase {phrase.id}: pattern does not compile ({exc})"
+            )
+        qb_count = len(regex.findall(qb_text))
+        body_count = len(regex.findall(rest_text))
+        if phrase.allowed_in_quality_bar:
+            if body_count > 0:
+                hits.append(
+                    {
+                        "id": phrase.id,
+                        "pattern": phrase.pattern,
+                        "where": "body",
+                        "count": body_count,
+                        "reason": phrase.reason,
+                    }
+                )
+            if qb_count > 1:
+                hits.append(
+                    {
+                        "id": phrase.id,
+                        "pattern": phrase.pattern,
+                        "where": "quality_bar",
+                        "count": qb_count,
+                        "reason": phrase.reason,
+                    }
+                )
+        else:
+            total = qb_count + body_count
+            if total > 0:
+                hits.append(
+                    {
+                        "id": phrase.id,
+                        "pattern": phrase.pattern,
+                        "where": "anywhere",
+                        "count": total,
+                        "reason": phrase.reason,
+                    }
+                )
+    return {"passed": not hits, "hits": hits}
 
 
 def build_parser() -> argparse.ArgumentParser:

@@ -1,0 +1,110 @@
+# Forbidden-phrase scanner patterns (SDD Task 3.3 — G3 + G11 + Task 3.4
+# truncated-hash addition).
+#
+# Each entry has:
+#   id — stable identifier (Gn.NN).
+#   pattern — Python regex (case-insensitive). The scanner wraps with
+#             re.IGNORECASE; patterns should NOT include (?i).
+#   reason — why this is forbidden.
+#   allowed_in_quality_bar — true → ≤1 occurrence inside `## Quality Bar`
+#                            is tolerated as a self-attestation recap.
+#                            false → zero occurrences allowed anywhere.
+#
+# Calibrated against R3 §Forbidden-phrase list (20 patterns from
+# Gemini's rubric-echo failures) + R3 §G4 truncated-hash pattern.
+phrases:
+  - id: G3.01
+    pattern: 'includes\s+\*\*method selection rationale\*\*'
+    reason: rubric-echo of must_include
+    allowed_in_quality_bar: true
+  - id: G3.02
+    pattern: 'includes\s+\*\*confidence or sensitivity note\*\*'
+    reason: rubric-echo
+    allowed_in_quality_bar: true
+  - id: G3.03
+    pattern: 'includes\s+\*\*next decision step\*\*'
+    reason: rubric-echo
+    allowed_in_quality_bar: true
+  - id: G3.04
+    pattern: 'includes\s+\*\*direct evidence or states that evidence is missing\*\*'
+    reason: rubric-echo
+    allowed_in_quality_bar: true
+  - id: G3.05
+    pattern: 'includes\s+\*\*confidence or risk notes\*\*'
+    reason: rubric-echo
+    allowed_in_quality_bar: true
+  - id: G3.06
+    # Bullet-anchored: Gemini's mode is `- **Sep**: This X **separates
+    # assumptions from facts**`. Claude uses the phrase as a section
+    # label in prose ("This section **separates assumptions from
+    # facts**.") — anchoring to bullet prefix passes Claude and still
+    # catches Gemini.
+    pattern: '^\s*[\-\*\+]\s+.*(this|the)\s+\w+\s+(explicitly\s+)?\*\*separates assumptions from facts\*\*'
+    reason: self-reference
+    allowed_in_quality_bar: false
+  - id: G3.07
+    pattern: '(this|the)\s+\w+\s+\*\*names concrete next actions\*\*'
+    reason: self-reference
+    allowed_in_quality_bar: false
+  - id: G3.08
+    pattern: '(this|the)\s+\w+\s+\*\*separates direct evidence from inference\*\*'
+    reason: self-reference
+    allowed_in_quality_bar: false
+  - id: G3.09
+    pattern: '\*\*lifecycle status\*\*\s+is\s+"?(Active|Pending|Done)"?'
+    reason: placeholder-as-content
+    allowed_in_quality_bar: false
+  - id: G3.10
+    pattern: 'includes\s+\*\*PRD scope and non-goals\*\*'
+    reason: rubric-echo
+    allowed_in_quality_bar: true
+  - id: G3.11
+    pattern: 'includes\s+\*\*epics or stories\*\*'
+    reason: rubric-echo
+    allowed_in_quality_bar: true
+  - id: G3.12
+    # Bullet-anchored — Gemini emits as `- **Payload**: **dry-run
+    # payload is shown before write**.`. Claude uses the phrase as a
+    # prose label introducing a code fence ("This is the **dry-run
+    # payload is shown before write** for Linear:").
+    pattern: '^\s*[\-\*\+]\s+.*\*\*dry-run payload (before write|is shown before write)\*\*'
+    reason: rubric-echo
+    allowed_in_quality_bar: true
+  - id: G3.13
+    # Bullet-anchored — Gemini emits as `- **Rollback**: **rollback is
+    # not overstated**`. Claude uses prose ("Manual revert language only
+    # — rollback is not overstated.").
+    pattern: '^\s*[\-\*\+]\s+.*\*\*rollback is not overstated\*\*'
+    reason: rubric-echo (as bullet content)
+    allowed_in_quality_bar: true
+  - id: G3.14
+    pattern: 'sha256:[a-zA-Z0-9]{0,15}\.\.\.'
+    reason: truncated hash (G4)
+    allowed_in_quality_bar: false
+  - id: G3.15
+    pattern: '^\s*\{\s*"dry_run":\s*true\s*\}\s*$'
+    reason: stub-payload (anti-pattern)
+    allowed_in_quality_bar: false
+  - id: G3.16
+    pattern: 'includes\s+\*\*acceptance criteria\*\*'
+    reason: rubric-echo
+    allowed_in_quality_bar: true
+  - id: G3.17
+    pattern: '\*\*labels confidence by theme\*\*\s+as\s+\*\*(High|Medium|Low)\*\*'
+    reason: rubric-echo (subtle)
+    allowed_in_quality_bar: false
+  - id: G3.18
+    pattern: '(includes|provides)\s+\*\*explicit (stop or )?approval gates?\*\*'
+    reason: rubric-echo
+    allowed_in_quality_bar: true
+  - id: G3.19
+    # Bullet-anchored — Gemini emits as `- **Score**: includes
+    # **assumptions scored by evidence strength**.`. Claude uses the
+    # phrase as a backticked label in prose intro lines.
+    pattern: '^\s*[\-\*\+]\s+.*\*\*assumptions scored by evidence strength\*\*'
+    reason: rubric-echo
+    allowed_in_quality_bar: false
+  - id: G3.20
+    pattern: '\*\*post-launch learning feeds discovery\*\*'
+    reason: rubric-echo (as ≤8-word bullet)
+    allowed_in_quality_bar: true
