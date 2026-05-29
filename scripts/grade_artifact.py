@@ -83,30 +83,199 @@ def unquote(value: str) -> str:
     return value.strip().strip('"').strip("'")
 
 
-def parse_simple_fixture(path: Path) -> dict[str, str | list[str]]:
-    """Parse the simple YAML subset used by eval expected fixtures."""
-    parsed: dict[str, str | list[str]] = {}
-    current_key: str | None = None
+def _coerce_scalar(value: str) -> str | int | bool:
+    """Coerce a YAML scalar to int / bool / string. Strings keep their quotes stripped."""
+    raw = unquote(value)
+    if raw in ("true", "True", "TRUE"):
+        return True
+    if raw in ("false", "False", "FALSE"):
+        return False
+    if raw and (raw.lstrip("-").isdigit()):
+        try:
+            return int(raw)
+        except ValueError:
+            return raw
+    return raw
 
+
+def _tokenize_lines(path: Path) -> list[tuple[int, int, str]]:
+    """Return (line_number, indent_spaces, stripped_line) tuples for non-blank,
+    non-comment lines. Tabs are not supported (raise ArtifactEvalError)."""
+    tokens: list[tuple[int, int, str]] = []
     for line_number, raw_line in enumerate(path.read_text(encoding="utf-8").splitlines(), start=1):
-        if not raw_line.strip() or raw_line.lstrip().startswith("#"):
-            continue
+        if "\t" in raw_line[: len(raw_line) - len(raw_line.lstrip())]:
+            raise ArtifactEvalError(f"{path}: line {line_number} uses tab indentation; only spaces supported")
         stripped = raw_line.strip()
-        if stripped.startswith("- "):
-            if current_key is None:
-                raise ArtifactEvalError(f"{path}: line {line_number} has a list item without a key")
-            existing = parsed.setdefault(current_key, [])
-            if not isinstance(existing, list):
-                raise ArtifactEvalError(f"{path}: line {line_number} mixes scalar and list values")
-            existing.append(unquote(stripped[2:]))
+        if not stripped or stripped.startswith("#"):
             continue
-        if ":" not in stripped:
-            raise ArtifactEvalError(f"{path}: line {line_number} is not a supported key/value line")
-        key, value = stripped.split(":", 1)
-        current_key = key.strip()
-        parsed[current_key] = unquote(value) if value.strip() else []
+        indent = len(raw_line) - len(raw_line.lstrip(" "))
+        tokens.append((line_number, indent, stripped))
+    return tokens
 
-    return parsed
+
+def parse_simple_fixture(path: Path) -> dict:
+    """Parse the YAML subset used by eval expected fixtures.
+
+    Supports up to 3 levels of nesting (per SDD Task 3.0). Handles:
+      key: value                 — scalar (string, int, bool)
+      key:                       — empty (becomes [] if followed by list,
+                                   or {} if followed by indented key:value)
+        - item                   — list of scalars
+        - key: value             — list of dicts (one or more keys at +2 indent)
+        subkey: value            — nested dict
+        subkey:                  — nested-dict with deeper structure (recursive)
+          subsubkey: value
+
+    Raises ArtifactEvalError on malformed input rather than silently
+    producing wrong structure.
+    """
+    tokens = _tokenize_lines(path)
+    if not tokens:
+        return {}
+
+    pos = 0
+
+    def parse_block(base_indent: int) -> dict | list:
+        nonlocal pos
+        # Decide block kind from first line at base_indent.
+        if pos >= len(tokens):
+            return {}
+        _, first_indent, first_line = tokens[pos]
+        if first_indent != base_indent:
+            raise ArtifactEvalError(
+                f"{path}: expected indent {base_indent}, got {first_indent} at line {tokens[pos][0]}"
+            )
+
+        if first_line.startswith("- "):
+            return parse_list(base_indent)
+        return parse_dict(base_indent)
+
+    def parse_dict(base_indent: int) -> dict:
+        nonlocal pos
+        result: dict = {}
+        while pos < len(tokens):
+            line_number, indent, line = tokens[pos]
+            if indent < base_indent:
+                break
+            if indent > base_indent:
+                raise ArtifactEvalError(
+                    f"{path}: line {line_number} indent {indent} exceeds expected {base_indent}"
+                )
+            if line.startswith("- "):
+                raise ArtifactEvalError(
+                    f"{path}: line {line_number} list item where key expected"
+                )
+            if ":" not in line:
+                raise ArtifactEvalError(
+                    f"{path}: line {line_number} is not a supported key/value line"
+                )
+            key, raw_value = line.split(":", 1)
+            key = key.strip()
+            value_str = raw_value.strip()
+            pos += 1
+            if value_str:
+                # Inline scalar value.
+                result[key] = _coerce_scalar(value_str)
+                continue
+            # Empty value — look ahead for nested structure.
+            if pos >= len(tokens):
+                result[key] = []
+                continue
+            _, next_indent, next_line = tokens[pos]
+            if next_indent <= base_indent:
+                # No child block — treat as empty list (preserves
+                # backward-compat with the 0.2.1 shape that uses
+                # `key:` followed by `- item` lines at the same indent
+                # as the key, which never actually happened in fixtures
+                # but the original parser permitted it). Tests prove the
+                # actual fixtures all indent children further.
+                result[key] = []
+                continue
+            child_base = next_indent
+            if next_line.startswith("- "):
+                result[key] = parse_list(child_base)
+            else:
+                result[key] = parse_dict(child_base)
+        return result
+
+    def parse_list(base_indent: int) -> list:
+        nonlocal pos
+        items: list = []
+        while pos < len(tokens):
+            line_number, indent, line = tokens[pos]
+            if indent < base_indent:
+                break
+            if indent > base_indent:
+                raise ArtifactEvalError(
+                    f"{path}: line {line_number} indent {indent} exceeds expected list indent {base_indent}"
+                )
+            if not line.startswith("- "):
+                break
+            after_dash = line[2:].strip()
+            pos += 1
+            if ":" in after_dash and not after_dash.endswith(":"):
+                # First key of an object item: `- key: value`
+                k, v = after_dash.split(":", 1)
+                k = k.strip()
+                v = v.strip()
+                obj: dict = {k: _coerce_scalar(v)} if v else {k: _parse_object_item_value(base_indent + 2)}
+                # Consume any additional keys at base_indent + 2 belonging to this item.
+                while pos < len(tokens):
+                    nl_no, nl_indent, nl_line = tokens[pos]
+                    if nl_indent <= base_indent:
+                        break
+                    if nl_line.startswith("- "):
+                        break
+                    if ":" not in nl_line:
+                        raise ArtifactEvalError(
+                            f"{path}: line {nl_no} in list-of-dicts item is not a key/value"
+                        )
+                    sk, sv = nl_line.split(":", 1)
+                    sk = sk.strip()
+                    sv = sv.strip()
+                    pos += 1
+                    if sv:
+                        obj[sk] = _coerce_scalar(sv)
+                    else:
+                        # Nested under list-item key.
+                        if pos < len(tokens) and tokens[pos][1] > nl_indent:
+                            child_indent = tokens[pos][1]
+                            child = parse_dict(child_indent) if not tokens[pos][2].startswith("- ") else parse_list(child_indent)
+                            obj[sk] = child
+                        else:
+                            obj[sk] = []
+                items.append(obj)
+            elif after_dash.endswith(":"):
+                # `- key:` followed by a deeper child block
+                k = after_dash[:-1].strip()
+                if pos < len(tokens) and tokens[pos][1] > base_indent:
+                    child_indent = tokens[pos][1]
+                    if tokens[pos][2].startswith("- "):
+                        obj = {k: parse_list(child_indent)}
+                    else:
+                        obj = {k: parse_dict(child_indent)}
+                    items.append(obj)
+                else:
+                    items.append({k: []})
+            else:
+                items.append(_coerce_scalar(after_dash))
+        return items
+
+    def _parse_object_item_value(child_indent: int) -> dict | list:
+        # Helper for `- key:` with empty value followed by deeper block.
+        nonlocal pos
+        if pos < len(tokens) and tokens[pos][1] >= child_indent:
+            if tokens[pos][2].startswith("- "):
+                return parse_list(tokens[pos][1])
+            return parse_dict(tokens[pos][1])
+        return []
+
+    result = parse_dict(0)
+    if pos < len(tokens):
+        raise ArtifactEvalError(
+            f"{path}: trailing unparsed content starting at line {tokens[pos][0]}"
+        )
+    return result
 
 
 def parse_expected_file(path: Path) -> ExpectedFixture:
