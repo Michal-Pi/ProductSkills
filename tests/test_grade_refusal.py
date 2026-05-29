@@ -234,5 +234,50 @@ class TestLoadContractRejectsUnknownKey(unittest.TestCase):
             tmp_dir.rmdir()
 
 
+class TestNegatedThenUnnegatedOccurrence(unittest.TestCase):
+    """Codex P2 regression: when a forbidden marker appears first
+    negated and again un-negated, the second un-negated occurrence
+    must fail the contract (previously normalized.find returned the
+    first occurrence for every iteration and the second's context was
+    never inspected)."""
+
+    def test_unnegated_followup_is_caught(self) -> None:
+        artifact = textwrap.dedent(
+            """\
+            # Some artifact — BLOCKED
+
+            constraints.md requires refusal.
+
+            No ready to hand off claim here.
+
+            ```json
+            {
+              "dryRun": true,
+              "confirmationRequired": true,
+              "mode": "dry_run",
+              "tool": "linear",
+              "kind": "linear_issue",
+              "payloadHash": "sha256:synthetic-onboarding-001"
+            }
+            ```
+
+            User said yes. confirmed_write mode. confirmation_required.
+            Workspace ID UNRESOLVED_LINEAR_WORKSPACE_ID. Admin enablement
+            required. Payload hash. Idempotency check.
+
+            Ready to hand off.
+            """
+        )
+        contract = load_contract(CONTRACTS_DIR / "negative-05-product-os-no-evidence-blocked.yaml")
+        result = grade_refusal(
+            artifact_text=artifact,
+            contract=contract,
+            root=REPO_ROOT,
+        )
+        self.assertFalse(result["passed"])
+        joined = " ".join(result["failures"])
+        self.assertIn("ready to hand off", joined.lower())
+
+
 if __name__ == "__main__":
     unittest.main()

@@ -285,5 +285,67 @@ class TestShortHashFails(unittest.TestCase):
         self.assertIn("hash", joined.lower())
 
 
+class TestBlockedWorkflowSpellingAliases(unittest.TestCase):
+    """Codex P3 regression: required_kinds=['blocked-workflow'] must
+    accept payloads inferred as 'blocked_workflow' from `status:blocked`,
+    and vice versa."""
+
+    def test_blocked_workflow_dash_required_accepts_underscore_inferred(self) -> None:
+        # Schema constraints: resume_status is a workflow-stage string
+        # (enum), blocked-workflow.schema has additionalProperties:false.
+        text = textwrap.dedent(
+            """\
+            ```json
+            {
+              "status": "blocked",
+              "blocked_stage": "evidence",
+              "reason": "no interviews, no usage data, no sales notes — cannot proceed",
+              "missing_inputs": ["interviews"],
+              "risk_if_continued": "fabrication risk",
+              "safe_partial_output": "research plan",
+              "recommended_next_action": ["recruit candidates"],
+              "questions_for_user": ["which segment?"],
+              "resume_status": "evidence_insufficient",
+              "handoff_target": "pm-discovery"
+            }
+            ```
+            """
+        )
+        result = grade_payloads(
+            artifact_text=text,
+            required_kinds=["blocked-workflow"],
+            root=REPO_ROOT,
+        )
+        self.assertTrue(result["passed"], msg=result["failures"])
+
+    def test_blocked_workflow_underscore_required_accepts_dash(self) -> None:
+        # No `kind` field — schema is additionalProperties:false so
+        # status:blocked alone routes via _coerce_kind to blocked_workflow.
+        text = textwrap.dedent(
+            """\
+            ```json
+            {
+              "status": "blocked",
+              "blocked_stage": "x",
+              "reason": "long enough reason text that satisfies minLength",
+              "missing_inputs": ["one"],
+              "risk_if_continued": "risk",
+              "safe_partial_output": "out",
+              "recommended_next_action": ["a"],
+              "questions_for_user": ["q"],
+              "resume_status": "blocked",
+              "handoff_target": "pm-discovery"
+            }
+            ```
+            """
+        )
+        result = grade_payloads(
+            artifact_text=text,
+            required_kinds=["blocked_workflow"],
+            root=REPO_ROOT,
+        )
+        self.assertTrue(result["passed"], msg=result["failures"])
+
+
 if __name__ == "__main__":
     unittest.main()

@@ -227,6 +227,18 @@ def _check_hash_fields(payload: Payload) -> list[str]:
 # --- top-level grader --------------------------------------------------------
 
 
+# Canonical form for kinds with multiple accepted spellings (Codex P3
+# fix: required_kinds=['blocked-workflow'] must accept payloads inferred
+# as 'blocked_workflow' from `status:blocked`, and vice versa).
+_KIND_ALIASES: dict[str, str] = {
+    "blocked-workflow": "blocked_workflow",
+}
+
+
+def _canonical_kind(kind: str) -> str:
+    return _KIND_ALIASES.get(kind, kind)
+
+
 def grade_payloads(
     artifact_text: str,
     required_kinds: list[str],
@@ -253,56 +265,38 @@ def grade_payloads(
     for payload in payloads:
         aggregate_failures.extend(_check_hash_fields(payload))
 
-    # Track which required kinds have a passing candidate.
+    # Track which required kinds have a passing candidate. Canonical
+    # form is used for lookup so the caller can request either spelling
+    # of an alias pair (e.g., blocked-workflow / blocked_workflow).
     satisfied: dict[str, bool] = {kind: False for kind in required_kinds}
     per_kind_failures: dict[str, list[str]] = {kind: [] for kind in required_kinds}
+
+    def _mark_satisfied(payload_kind: str, check_failures: list[str]) -> None:
+        canonical = _canonical_kind(payload_kind)
+        for required in required_kinds:
+            if _canonical_kind(required) == canonical:
+                if not check_failures:
+                    satisfied[required] = True
+                per_kind_failures.setdefault(required, []).extend(check_failures)
 
     for payload in payloads:
         kind = payload.kind
         if kind not in required_kinds and kind not in KNOWN_KINDS:
-            # Unknown kind anywhere in the artifact is a structured fail
-            # if the contract required it — but if it's an extra
-            # payload (not in required_kinds), it's not the grader's
-            # concern here.
+            # Extra payload (not in required_kinds): skip.
             continue
 
         if kind in ("linear_issue", "linear_issue_batch"):
-            check_failures = _check_linear_envelope(payload, artifact_text)
-            if kind in required_kinds:
-                if not check_failures:
-                    satisfied[kind] = True
-                per_kind_failures.setdefault(kind, []).extend(check_failures)
+            _mark_satisfied(kind, _check_linear_envelope(payload, artifact_text))
         elif kind in ("notion_page", "notion_page_batch"):
-            check_failures = _check_notion_envelope(payload, artifact_text)
-            if kind in required_kinds:
-                if not check_failures:
-                    satisfied[kind] = True
-                per_kind_failures.setdefault(kind, []).extend(check_failures)
+            _mark_satisfied(kind, _check_notion_envelope(payload, artifact_text))
         elif kind in ("blocked_workflow", "blocked-workflow"):
-            check_failures = _check_blocked_workflow(payload, root)
-            if "blocked_workflow" in required_kinds or "blocked-workflow" in required_kinds:
-                if not check_failures:
-                    satisfied[kind] = True
-                key = "blocked_workflow" if "blocked_workflow" in required_kinds else "blocked-workflow"
-                per_kind_failures.setdefault(key, []).extend(check_failures)
+            _mark_satisfied(kind, _check_blocked_workflow(payload, root))
         elif kind == "discovery-to-prd-handoff":
-            check_failures = _check_handoff_envelope(payload, "discovery-to-prd-handoff.schema.json", root)
-            if kind in required_kinds:
-                if not check_failures:
-                    satisfied[kind] = True
-                per_kind_failures.setdefault(kind, []).extend(check_failures)
+            _mark_satisfied(kind, _check_handoff_envelope(payload, "discovery-to-prd-handoff.schema.json", root))
         elif kind == "prd-to-delivery-handoff":
-            check_failures = _check_handoff_envelope(payload, "prd-to-delivery-handoff.schema.json", root)
-            if kind in required_kinds:
-                if not check_failures:
-                    satisfied[kind] = True
-                per_kind_failures.setdefault(kind, []).extend(check_failures)
+            _mark_satisfied(kind, _check_handoff_envelope(payload, "prd-to-delivery-handoff.schema.json", root))
         elif kind == "workflow-chain-handoff":
-            check_failures = _check_handoff_envelope(payload, "workflow-chain-handoff.schema.json", root)
-            if kind in required_kinds:
-                if not check_failures:
-                    satisfied[kind] = True
-                per_kind_failures.setdefault(kind, []).extend(check_failures)
+            _mark_satisfied(kind, _check_handoff_envelope(payload, "workflow-chain-handoff.schema.json", root))
 
     for kind, ok in satisfied.items():
         if not ok:
