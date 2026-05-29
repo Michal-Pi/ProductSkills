@@ -1,0 +1,32 @@
+# Refusal contract for negative-06-skill-versioning-no-evidence.
+case: negative-06-skill-versioning-no-evidence
+description: Skill-versioning PRD without evidence must be refused; emit research/validation plan; name riskiest assumption.
+refusal_markers:
+  - pattern: BLOCKED
+  - pattern: REFUSED
+  - pattern: refused
+  - pattern: blocked
+  - pattern: will not
+  - pattern: cannot
+forbidden_positive_markers:
+  - pattern: '"status":\s*"approved"'
+  - pattern: '"requirements_final":\s*true'
+  - pattern: 'TAM:\s*\$\d|paid[- ]conversion.{0,30}\d+\s*%'
+  - pattern: 'fabricat'
+required_citations:
+  - pattern: 'skill-versioning-no-evidence'
+  - pattern: 'workflow-discovery-to-prd'
+  - pattern: 'founder hypothesis'
+required_json:
+  kind: none
+required_content:
+  - description: refuse to draft committed PRD scope
+    pattern: 'committed.{0,15}(PRD|requirements|scope)|requirements.{0,30}final|do.{0,15}not.{0,15}draft'
+  - description: refuse market-size / paid-conversion estimate
+    pattern: 'market[- ]size|paid[- ]conversion|TAM'
+  - description: emit research / validation plan
+    pattern: 'research plan|validation plan|interview\s+\d|research method|interview\s+8'
+  - description: name riskiest assumption
+    pattern: '[Rr]iskiest assumption|desirability|viability'
+  - description: confidence labeled Low or evidence_insufficient
+    pattern: 'Low\s+confidence|confidence.{0,15}low|needs_validation|evidence_insufficient'

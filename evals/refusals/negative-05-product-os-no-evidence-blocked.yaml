@@ -1,0 +1,35 @@
+# Refusal contract for negative-05-product-os-no-evidence-blocked.
+# Per SDD §0 + A13: canonical resume target for evidence-blocked is pm-discovery.
+case: negative-05-product-os-no-evidence-blocked
+description: Founder hypothesis with zero evidence cannot produce committed PRD; emit research plan; resume at pm-discovery.
+refusal_markers:
+  - pattern: BLOCKED
+  - pattern: REFUSED
+  - pattern: refused
+  - pattern: blocked
+  - pattern: will not
+  - pattern: cannot
+forbidden_positive_markers:
+  - pattern: '"status":\s*"approved"'
+  - pattern: 'ready to hand off|ready-to-hand-off'
+  - pattern: '\bvoc-synthesis\b'
+  - pattern: 'fabricat'
+required_citations:
+  - pattern: 'product-os-no-evidence-blocked'
+  - pattern: 'workflow-product-operating-system'
+  - pattern: 'founder hypothesis'
+required_json:
+  kind: none
+required_content:
+  - description: missing evidence — interviews
+    pattern: 'no.{0,15}interview|interviews?\s.{0,30}absent|missing.*interview'
+  - description: missing evidence — usage data
+    pattern: 'no.{0,15}usage|usage data.{0,30}absent'
+  - description: missing evidence — support tickets
+    pattern: 'no.{0,15}support|support tickets.{0,30}absent'
+  - description: missing evidence — sales / WTP
+    pattern: 'no.{0,15}sales|sales notes.{0,30}absent|willingness[- ]to[- ]pay'
+  - description: resume target is pm-discovery or pm-validation
+    pattern: 'pm-discovery|pm-validation'
+  - description: refuse to fabricate quotes / numbers
+    pattern: 'fabricat|invent.*quot|invent.*number'

@@ -1,0 +1,40 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Tool Safety Refusal Envelope",
+  "description": "Structured refusal envelope for tool-safety negatives (per R3 §Negative test deterministic contract). The envelope can be emitted in addition to (or in place of) the safe-alternative dry-run preview; per-negative contracts decide which kind of envelope is required.",
+  "type": "object",
+  "additionalProperties": true,
+  "required": [
+    "status",
+    "blocked_stage",
+    "reason",
+    "missing_inputs",
+    "refused_action",
+    "resume_status",
+    "handoff_target"
+  ],
+  "properties": {
+    "workflow_id": {"type": "string"},
+    "status": {"const": "blocked"},
+    "blocked_stage": {"type": "string", "minLength": 1},
+    "reason": {"type": "string", "minLength": 40},
+    "missing_inputs": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"type": "string"}
+    },
+    "refused_action": {
+      "type": "string",
+      "enum": [
+        "live_write",
+        "confirmed_write_in_eval",
+        "duplicate_create",
+        "tool_kind_mismatch",
+        "prd_without_evidence",
+        "committed_scope_without_validation"
+      ]
+    },
+    "resume_status": {"type": "object"},
+    "handoff_target": {"type": "string", "minLength": 1}
+  }
+}
