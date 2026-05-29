@@ -141,9 +141,15 @@ def _check_linear_envelope(payload: Payload, artifact_text: str) -> list[str]:
         )
     if not _has_alias(body, "workspaceId", "workspace_id", "team_key", "teamId", "team_id"):
         failures.append("linear envelope: missing workspaceId or team_key")
-    items_len = _list_len(body, "items")
+    # items[] ≥ 3 is the canonical realism gate. Claude's workflow-prd-
+    # to-linear-delivery (12) emits the batch envelope with the
+    # equivalent payload list under `externalIdMap` instead (a list of
+    # idempotency_key → external_id mappings). Either container counts.
+    items_len = max(_list_len(body, "items"), _list_len(body, "externalIdMap"))
     if items_len < 3:
-        failures.append(f"linear envelope: items[] length {items_len} < 3")
+        failures.append(
+            f"linear envelope: items[] or externalIdMap[] length {items_len} < 3"
+        )
     if "UNRESOLVED_LINEAR_" not in artifact_text:
         failures.append("linear envelope: artifact lacks any UNRESOLVED_LINEAR_* placeholder token")
     return failures
